@@ -173,3 +173,69 @@ Tako lahko implementiramo:
 14 Urejanje in oblikovanje
 
 ```
+Eden izmed glavnih problemov je ločevanje oblikovanja (oblike) od urejevanja (podatkov).
+Pri spletnem razvoju je to rešeno z delitvijo na HTML in CSS.
+LaTeX to ne ločuje tako učinkovito, ampak podobno imamo delitev na vsebino - torej tekst -
+in oblikovanje - v obliki nekih predlog (templatov). Ti določajo obliko oz. izgled dokumenta.
+Mi se tako osredotočamo na vsebino, ne pa na oblikovanje.
+Word po drugi strani ima to še bolj pomešano.
+
+Glavna ideja je tako, da imamo najprej vhodno besedilo in nato oblikovalnik (kjer določimo font, velikost, barvo ipd.).
+Ko to združimo, dobimo izhodno besedilo.
+
+Prednost vsega tega ločevanja je, da lahko vsebino enostavno spremenimo, ne da bi morali spremeniti obliko.
+To je lahko pri LaTeXu sicer bolj zahtevno, saj je treba dokumenta znova prevesti, medtem ko se v Word spremembe prikažejo takoj.
+```
+
+15 Interaktivno vs statično oblikovanje/urejanje
+
+```
++ Glavna prednost interaktivnega oblikovanja je, da se spremembe prikažejo takoj.
++ Takoj je tudi vidna oblika oz. izgled dokumenta, kar nam omogoča lažje urejanje oblike.
+- Slabost je, da je treba dokument stalno posodabljati, kar pa je računsko zahtevno.
+- Poleg tega sta vsebina in oblika pri takšnem oblikovanju pogosto pomešani, kar pomeni, da vsebino
+  včasih težko spremenimo brez oblike.
+```
+
+```
++ Glavna prednost statičnega oblikovanja je, da je vsebina ločena od oblike. Tako se lahko osredotočimo na samo vsebino
+  brez spreminjanja oblike in se oblike lotimo šele na koncu. Pri bolj obsežnih dokumentih je to morda še lažje.
++ Ker ni sprotnega posodabljanje, je oblikovanje/urejanje hitrejše.
+- Slabost je, da se spremembe prikažejo šele, ko dokument prevedemo.
+```
+
+16 Vektorski format
+
+```
+Prednost vektorskega formata je ta, da bolje ohranja informacije. To pomeni, da npr. če povečamo velikost prikaza slike
+na zaslonu, bo ta ohranila kakovost (rasterska slika pa le-te nebi). Vektorski format to doseže z uporabo matematičnih
+formul, ki opisujejo geometrijo slik. to omogoča spremembo velikosti brez izgube informacij.
+```
+
+17 Vloga gonilnikov ?
+
+```
+```
+
+18 TrueType
+
+```
+TrueType je vektorski format, ki se uporablja za pisave (fonte) brez izgube kakovosti pri skaliranju.
+S tem omogoča prikaz znakov (črk) v maksimalni kvaliteti pri poljubni resoluciji.
+```
+
+19 Rasterizacija
+
+```
+Problem rasterizacije je, da je treba vektorsko sliko pretvoriti v rastersko sliko. Tu pogosto pride do izgube kakovosti slike.
+Rešitev, ki jo pogosto uporabimo, je, da programu za rasterizacijo damo namig, kako simbol izrisati. LAhko bi npr. rekli,
+da naj se potrudi znake narediti simetrične. Za to pa se uporablja tudi tehnika ClearType (anti-aliasing + smoothing).
+Slika s pomočjo ClearType izgleda bolj gladko in čisto - ni tistih kvadratnih robov.
+
+To je v bistvu sismska podpora obliki, kar pomeni, da mi ne rabimo skrbeti za izgled znakov, ampak le za vsebino.
+```
+
+20 PostScript
+
+```
+```
