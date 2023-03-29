@@ -95,6 +95,7 @@ int main() {
 ```
 
 Izhod:
+
 ```
 Število znakov v besedi: 24
 Število znakov v besedi strlen: 24
@@ -128,6 +129,7 @@ int main() {
 ```
 
 Izhod:
+
 ```
 Velikost strukture: 16
 ```
@@ -212,7 +214,7 @@ na zaslonu, bo ta ohranila kakovost (rasterska slika pa le-te nebi). Vektorski f
 formul, ki opisujejo geometrijo slik. to omogoča spremembo velikosti brez izgube informacij.
 ```
 
-17 Vloga gonilnikov ?
+17 Vloga gonilnikov
 
 ```
 ```
@@ -236,6 +238,91 @@ To je v bistvu sismska podpora obliki, kar pomeni, da mi ne rabimo skrbeti za iz
 ```
 
 20 PostScript
+
+```
+PostScript je jezik, ki pove, kako se nekaj nariše: izris grafičnih elementov (uporabljeno pri tiskanju) v dokumentih.
+Doda podporo fontom, kompresiji slik, tekstu ipd. - je kot nek programski jezik za tisk.
+Podprt je (bil) v raznih aplikacijah in tiskalnikih.
+```
+
+21 PDF
+
+```
+PDF je tako neka nadgradna verzija PostScripta. Je bolj optimiziran za digitalno/elektronsko distribucijo.
+Omogoča platformno neodvisno prikazovanje dokumentov.
+Ravno tako podpira razne grafične elemente: tekst, slike, ostale grafične objekte, povezave, oblike, fonte itd.
+
+Sestoji iz nekaj delov:
+* Glava - struktura dokumenta, verzija, podatki o avtorju, ...
+* Telo - vsebina dokumenta - objekti (tekst, slike, povezave, ...)
+* Tabela reference - seznam vseh objektov v dokumentu za lažji dostop
+* Rep - lokacija tabele prečnih reference, konča se z %%EOF
+```
+
+22 LaTeX - princip škatel
+
+```
+LaTeX je zasnovan tako, da je vsebina ločena od oblike. Je kot nek programski jezik in sestoji iz jezika in tolmača.
+Ima nekaj 100 ukazov za grajenje dokumenta.
+
+Posamezni objekti - simboli, besedila, slike, grafi, ... - so v LaTeXu zapisani v obliki škatel.
+Škatle gradijo dokument. Le-tem lahko spreminjamo: velikost, vsebino. Lahko pa jih tudi gnezdimo.
+Škatle imajo neko določeno višino in širino in ko ustvarimo vse škatle, je naloga LaTeXa, da jih pravilno postavi - 
+problem polnjenja nahrbtnika.
+```
+
+23 DOCX
+
+```
+DOCX dokumenti uporabljajo XML za shranjevanje vsebine, oblike, podatkov itd.
+Imamo tudi več markup jezikov za opis različnih gradnikov: besedilo (Word), razpredelnice (Excel), prosojnice (PP), 
+matematični izrazi, vektor grafike (GIMP npr.), ...
+
+Te različne tehnologije lahko potlej tudi kombiniramo - npr. matematični izrazi zniotraj word dokumenta.
+Vse skupaj pa nazadnje zazipamo v eno datoteko (npr. .docx). Kompresija je potrebna, ker je XML zelo ponavljujoč, lahko bi
+rekli, da je precej "balasta" - kompresija pa vse skupaj zmanjša na primerno velikost.
+
+Skratka več datotek za en dokument.
+```
+
+24 Življenjski cikel programa
+
+```
+Program gre čez nekaj faz:
+1. Izvorni program (C, C++, ...)
+   Predprocesiranje (import, makro, ...)
+   Zbiranje (zbirnik) / prevajanje (prevajalnik)
+2. Objektni moduli (.obj - strojna koda)
+   Povezovanje (povezovalnik)
+3. Izvedljivi modul (.exe)
+   Nalaganje (nalagalnik)
+4. Naložen program (v glavnem pomnilniku)
+   Izvajanje
+```
+
+25 Zakaj zbirnik?
+
+```
+Morebiti hitrost, direkten dostop do strojne opreme (registri, gonilniki), optimizacija, ...
+Sicer ni razloga, ker so današnji prevajalniki zelo močni: koda je hitra, zanesljiva, krajša, prenosljiva.
+```
+
+26 Simboli, funkcije
+
+```
+```
+
+27 Slika pomnilnika
+
+```
+Pomnilnik v glavnem sestoji iz štirih segmentov (od višjega proti nižjemu naslovu), za ketere pa imamo tudi segmentne registre:
+* Sklad - dinamičen segment za shranjevanje lokalnih podatkov - pri menjavi konteksta se tja shranijo lokalne spremenljivke (registri)
+* Kopica - dinamičen segment za dinamično alokacijo pomnilnika (malloc, new, free, delete)
+* Podatkovni segment - statični segment (fiksne velikosti) za shranjevanje globalnih spremenljivk
+* Tekst segment (koda) - statični segment (fiksne velikosti) za shranjevanje kode
+```
+
+28 Efektivni naslov
 
 ```
 ```
