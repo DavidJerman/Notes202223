@@ -2,7 +2,7 @@
 
 ## Vprašanja
 
-1 Statične vs. dinamične knjižnice.
+1 Statične vs dinamične knjižnice.
 
 | Statične                                                                                                                  | Dinamične                                                                                                                                                    |
 |---------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -325,4 +325,282 @@ Pomnilnik v glavnem sestoji iz štirih segmentov (od višjega proti nižjemu nas
 28 Efektivni naslov
 
 ```
+Efektivni naslov je naslov, ki ga uporablja procesor za dostop do nekega dela pomnilnika. Najdemo ga v zbirnih ukazih
+v obliki in ga je potrebno pred uporabu izračunati. Formula se glasi: 
+Bazni_register + Faktor*Indeksni_register + odmik
+Le-ta se nato združi z segmentnim registrom, da dobimo fizični naslov pri recimo realnem načinu delovanja.
+Efektivni naslov je namreč relativen glede na začetek programa (ta se začne z naslovom nič).
+Za ta nem imamo tudi AGU enoto.
+```
+
+29 Kaj je sklad?
+
+```
+Gre za dinamičen del (segment) pomnilnika, ki služi kot prostor za začasno shranjevanje lokalnih spremenljivk (registrov).
+To nam pride prav pri npr. zamenjavi konteksta. Za ta nam imamo tudi kazalec na začetek (vrh) sklada (RSP) in kazalec na
+okvir sklada (RBP) - ta predstavlja začetek trenutnega dela sklada, ki ga uporabljamo.
+Z vsako zamenjavo konteksta tako nastane nov okvir in se doda na sklad (push, ovijanje sklada) oz. vzame iz sklada (pop, 
+odvijanje sklada), ko se vračamo iz funkcije.
+
+Pred začetkom sklada (torej pred RSP) imamo še 128 bajtov rdeče cone (Linux/MacOS, x64). Gre za zavarovan del pomnilnika pred RSP, do katerega
+naj signali in interrupt handlerji ne bi dostopali. Omogoča shranjevanje podatkov na stack brez spreminjanja RSP.
+```
+
+30 Sklad vsebina – 32 vs 64 bit
+
+```
+https://eli.thegreenplace.net/2011/02/04/where-the-top-of-the-stack-is-on-x86/
+TL;DR: Pri obeh najdemo lokalne spremenljivke in naslov za vračanje ob klicu funkcije. Po klic funkcije pa še kazalec 
+       na prejšen okvir sklada (RBP oz. EBP). Tudi vrednosti funkcije se vračajo preko sklada.
+       Pri 64-bit pa pogosto najdemo še prej omenjeno rdečo cono (128 bajtov).
+```
+
+31 Zakaj lokalne spremenljivke na skladu, ko pa bi bile lahko v registrih?
+
+```
+Razlog tiči v tem, da je registrov pogosto premalo (recimo imaš samo 8 splošno namenskih registrov).
+Nato izbiraš med pomnilnikom, ki ti ga dodeli OS ali skladom, ki ga že imaš. Sklad je seveda hitrejši in zato so
+lokalne spremenljivke shranjene tam, četudi morda nova funkcija znotraj trenutne ne bo klicana.
+Mogoče izgubimo malce na hitrosti (zanemarljivo malo ponavadi), a če nas to skrbi, je na voljo zbirnik.
+```
+
+32 Kaj so okvirji na skladu
+
+```
+Okvir na skladu je del sklada, ki služijo za shranjevanje lokalnih spremenljivk (registrov) trenutne funkcije.
+V njem ponavadi najdemo še kazalec na prejšnji okvir sklada (RBP oz. EBP) in naslov za vračanje ob klicu funkcije.
+```
+
+33 Kaj pa kopica?
+
+```
+Kot omenjeno že prej, gre za dinamičen segment pomnilnika, ki služi za dinamično alokacijo pomnilnika (malloc, new, free, delete).
+```
+
+34 Ostranjevanje (paging)
+
+```
+Ostranjevanje (paging) je razdelitev glavnega pomnilnika na enako velike enote (strani) - ponavadi velikosti 4kB.
+Tako namesto da naslvljamo direktne lokacije v pomnilniku, naslovimo stran in povemo še odmik znotraj strani.
+Ostranjevanje prepreči zunanjo razdrobljenost, omili notranjo razdrobljenost, poenostavi delo OS in omogoča virtualni
+pomnilnik - če zmanjka prostora v GP, lahko strani "odložimo" na disk.
+OSu tudi omogoča lažjo zaščito pomnilnika in manj režije.
+
+2⁵² strani nam je na voljo.
+Poleg tega uvedemo večstopenjsko tabelo strani, kjer shranjujemo informacije o straneh - kje se nahajajo, ali so 
+veljavne (v glavnem pomnilniku) in nekatere druge zastavice.
+
+Rabimo uvesti preslikavo virualnih naslovov v fizične (ker strani niso nujno v pomnilniku, jih celo lahko celo več, kot
+pa je velikost pomnilnika in ni nujno da so na lokaciji v pomnilniku, ki je enaka fizični lokaciji strani) - uvedemo
+preslikovalne tabele.
+```
+
+35 Little magic box - Intel allocator
+
+```
+Ideja je, da imamo več logičnih registrov, kateri pa se med izvajanjem preslikajo na fizične registre.
+Imamo pa več fizičnih registrov za vsak logični register. To omogoča izvajanje več ukazov hkrati.
+Imamo namreč več ALU enot in tako lahko npr. izračunamo več stvari hkrati (out of order execution), če so deli
+kode med sabo neodvisni.
+```
+
+36 AGU
+
+```
+AGU je enota v procesorju, ki služi za izračun efektivnega naslova. S tem pohtri računanje naslovov za dostop 
+do pomnilnika in zmanjša število ciklov, ki bi jih sicer procesor porabil za ta izračun.
+```
+
+37 ALU
+
+```
+Aritmetično logična enota - služi za izvajanje aritmetičnih in logičnih operacij (+, -, *, /, &, |, ^, ~, <<, >>, ...)
+```
+
+38 FPU
+
+```
+Floating point unit - služi za izvajanje operacij z realnimi števili (float, double).
+```
+
+39 MMX
+
+```
+MultiMedia eXtensions - služi za izvajanje operacij z 64-bitnimi celoštevilskimi števili ali grupami manjših števil.
+Nekako ostanek iz preteklosti.
+```
+
+40 SSE
+
+```
+Streaming SIMD Extensions - služi za izvajanje operacij z 128-bitnimi celoštevilskimi števili ali grupami manjših števil.
+Uvede 8 novih XMM registrov in več ukazov za računanje z njimi. So širine 128 bitov in omogočajo računanje z več
+števili hkrati (2x64, 4x32...). Njihov namen je pohitritev takšnih računskih operacij.
+```
+
+41 Out of order execution
+
+```
+Procesor kodo razbije na več delov in določene dele kode izvede paralelno, če so med sabo neodvisni.
+Na koncu seveda poskrbi za vzpostavitev originalenga vrstnega reda kode.
+Primer je računanje dveh neodvisnih spremenljivk.
+```
+
+42 Cevovodi in branch prediction (predikcija vejitev)
+
+```
+Cevovodi omogočajo nek nivo paralelizacije s tem, da izvajajo več ukazov hkrat s tega vidika, da ko je en ukaz
+pridobljen in gre v dekodiranje, da se začne pridobivati že naslednji ukaz.
+Cevovod sestoji iz več faz/nivojev: fetch, decode, execute, writeback.
+Potlej ko je specifičen ukaz v eni izmed faz, gre naslednji ukaz v že prejšnjo fazo.
+
+Fetch - pridobivanje ukazov iz pomnilnika
+Decode - dekodiranje ukaza
+Execute - izvajanje ukaza
+Writeback - zapis rezultata v pomnilnik
+
+Tu pa pride na vrsto predikcija vejitev. Predikcija vejitev je predvidevanje, katera pot bo izbrana pri veji.
+Če pot uganemo, super, jo upoštevamo, sicer je treba celoten cevovod zavreči in začeti znova.
+Imamo več načinov predikcije vejitev, ki pa so danes že zelo učinkoviti (Intel kar 97%).
+
+Primeri predikcije vejitev:
+- Statistična predikcija,
+- Predikcija na podlagi zgodovine...
+```
+
+43 Zakasnjene vejitve
+
+```
+Ideja tu je, da prevajalnik išče kodo neodvisno od vejitve in jo izvede šele po vejitvi.
+Izvede jo šele za vejitvijo - to pride prav, da v primeru da se za vejitev zmoti, ne zavržemo od vejitve 
+neodvisne kode v cevovodu.
+
+Zakasnitve so omejene z dolžino cevovoda.
+```
+
+44 Matična plošča
+
+```
+Matična plošča je osnova računalnika. Vsebuje procesor, pomnilnik, različne povezave, napajanje, ...
+https://en.wikipedia.org/wiki/Southbridge_(computing)
+The southbridge typically implements the slower capabilities of the motherboard in a northbridge/southbridge chipset computer architecture.
+https://en.wikipedia.org/wiki/Northbridge_(computing)
+The northbridge is a computer chip found on motherboards. It connects the CPU to the memory, peripheral buses, and other components.
+
+Potrebna je tudi sinhronizacija med različnimi komponentami.
+```
+
+45 Imena registrov
+
+```
+EAX - general purpose register (32-bit)
+RAX - general purpose register (64-bit)
+AX - general purpose register (16-bit)
+AH - general purpose register (8-bit)
+
+RSI - source index (64-bit) - index za branje iz pomnilnika
+RDI - destination index (64-bit) - index za pisanje v pomnilnik
+
+RIP - instruction pointer (64-bit) - kazalec na naslov naslednjega ukaza (call, jmp, ret, ...) - eden za vsako nit
+
+Lokacijski števec - iz kje v datoteki beremo - naredi se eden za vsako odprto datoteko
+
+EFALGS - flags register (32-bit) - registri za shranjevanje stanja procesorja (npr. overflow, carry, zero, parity ...)
+
+FPU/MMX registri (80-bit) - FPU in MMX
+YMM registri (256-bit) - SSE2
+XMM registri (128-bit) - SSE
+
+V legacy 32-bit načinu imamo 8 YMM/XMM registrov, v 64-bit načinu pa 16.
+```
+
+46 Računalniške operacije in tipi podatkov
+
+```
+Operacije:
+- aritmetične (+, -, *, /, %)
+- logične (&, |, ^, ~)
+- bitne (<<, >>)
+
+Tipi podatkov:
+- celoštevilski (int, long, ...)
+- realni (float, double, ...)
+- znakovni (char, string, ...)
+- logični (bool)
+- pointerji (int*, ...)
+- strukture (struct, class ...)
+```
+
+47 Koliko biten je ta ukaz?
+
+```asm
+mov eax, 0x12345678  ; 32-bit
+mov rax, 0x12345678  ; 64-bit
+```
+
+```
+V glavnem bodi pozoren na tipe registrov in na podatkovne tipe (BYTE [8], WORD [16], DWORD [32], QWORD [64]...).
+```
+
+48 Kontekstni preklop in preimenovanje registrov
+
+```
+Pri zamenjavi/preklopu konteksta je potrebno shraniti trenutno stanje registrov. To je mogoče pohitriti z uporabo
+preimenovanja registrov. Za vsak logičen/navidezen register imamo v ozadju več fizičnih registrov. In procesor poskrbi
+za preslikavo med njimi. Tako ob preklopu konteksta samo zamenjamo skupino registrov, ki jo uporabljamo.
+To pride prav tudi pri nitenju, dkjer ima vsaka nit svoje lokalne spremenljivke (registere).
+```
+
+49 Zakaj te zamenjave sploh delamo?
+
+```
+Zamenjave konteksta izvajajmo, ker želimo, da vmes ko en proces v kernel modu čaka na neke sistemske vire - recimo določene
+podatke iz pomnilnika, da se lahko vmes izvaja nek drug proces - samo zamenjamo kontekst, kar pa je z uporabo preslikave
+rehistrov storjeno zelo hitro. Point: učinkovitost. Poleg tega je to potrebno za navidezno realno-časovno delovanje OS.
+```
+
+50 Kam pa z lokalnimi podatki pri klicu funkcije?
+
+```
+Lokalne spremenljivke funkcije so shranjene na stacku. Ob klicu nove funkcije so tako na stacku shranjene
+lokalne spremenljivke in pa naslov za vrnitev (in pa ponavadi na začetku še kazalec na prejšnji okvir).
+```
+
+51 Delitev naslovitvenega prostora OS in uporabnika
+
+```
+OS ima svoj naslovitveni prostor, ki je ločen od uporabniškega. To zagotavlja nemotenoo in varno delovanje OS, ker 
+programom preprečimo dostop do pomnilnika OS, da le-te nebi česa koruptirali.
+
+https://en.wikipedia.org/wiki/X86-64#Virtual_address_space_details
+
+Ta delitev je s trenutno 48-bitno implementacijo (virtualni prostor je sicer velik 64-bitov, ampak fizično lahko 
+naslovimo samo naslove do 48-bitov pri translaciji naslovov) narejena tako, da je prvih 48 bitov pri naslavljanju
+za uporabnika, zadnjih 16 bitov pa za kernel. Dobimo uporabniški pomnilniški prostor in pomnilniški prostor jedra.
+Na voljo nam je 256 TiB pomnilnika za uporabnika in 64 KiB za jedro.
+
+Linux: dmesg | grep "Memory"
+[    0.112886] Memory: 32467112K/33474256K available (16393K kernel code, 4379K rwdata, 10820K rodata, 3240K init, 6556K bss, 1006884K reserved, 0K cma-reserved)
+```
+
+52 Glavni pomnilnik – naslavljanje po zlogih
+
+```
+Zlog - 1 byte
+Beseda - 2 byte
+Dvojna beseda - 4 byte
+Četverna beseda - 8 byte
+```
+
+53 Nekaj o zbirniku
+
+```
+
+```
+
+
+
+
+5x Vrste naslavljanja
+
 ```
