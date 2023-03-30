@@ -1,5 +1,15 @@
 # Kolokvij 1
 
+## Pred vprašanji
+
+Simbol '*' za številko vprašanja namiguje na to, da vprašanje načeloma ni del predmeta, ampak koristi za boljše
+razumevanje
+ostalih vprašanj.
+
+Vprašanja bolj ali manj zajemajo vso snov predavanj.
+
+Priporočam tudi ogled videov in povezav podanih ob vprašanjih, saj ponujajo dobro razlago snovi in dodatno razumevanje.
+
 ## Vprašanja
 
 1 Statične vs dinamične knjižnice.
@@ -490,9 +500,9 @@ The northbridge is a computer chip found on motherboards. It connects the CPU to
 Potrebna je tudi sinhronizacija med različnimi komponentami.
 ```
 
-https://en.wikipedia.org/wiki/Southbridge_(computing)
+[South-bridge](https://en.wikipedia.org/wiki/Southbridge_(computing))
 
-https://en.wikipedia.org/wiki/Northbridge_(computing)
+[North-bridge](https://en.wikipedia.org/wiki/Northbridge_(computing))
 
 45 Imena registrov
 
@@ -582,8 +592,7 @@ za uporabnika, zadnjih 16 bitov pa za kernel. Dobimo uporabniški pomnilniški p
 Na voljo nam je 256 TiB pomnilnika za uporabnika in 64 KiB za jedro.
 ```
 
-https://en.wikipedia.org/wiki/X86-64#Virtual_address_space_details
-
+[Virtual address space](https://en.wikipedia.org/wiki/X86-64#Virtual_address_space_details)
 
 ```bash
 dmesg | grep "Memory"
@@ -731,5 +740,110 @@ del pomnilnika, ki ga za naš program dodeli OS. Če želimo več pomnilnika, mo
 Ker pa uporabljamo virtuali pomnilnik, je v ozadju potrebno izračunavati fizične naslove - to pa je naloga AGU enote.
 ```
 
-https://stackoverflow.com/questions/10810203/what-is-the-fs-gs-register-intended-for
+[What are the FS and GS registers](https://stackoverflow.com/questions/10810203/what-is-the-fs-gs-register-intended-for)
+
+64 Simbolna in ukazna tabela
+
+```
+Simbolna tabela
+
+Vsebuje imena spremenljivk, funkcij, objektov, razredov, vmesnikov, ... in njihove naslove.
+Zgradi in uporablja jo compiler in pomaga določiti:
+ - preslikavo imen v naslove/vrednosti,
+ - scope (obseg),
+ - ali je spremenljivka že definirana,
+ - poda informacije o spremenljivki/objektu,
+ - type checking,
+ - tip spremenljivke,
+ - konstante, keterim pa so določene vrednosti, ne pa naslovi...
+
+Načeloma delamo novo tabelo simbolov za vsak scope (obseg). In le-te so lahko organizirane v drevo.
+Tabela se polni med zbiranjem dinamično.
+Lokalne spremenljivke gredo v registre.
+
+Ena izmed pomembnih uporab te tabele je dinamično povezovanje knjižnic. Sklice na knjižnice namreč še ne moremo
+zamnjati z dejanskimi naslovi, dokler knjižnice nismo naložili. Šele, ko se knjižnica naloži, lahko zamnjamo simbole
+v programu z dejanskimi naslovi iz knjižnice.
+
+Ker so imena spremenljivk v simbolni tabeli lahko variabline dolžine, uvedemo kazalce na besede in tako prigranimo nekaj prostora.
+Temu rečemo tudi dvostopenjska simbolna tabela.
+ 
+
+Ukazna tabela
+
+Ukazna tabela pa vsebuje ukaze, ki jih najdemo v naši kodi, ter operacijske kode, ki ji pripadajo.
+Ta tabela je fiksna. V njej najdemo podatk o mnemoniku (operandu), pripadajoči operacijski kodi, tipu ukaza in številu 
+operandov. S pomočjo tega lahko kasneje tvorimo ukaz.
+
+```
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-30-18-53-19.png" alt="Screenshot from 2023-03-30 18-53-19" width="800"/>
+
+Some Indian guy on YouTube: [Symbol table](https://www.youtube.com/watch?v=oyG_JfrbTCQ)
+
+65 Zakaj se imena simbolov ne začnejo s števili?
+
+```
+Glavni razlog je v tem, da če bi števila uporabili za imena simbolov, nebi mogli razlikovati med simboli in vrednostmi.
+```
+
+66 Konstrukcija simbolnih tabel
+
+```
+Hash-table!
+```
+
+[Hash-table - a solution for everything](https://www.youtube.com/watch?v=5bId3N7QZec)*
+
+```
+Simbolna tabela se generira v dveh fazah (generiranje tabele + zamenjava):
+ - prva faza - analiza kode in zbiranje informacij o simbolih,
+ - druga faza - sinteza: zamenjava simbolov z njihovimi naslovi/vrednostmi.
+ 
+Za dostop podatkov v simbolni tabeli lahko uporabimo hash-table. Ta omogoča hitro linearno preiskovanje podatkov O(n)
+in še hitrejše binarno preiskovanje podatkov O(log2 n).
+
+Če je v hash tabeli lokacija zasedena, potem samo gremo za eno naprej (naslov povečamo za 1).
+```
+
+[Symbol table](https://www.youtube.com/watch?v=Dd3DWRpqI40)
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-30-19-25-21.png" alt="Screenshot from 2023-03-30 19-25-21" width="800"/>
+
+67 Še nekaj o simbolnih tabelah
+
+```
+Pogosti ukazi in operandi se lahko združijo v nove ukaze.
+
+Naslovi se lahko dodajo šele naknadno, ko je knjižnica vključena.
+
+V simbolni tabeli tudi najdemo vse simbole iz knjižnic.
+
+Te simbolne tabele ostanejo v kodi, če uporabljamo debug. Zato tudi lahko med debugganjem vidimo imena spremenljivk.
+
+Za odstranjevanje teh ukazov imamo sicer ukaz strip - tega si želimo uporabiti, če želimo zavarovati našo kodo - 
+intelektualna lastnina. Zato tudi, če imamo to tabelo, lahko skoraj da dobimo originalno izvorno kodo.
+```
+
+68* Stopnje prevajanja
+
+```
+
+* Leksikalna analiza
+* Sintaktična analiza
+* Semantična analiza
+* Vmesno generiranje kode
+* Optimizacija
+* Prevajanje v strojno kodo
+
+```
+
+69 Inline funkcije
+
+```
+Inline funkcije so funkcije, ki so vključene v kodo, kjer so klicane. To pomeni, da se funkcija ne kliče, ampak se 
+dejansko "skopira" v kodo, kjer je klicana. Tako lahko pridobimo na hitrosti.
+```
+
+[When to use inline functions](https://www.reddit.com/r/learnprogramming/comments/3h5dbm/c_why_not_inline_every_function/)
 
