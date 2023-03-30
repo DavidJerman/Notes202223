@@ -482,13 +482,17 @@ Zakasnitve so omejene z dolžino cevovoda.
 
 ```
 Matična plošča je osnova računalnika. Vsebuje procesor, pomnilnik, različne povezave, napajanje, ...
-https://en.wikipedia.org/wiki/Southbridge_(computing)
+
 The southbridge typically implements the slower capabilities of the motherboard in a northbridge/southbridge chipset computer architecture.
-https://en.wikipedia.org/wiki/Northbridge_(computing)
+
 The northbridge is a computer chip found on motherboards. It connects the CPU to the memory, peripheral buses, and other components.
 
 Potrebna je tudi sinhronizacija med različnimi komponentami.
 ```
+
+https://en.wikipedia.org/wiki/Southbridge_(computing)
+
+https://en.wikipedia.org/wiki/Northbridge_(computing)
 
 45 Imena registrov
 
@@ -572,14 +576,20 @@ lokalne spremenljivke in pa naslov za vrnitev (in pa ponavadi na začetku še ka
 OS ima svoj naslovitveni prostor, ki je ločen od uporabniškega. To zagotavlja nemotenoo in varno delovanje OS, ker 
 programom preprečimo dostop do pomnilnika OS, da le-te nebi česa koruptirali.
 
-https://en.wikipedia.org/wiki/X86-64#Virtual_address_space_details
-
 Ta delitev je s trenutno 48-bitno implementacijo (virtualni prostor je sicer velik 64-bitov, ampak fizično lahko 
 naslovimo samo naslove do 48-bitov pri translaciji naslovov) narejena tako, da je prvih 48 bitov pri naslavljanju
 za uporabnika, zadnjih 16 bitov pa za kernel. Dobimo uporabniški pomnilniški prostor in pomnilniški prostor jedra.
 Na voljo nam je 256 TiB pomnilnika za uporabnika in 64 KiB za jedro.
+```
 
-Linux: dmesg | grep "Memory"
+https://en.wikipedia.org/wiki/X86-64#Virtual_address_space_details
+
+
+```bash
+dmesg | grep "Memory"
+```
+
+```console
 [    0.112886] Memory: 32467112K/33474256K available (16393K kernel code, 4379K rwdata, 10820K rodata, 3240K init, 6556K bss, 1006884K reserved, 0K cma-reserved)
 ```
 
@@ -595,12 +605,131 @@ Dvojna beseda - 4 byte
 53 Nekaj o zbirniku
 
 ```
+Format zbirnika:
+Oznaka: OpCode Destinacija, Izvor
 
+OpCode - ukaz, ki ga želimo izvesti
+Destinacija - kje želimo shraniti rezultat
+Izvor - od kod želimo vzeti podatke
+
+Oznaka ti v bistvu pove naslov ukaza - tako tudi definiramo funkcije - dodamo oznako nekemu delu kode.
+V ozadju v bistvu klic funkcije ni nič drugega kot le shranitev trenutnega stanja in skok na nek naslov.
+
+Navodila lahko zbirniku podamo preko globalnih spremenljivk. Te po prevedbi programa v bistvu postanejo naslovi, 
+prevajalnik pa te naslove vstavi, kjer smo se na to globalno spremenljivko sklicevali.
+
+Pomnilniški prostor lahko rezerviramo v bss sekciji s pomočjo resb, resw, resd, resq ukazov.
+Konstante - torej vrednosti, ki se hard-codajo v ukaz/kodo - zapišemo npr. kot 
+KONSTANTA equ 12
 ```
 
-
-
-
-5x Vrste naslavljanja
+54 Gajbe in palete – sekcije in segmenti
 
 ```
+Ideja je, da se različni tipi podatkov zapišejo/shranijo v različne sekcije.
+Neicializirani podatki, inicializirani podatki, konstante, funkcije - vsake izmed teh gredo v svojo sekcijo.
+Le-te pa se nato združijo v segmente. Recimo konstante in koda gredo v isti segment (.text).
+Neicializirani podatki in inicializirani podatki pa gredo v različne segmente (.bss in .data).
+Te segmenti tako tvorijo program. In ko program želimo zagnati, potrebne segmente naložimo v pomnilnik.
+```
+
+55 Načini naslavljanja
+
+```
+- takojšnje naslavljanje (immediate addressing) - v ukazu je vrednost, ki se uporabi (konstanta)
+- registrsko naslavljanje (register addressing) - v ukazu je register, ki se uporabi
+- neposredno naslavljanje (direct addressing) - v ukazu je naslov, ki se uporabi:
+
+Pri neposrednem naslavljanju lahko naslov izračunamo na več načinov - za to računanje poskrbi AGU enota v procesorju.
+Formula za izračun naslova: 
+naslov = base + index * scale + displacement
+
+Mimogrede: cilj in izvor ne moreta biti hkrati pomnilniška naslova.
+```
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-30-18-00-06.png" alt="Screenshot from 2023-03-30 18-00-06" width="800"/>
+
+56 Windows proti Linuxu
+
+```
+```
+
+57 Kdaj katero naslavljanje uporabimo?
+
+```
+Odmik (neposredno naslavljanje): če uporabimo izključno odmik, potlej je ta odmik od naslova 0. To pogosto uporabimo v 
+kombinaciji z globalnimi spremenljivkami in neinicializiranimi spremenljivkami.
+Primer:
+mov ax, [0x1000]
+
+Bazno (registersko posredno naslavljanje): to je zelo uporabno za recimo dostop do podatkov v strukturi, poljih, ker lahko
+vrednost poljubnega baznega registra spreminjamo - recimo se premikamo skozi neko polje.
+Primer:
+mov ax, [ebx]
+
+Baza + odmik (relativno registrsko naslavljanje): uporabno za dostop elementov objekta in polja. Baza predstavlja
+začetek objekta ali polja, odmik pa predstavlja odmik.
+Primer:
+mov ax, [ebx + 0x1000]
+
+Baza + indeks (bazno-indeksno naslavljanje): to je zelo uporabno za dostop do podatkov v tabelah. Bazni register predstavlja
+začetek tabele, indeksni pa predstavlja indeks elementa v tabeli. Indeks lahko nato dinamično spreminjamo.
+Uporabno kot neka for zanka čez polje.
+Primer:
+mov ax, [ebx + ecx]
+```
+
+58 Segmentiranje pomnilnika
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-30-18-16-59.png" alt="Screenshot from 2023-03-30 18-16-59" width="800"/>
+
+```
+Uvedemo segmente v pomnilniku, da lo;imo programe v pomnilniku. Vsakemu programu damo svoj segment.
+Ko želimo dostopati do nekih podatkov v segmentu, najprej dobimo efektivni naslov ZNOTRAJ SEGMENTA. Šele nato
+procesor izračuna fizični naslov, ki ga dobi preko efektivnega naslova in segmentnega registra.
+Segmenti register v descriptor tabeli pogleda, kje se naš segment nahaja in kako velik je.
+Če poskušamo dostopati izven segmenta, dobimo napako! Tako je zagotovljena integriteta in varnost podatkov v pomnilniku.
+
+Skratka uvedemo te virtualne naslove, ki pa jih AGU preračuna v fizične naslove.
+```
+
+59 Segmentacija in paging skupaj
+
+```
+```
+
+60 Windows vs Linux – naslavljanje, AGU, registri
+
+```
+```
+
+61 Prenaslovitvena tabela
+
+```
+Prenaslovitvena tabela služi za prenaslovitev klicev funkcij iz knjižnic, ko le-te premaknemo v pomnilnik.
+Npr. neko knjižnico x smo najprej imeli naloženo takoj za programom, a se kasneje premakne dugam zaradi določenih razlogov.
+```
+
+62 Prevajanje višjih programskih jezikov
+
+```
+Višji programski jeziki se prevedejo v več assembly ukazov. Debug si mora tudi shraniti, kateri assemblz ukazi pripadajo
+kateremu višjemu programskemu jeziku. Tako se med debugganjem v bistvu premikamo skozi več ukazov hkrati.
+Poleg tega si debugger oz. program shrani tabelo simbolov - to je tabela imen vseh funkcij, spremenljivk itd.
+```
+
+63 Načini naslavljanja
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-30-18-36-52.png" alt="Screenshot from 2023-03-30 18-36-52" width="800"/>
+
+```
+To registri na levi so vsi segmenti.
+Žal pa se takšno naslavljanje ne uporablja več, ker ga je industrija zavrgla.
+
+Glavni takeaway je, da smo uvedli virtualne naslove, kar pomeni da smo omejeni na nek lokalni del pomnilnika. To je na
+del pomnilnika, ki ga za naš program dodeli OS. Če želimo več pomnilnika, moramo za to prositi OS (sistemski klici).
+Ker pa uporabljamo virtuali pomnilnik, je v ozadju potrebno izračunavati fizične naslove - to pa je naloga AGU enote.
+```
+
+https://stackoverflow.com/questions/10810203/what-is-the-fs-gs-register-intended-for
+
