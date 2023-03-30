@@ -185,4 +185,4 @@ Ta algoritem lahko implementiramo tudi z oknom alfa-beta.
 
 #### MCTS
 
-[Monte Carlo Tree Search](https://www.youtube.com/watch?v=onBYsen2_eA)
+[Monte Carlo Tree Search](https://www.youtube.com/watch?v=UXW2yZndl7U)
