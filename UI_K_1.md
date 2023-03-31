@@ -212,6 +212,7 @@ Ostale oblike strojnega učenja so:
 * Semi-nadzorovano učenje
 
 Pojmi:
+
 - [ ] okolje - v njem deluje agent
 - [ ] stanje - v njem se nahaja agent
 - [ ] akcija - agent lahko izvede akcijo
@@ -232,9 +233,10 @@ Naloga je zvezna, če ni nekih jasnih meja med akcijami.
 Glavna ideja je, da je naslednje stanje (prehod) odvisno samo od trenutnega stanja.
 
 Primer je recimo, da poskušamo priti do službe. Na voljo so nam avto, kolo in vlak.
-Če gremo s kolesom, smo 100%, da bomo prišli v 45min. Če pa gremo z avtom, pa je recimo 10% možnost, da 
+Če gremo s kolesom, smo 100%, da bomo prišli v 45min. Če pa gremo z avtom, pa je recimo 10% možnost, da
 naletimo na prometno nesrečo, kar pomeni, da bomo prišli v 60min. Je pa tudi 20% možnost, da bomo prišli v 30min.
-Skratka, uvedemo verjetnost. Z vlakom pa bomo npr. prišli v 35min vedno. Skratka prehajamo med stanji in uvedemo verjetnosti.
+Skratka, uvedemo verjetnost. Z vlakom pa bomo npr. prišli v 35min vedno. Skratka prehajamo med stanji in uvedemo
+verjetnosti.
 Pri vlaku pa lahko dodamo še 10% možnost za čakalnico, v katero pa se lahko vračamo in če smo prevečkrat čakali,
 gremo lahko tudi nazaj domov in nato recimo z avtom ali kolesom.
 
@@ -251,11 +253,13 @@ Izračun verjetnosti:
 * [ ] **Pravilnik** - obnašanje agenta - katere akcije lahko izvede (npr. look-up tabela)
 * [ ] **Signal nagrade** - zaželenost stanja kot korist izvedene akcije
 * [ ] **Funkcija vrednosti** - dolgoročna vrednost posameznega stanja
-* [ ] **Model okolja** - predstavitev okolja - posnema delovanje okolja - omogoča planiranje - agent model lahko ima ali pa ga nima (trial error)
+* [ ] **Model okolja** - predstavitev okolja - posnema delovanje okolja - omogoča planiranje - agent model lahko ima ali
+  pa ga nima (trial error)
 
-Ker so akcije zaporedne, je lahko okrepitveno učenje težko - ni nujno, da je neka akcija na dolgi rok dobra: **problem dodelitve zaslug**.
+Ker so akcije zaporedne, je lahko okrepitveno učenje težko - ni nujno, da je neka akcija na dolgi rok dobra: **problem
+dodelitve zaslug**.
 
-Ker je interakcija z okoljem vzorčena - torej nimamo popolnih informacij o okolju, je potrebno uporabiti 
+Ker je interakcija z okoljem vzorčena - torej nimamo popolnih informacij o okolju, je potrebno uporabiti
 funkcijsko aproksimacijo pravilnika (npr. nevronska mreža).
 
 #### Križci in krožci
@@ -290,7 +294,8 @@ Uvedemo pa še zniževalni faktor - tako so akcije, ki so blizu bolj pomembne od
 
 Pove nam, kakšna je verjetnost, da bo agent v nekem stanju izvedel neko akcijo.
 
-Funkcija vrednosti akcije? Določa pričakovano povračilo, če agent začne v stanju s, izvede akcijo a in sledi pravilniku π.
+Funkcija vrednosti akcije? Določa pričakovano povračilo, če agent začne v stanju s, izvede akcijo a in sledi pravilniku
+π.
 
 Bellmanova enačba str. 34
 
@@ -298,3 +303,139 @@ Bellmanova enačba str. 34
 
 #### Optimalni pravilnik
 
+Skozi učenje želimo pravilnik izboljšati. Pravilnik je boljši, če velja
+
+```
+vπ1(s) ≥ vπ2(s) za vse s∈𝒮
+```
+
+Vedno obstaja optimalni pravilnik. Za ocenitev pravilnika rabimo neko metodo (policy-evaluation).
+Da bi izbirali med več pravilniki, ni ravno učinkovito zato obstoječ pravilnik izboljšujemo.
+
+Optimalni pravilnik lahko poiščemo z algoritmom **posplošene iteracije pravilnika**, ki ponavlja: 1) ocenitev pravilnika
+(za trenuten pravilnik določimo vrednost stanj in akcij) in 2) izboljšanje pravilnika. Ponavljamo do konvergence
+pravilnika
+(tj. dokler ne dobimo optimalnega pravilnika).
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-2023-03-31-192732.png" alt="Optimalni pravilnik" width="600">
+
+Po izboljšavi pravilnika izberemo najboljše akcije. Tak pravilnik je determinističen - v vsakem stanju izbere najboljšo
+akcijo.
+Za izboljšanje uporabljamo greedy metodo. Da pridemo do rešitve, niti ne rabimo čakati do konvergence.
+
+[Policy Iteration](https://www.youtube.com/watch?v=l87rgLg90HI)
+
+#### Raziskovanje okolja
+
+Če poznamo okolje - imamo model okolja - lahko planiramo. V resničnem svetu tega nimamo, zato uvedemo učenje s poskusi
+in napakami.
+Iteracija pravilnika je primer dinamičnega programiranja.
+
+Raziskovanje vs. izkoriščanje (pozna okolje, ima neke informacije) - kompromis.
+
+Cilj agenta pa je maksimizirati skupno nagrado (povračilo).
+
+#### Strategije raziskovanja
+
+Požrešna (vedno najvišjo), naključna, ε-požrešna (z verjetnostjo ε izberemo naključno akcijo), optimistična
+inicializacija
+(začetne vrednosti visoke, postopoma znižujemo), softmax (verjetnost izbire akcije je proporcionalna vrednosti akcije),
+UCB.
+UCB spominja na Monte-Carlo metode.
+
+#### Optimizacija pravilnika RL
+
+Iskanje optimalnega pravilnika -> ni modela okolja -> raziskovanje, izkoriščanje -> nagrada, povračilo -> iskanje
+maksimalnega povračila -> ocenitev pravilnika/izboljšanje pravilnika.
+
+Pravilnik lahko stohastičen (naključen) ali determinističen (npr. greedy).
+
+Problem napovedi - izračun vrednosti vseh stanj. Pričakovano povračilo lahko simuliramo z Monte-Carlo metodo.
+Vzamemo povprečje več simulacij. Primerno za epizodne probleme: osvežitev stanj, akcij, pravilnika na koncu epizode.
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-2023-03-31-210410.png" alt="Monte-Carlo" width="600">
+
+#### Učenje s časovno razliko
+
+Monte-Carlo metoda je neučinkovita, ker je preveč stohastično. Učenje s časovno razliko kombinira Monte-Carlo in
+dinamično programiranje. Monte-Carlo je dodano to, da se pravilnik posodablja z vsako akcijo.
+Ocenitev pravilnika TD (ideja: z vsakim korakom t ocenimo pričakovano povračilo do konca epizode):
+
+```
+vπ(s) = 𝔼π[Gt:T|St=s]
+= 𝔼π[Rt+1 + γ·Gt+1:T|St=s]
+= 𝔼π[Rt+1 + γ·vπ(St+1)|St=s]
+```
+
+bootstrapping
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-2023-03-31-211018.png" alt="TD" width="600">
+
+// TODO: The rest of the slides
+
+### Predstavitev znanja z logiko
+
+Pojmi:
+
+- [ ] Izjave - dejstva
+- [ ] Sklepanje - izpeljevanje novih dejstev
+- [ ] Predstavitev znanja - predstavitev znanja v logični obliki - logika
+- [ ] Stavki ali formule - dejstva v jeziku logike - baza znanja
+- [ ] Sintaksa
+- [ ] Semantika
+- [ ] Resničen, neresničen stavek
+- [ ] Logično sledi
+- [ ] Algoritem sklepanja - iz baze znanja izpelje nova dejstva
+- [ ] Smiselno sklepanje - ne sme biti nesmiselno - izpelje nekaj smiselnega iz baze znanja
+- [ ] Poln - vse stvari, ki jih lahko izpeljemo iz baze znanja
+- [ ] Boolova logika - logika, ki ima dve vrednosti: resnična in neresnična
+- [ ] Atomarne izjave - nedeljive izjave
+- [ ] Ne-atomarni stavki - deljivi na atomarne
+- [ ] Konjunkcija, disjunkcija, implikacija, ekvivalenca, predpostavka, posledica, negacija
+- [ ] Pravilnostna tabela
+- [ ] Komutativnost, asociativnost, involucija (odstranitev negacije)
+- [ ] Veljaven stavek - tavtologija
+- [ ] Izpolnjiv stavek
+- [ ] Dokaz s protislovjem - iz A sledi B
+- [ ] Aksiomi -> teoremi = dokaz teorema
+- [ ] Modus ponens, modus tollens
+
+#### Resolucija
+
+Uporablja se pri avtomatičnem dokazovanju. Deluje na stavkih, ki so klavzule (konjunkcija atomarnih izjav).
+Velja, da lahko stavek P1 or P2 s stavkom ¬P1 or Q1 združimo v stavek P2 or Q1. Temu rečemo resolventa.
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-2023-03-31-212834.png" alt="Resolucija" width="600">
+
+#### Predikatna logika prvega reda
+
+Sladki spomini na diskretne strukture.
+
+Štiri vrste simbolov:
+
+- [ ] Simboli konstant - končni objekti
+- [ ] Funkcijski simboli - preslikave med objekti
+- [ ] Simboli spremenljivk - splošni objekti
+- [ ] Simboli predikatov - relacije med objekti
+
+Primer lastnosti: P(x, y) - x je oče y
+
+Argumenti predikata so lahko zgoraj navedeni simboli. Rečemo jim termi. Predikate povežem z logičnimi operatorji (
+konjunkcija, disjunkcija, implikacija, ekvivalenca, predpostavka, posledica, negacija).
+vse spremenljivke morajo biti kvantificirane oz. vezane
+(bound); nekvantificirane spremenljivke so proste (free)
+– stavki z vsemi vezanimi spremenljivkami so zaprti
+(closed).
+
+Univerzalnostni kvantifikator: za vse x velja P(x).
+Existencialni kvantifikator: za kakšen koli x velja P(x).
+
+Stavki morajo biti pravilno oblikovani.
+
+Imamo še predikatno logiko drugega reda.
+
+#### Substitucija
+
+Gre za zamenjavo spremenljivk, to je vse. Notacija v/t pomeni, da vse pojavitve "t" v stavku zamenjamo z "v".
+
+Kompozicija: TODO
