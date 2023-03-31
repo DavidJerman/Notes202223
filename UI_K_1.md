@@ -186,3 +186,21 @@ Ta algoritem lahko implementiramo tudi z oknom alfa-beta.
 #### MCTS
 
 [Monte Carlo Tree Search](https://www.youtube.com/watch?v=UXW2yZndl7U)
+
+Skratka glavna ideja je: izberemo naslednji list v drevesu stanj glede na podano formulo (oz. naključno). Za tisti list nato izvedemo
+simulacijo igre, ki nam doda informacije o tem, kako dober je ta list.
+
+Nadgradnja je selekcija RAVE. Ideja tu je, da pri oceni poteze upoštevamo vse simulacije, ne samo tiste, v keteri 
+i nastopa – torej simulacije izvedene s to potezo.*
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-31-06-57-10.png" alt="RAVE" width="600">
+
+* [RAVE](https://en.wikipedia.org/wiki/Monte_Carlo_tree_search)
+
+### Okrepitveno učenje
+
+Glavna ideja je, da se algoritem uči na podlagi izkušenj. Za dobre akcije dobi nagrado, za slabe kazen.
+Ta algoritem oz. model, ki se uči imenujemo **agent**.
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Reinforcement_learning_diagram.svg/250px-Reinforcement_learning_diagram.svg.png" alt="Reinforcement Learning">
+
