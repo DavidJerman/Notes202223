@@ -187,10 +187,11 @@ Ta algoritem lahko implementiramo tudi z oknom alfa-beta.
 
 [Monte Carlo Tree Search](https://www.youtube.com/watch?v=UXW2yZndl7U)
 
-Skratka glavna ideja je: izberemo naslednji list v drevesu stanj glede na podano formulo (oz. naključno). Za tisti list nato izvedemo
+Skratka glavna ideja je: izberemo naslednji list v drevesu stanj glede na podano formulo (oz. naključno). Za tisti list
+nato izvedemo
 simulacijo igre, ki nam doda informacije o tem, kako dober je ta list.
 
-Nadgradnja je selekcija RAVE. Ideja tu je, da pri oceni poteze upoštevamo vse simulacije, ne samo tiste, v keteri 
+Nadgradnja je selekcija RAVE. Ideja tu je, da pri oceni poteze upoštevamo vse simulacije, ne samo tiste, v keteri
 i nastopa – torej simulacije izvedene s to potezo.*
 
 <img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-31-06-57-10.png" alt="RAVE" width="600">
@@ -203,4 +204,97 @@ Glavna ideja je, da se algoritem uči na podlagi izkušenj. Za dobre akcije dobi
 Ta algoritem oz. model, ki se uči imenujemo **agent**.
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Reinforcement_learning_diagram.svg/250px-Reinforcement_learning_diagram.svg.png" alt="Reinforcement Learning">
+
+Ostale oblike strojnega učenja so:
+
+* Nadzorovano učenje
+* Ne-nadzorovano učenje
+* Semi-nadzorovano učenje
+
+Pojmi:
+- [ ] okolje - v njem deluje agent
+- [ ] stanje - v njem se nahaja agent
+- [ ] akcija - agent lahko izvede akcijo
+- [ ] pravilnik/strategija - določa, kakšne akcije lahko izvede agent
+- [ ] nagrada - nagrada, ki jo dobi agent za izvedeno akcijo
+- [ ] izkušnja - stanje, akcija, nagrada, novo stanje
+
+Cilj na dolgi rok je čim večja nagrada. Stanje - akcija - nagrada.
+
+Naloge agenta so lahko epizodne - to pomeni, da je potrebnih več akcij, da se doseže cilj.
+
+Naloga je zvezna, če ni nekih jasnih meja med akcijami.
+
+#### Markovski odločitveni procesi
+
+[Markov Decision Process](https://www.youtube.com/watch?v=2iF9PRriA7w)
+
+Glavna ideja je, da je naslednje stanje (prehod) odvisno samo od trenutnega stanja.
+
+Primer je recimo, da poskušamo priti do službe. Na voljo so nam avto, kolo in vlak.
+Če gremo s kolesom, smo 100%, da bomo prišli v 45min. Če pa gremo z avtom, pa je recimo 10% možnost, da 
+naletimo na prometno nesrečo, kar pomeni, da bomo prišli v 60min. Je pa tudi 20% možnost, da bomo prišli v 30min.
+Skratka, uvedemo verjetnost. Z vlakom pa bomo npr. prišli v 35min vedno. Skratka prehajamo med stanji in uvedemo verjetnosti.
+Pri vlaku pa lahko dodamo še 10% možnost za čakalnico, v katero pa se lahko vračamo in če smo prevečkrat čakali,
+gremo lahko tudi nazaj domov in nato recimo z avtom ali kolesom.
+
+Uvedemo negotovost - verjetnost.
+
+Te verjetnosti so predstavljene z **modelom okolja**.
+
+Izračun verjetnosti:
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-31-14-16-07.png" alt="Markovski odločitveni procesi" width="600">
+
+#### Komponente RL
+
+* [ ] **Pravilnik** - obnašanje agenta - katere akcije lahko izvede (npr. look-up tabela)
+* [ ] **Signal nagrade** - zaželenost stanja kot korist izvedene akcije
+* [ ] **Funkcija vrednosti** - dolgoročna vrednost posameznega stanja
+* [ ] **Model okolja** - predstavitev okolja - posnema delovanje okolja - omogoča planiranje - agent model lahko ima ali pa ga nima (trial error)
+
+Ker so akcije zaporedne, je lahko okrepitveno učenje težko - ni nujno, da je neka akcija na dolgi rok dobra: **problem dodelitve zaslug**.
+
+Ker je interakcija z okoljem vzorčena - torej nimamo popolnih informacij o okolju, je potrebno uporabiti 
+funkcijsko aproksimacijo pravilnika (npr. nevronska mreža).
+
+#### Križci in krožci
+
+Minimaks predpostavi, da nasprotni igralec igra optimalno - najbolje. Ker pa mi nimamo popolnega modela okolja, tega
+ne moremo predpostaviti oz. predvideti.
+
+<img src="http://incompleteideas.net/book/ebook/figtmp0.png" alt="Tic-Tac-Toe" width="600">
+
+Med igro izbiramo med najboljšimi potezami (izkoriščanje) in naključnimi potezami (raziskovanje).
+Po vsaki požrešni potezi popravimo vrednost stanja s pred nasprotnikovo potezo (ker se korak pred tem o potezi
+odločamo mi) tako, da jo približamo vrednosti stanja s’ po odgovoru
+
+Učenje s časovno razliko:
+
+```
+V(s) = V(s) + α·(V(s’) – V(s))
+```
+
+Alfa predstavlja hitrost učenja. Le-tega lahko sproti zmanjšujemo do 0. Potlej konvergira, ampak preneha z učenjem.
+
+#### Reciklažni robot
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-31-14-37-18.png" alt="Reciklažni robot" width="600">
+
+#### Povračilo
+
+Cilj agenta je maksimizirati povračilo, t.j. nagrado na dolgi rok. Označimo ga z G. Je seštevek vseh prihodnjih nagrad.
+Uvedemo pa še zniževalni faktor - tako so akcije, ki so blizu bolj pomembne od tistih v prihodnosti.
+
+#### Pravilnik
+
+Pove nam, kakšna je verjetnost, da bo agent v nekem stanju izvedel neko akcijo.
+
+Funkcija vrednosti akcije? Določa pričakovano povračilo, če agent začne v stanju s, izvede akcijo a in sledi pravilniku π.
+
+Bellmanova enačba str. 34
+
+<img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-31-14-44-16.png" alt="Bellmanova enačba" width="600">
+
+#### Optimalni pravilnik
 
