@@ -61,7 +61,7 @@ Priporočam tudi ogled videov in povezav podanih ob vprašanjih, saj ponujajo do
 
 ```
 V glavnem imamo mantisto in eksponent
-Mantisa nam pove decimalno število, eksponent pa pove, za koliko je potrebno to število pomnožiti z 2 - torej stopnja 2, ki jo potrebujemo za pomnožitev
+Mantisa nam pove decimalno število, eksponent pa pove, za koliko je potrebno to število pomnožiti z 10 - torej stopnja 10, ki jo potrebujemo za pomnožitev
 ```
 
 8 Slabosti in prednosti ASCII
@@ -340,7 +340,7 @@ v obliki in ga je potrebno pred uporabu izračunati. Formula se glasi:
 Bazni_register + Faktor*Indeksni_register + odmik
 Le-ta se nato združi z segmentnim registrom, da dobimo fizični naslov pri recimo realnem načinu delovanja.
 Efektivni naslov je namreč relativen glede na začetek programa (ta se začne z naslovom nič).
-Za ta nem imamo tudi AGU enoto.
+Za ta namen imamo tudi AGU enoto.
 ```
 
 29 Kaj je sklad?
@@ -409,7 +409,7 @@ preslikovalne tabele.
 
 ```
 Ideja je, da imamo več logičnih registrov, kateri pa se med izvajanjem preslikajo na fizične registre.
-Imamo pa več fizičnih registrov za vsak logični register. To omogoča izvajanje več ukazov hkrati.
+Imamo pa več fizičnih registrov za vsak logični register. To omogoča izvajanje več ukazov hkrati brez premikanja spremenljivk v pomnilnik.
 Imamo namreč več ALU enot in tako lahko npr. izračunamo več stvari hkrati (out of order execution), če so deli
 kode med sabo neodvisni.
 ```
