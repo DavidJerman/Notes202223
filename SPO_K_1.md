@@ -10,6 +10,13 @@ Vprašanja bolj ali manj zajemajo vso snov predavanj.
 
 Priporočam tudi ogled videov in povezav podanih ob vprašanjih, saj ponujajo dobro razlago snovi in dodatno razumevanje.
 
+Kratice:
+
+* OS - operacijski sistem
+* HW - strojna oprema
+* GP - glavni pomnilnik
+* VPJ - višji programski jezik
+
 ## Vprašanja
 
 1 Statične vs dinamične knjižnice.
@@ -222,11 +229,16 @@ To je lahko pri LaTeXu sicer bolj zahtevno, saj je treba dokumenta znova prevest
 Prednost vektorskega formata je ta, da bolje ohranja informacije. To pomeni, da npr. če povečamo velikost prikaza slike
 na zaslonu, bo ta ohranila kakovost (rasterska slika pa le-te nebi). Vektorski format to doseže z uporabo matematičnih
 formul, ki opisujejo geometrijo slik. to omogoča spremembo velikosti brez izgube informacij.
+
+Poleg vektorskega formata rabimo še rasterizator, ki pa nam omogoča prikaz vektorske slike na zaslonu. Ampak prednost
+je pa ravno v tem, da ohranimo kakovost slike s tem vektorskim formatom.
 ```
 
 17 Vloga gonilnikov
 
 ```
+Gonilniki skrbijo za rasterizacijo, da se nam programerjem s tem ni treba ukvarjati. Mi samo ustvarimo vektorsko ali 
+rastesko sliko, gonilniki pa poskrbijo za rasterizacijo, antialiasing in druge stvari.
 ```
 
 18 TrueType
@@ -240,17 +252,17 @@ S tem omogoča prikaz znakov (črk) v maksimalni kvaliteti pri poljubni resoluci
 
 ```
 Problem rasterizacije je, da je treba vektorsko sliko pretvoriti v rastersko sliko. Tu pogosto pride do izgube kakovosti slike.
-Rešitev, ki jo pogosto uporabimo, je, da programu za rasterizacijo damo namig, kako simbol izrisati. LAhko bi npr. rekli,
-da naj se potrudi znake narediti simetrične. Za to pa se uporablja tudi tehnika ClearType (anti-aliasing + smoothing).
+Rešitev, ki jo pogosto uporabimo, je, da programu za rasterizacijo damo namig, kako simbol izrisati. Lahko bi npr. rekli,
+da naj se potrudi znake narediti simetrične. Za ta namen pa se uporablja tudi tehnika ClearType (anti-aliasing + smoothing).
 Slika s pomočjo ClearType izgleda bolj gladko in čisto - ni tistih kvadratnih robov.
 
-To je v bistvu sismska podpora obliki, kar pomeni, da mi ne rabimo skrbeti za izgled znakov, ampak le za vsebino.
+To je v bistvu sistemska podpora obliki, kar pomeni, da mi ne rabimo skrbeti za izgled znakov, ampak le za vsebino.
 ```
 
 20 PostScript
 
 ```
-PostScript je jezik, ki pove, kako se nekaj nariše: izris grafičnih elementov (uporabljeno pri tiskanju) v dokumentih.
+PostScript je (programski) jezik, ki pove, kako se nekaj nariše: izris grafičnih elementov (uporabljeno pri tiskanju) v dokumentih.
 Doda podporo fontom, kompresiji slik, tekstu ipd. - je kot nek programski jezik za tisk.
 Podprt je (bil) v raznih aplikacijah in tiskalnikih.
 ```
@@ -261,6 +273,7 @@ Podprt je (bil) v raznih aplikacijah in tiskalnikih.
 PDF je tako neka nadgradna verzija PostScripta. Je bolj optimiziran za digitalno/elektronsko distribucijo.
 Omogoča platformno neodvisno prikazovanje dokumentov.
 Ravno tako podpira razne grafične elemente: tekst, slike, ostale grafične objekte, povezave, oblike, fonte itd.
+Še bolj v smeri programskega jezika z dodanimi objekti.
 
 Sestoji iz nekaj delov:
 * Glava - struktura dokumenta, verzija, podatki o avtorju, ...
@@ -278,7 +291,7 @@ Ima nekaj 100 ukazov za grajenje dokumenta.
 Posamezni objekti - simboli, besedila, slike, grafi, ... - so v LaTeXu zapisani v obliki škatel.
 Škatle gradijo dokument. Le-tem lahko spreminjamo: velikost, vsebino. Lahko pa jih tudi gnezdimo.
 Škatle imajo neko določeno višino in širino in ko ustvarimo vse škatle, je naloga LaTeXa, da jih pravilno postavi - 
-problem polnjenja nahrbtnika.
+problem polnjenja nahrbtnika, optimizacija prostora.
 ```
 
 23 DOCX
@@ -303,11 +316,13 @@ Program gre čez nekaj faz:
    Predprocesiranje (import, makro, ...)
    Zbiranje (zbirnik) / prevajanje (prevajalnik)
 2. Objektni moduli (.obj - strojna koda)
-   Povezovanje (povezovalnik)
+   Povezovanje (povezovalnik) - tu povezujemo zato, d anebi že na izvornem nivoju imeli napak - tako lahko vsak modul posebej preverimo za napake.
 3. Izvedljivi modul (.exe)
    Nalaganje (nalagalnik)
 4. Naložen program (v glavnem pomnilniku)
    Izvajanje
+   
+Lokalne spremenljivke gredo ponavadi v registre, globalne pa v glavni pomnilnik.
 ```
 
 25 Zakaj zbirnik?
@@ -317,18 +332,40 @@ Morebiti hitrost, direkten dostop do strojne opreme (registri, gonilniki), optim
 Sicer ni razloga, ker so današnji prevajalniki zelo močni: koda je hitra, zanesljiva, krajša, prenosljiva.
 ```
 
-26 Simboli, funkcije
+26.1 Simboli, funkcije
 
 ```
+V debug načni si želimo program videti z vidika višjega programskega jezika, čeprav se ta izvaja po korakih na nizkem nivoju - na nivoju strojne kode.
+Zato tudi 1 korak v višjem programskem jeziku predstavlja več korakov v  nižjem strojnem jeziku. To preavjanje deluje kot
+neko kopiranje assembly kode za specifične ukaze višjega strojnega jezika.
+
+Zato rabimo simbole, ki nam povejo, kjer se kateri ukaz začne in konča. Tudi za funkcije rabimo simbole, ki nam povejo
+naslove funkcij. Simboli so v bistvu tako bolj prijazna imena za naslove, ki jih lahko dodamo ukazom in funkcijam -
+na strojnem nivoju so funkcije tako ali tako nič drugega kot nek odsek kode na nekem naslovu in klic fukcij je samo 
+skok na ta naslov in shranitev trenutnega stanja.
+```
+
+26.2 Klicanje funkcij
+
+```
+Ko kličemo funkcijo A, se lokalne spremenljivke funkcije A shranijo v registre. Ko nato kličemo funkcijo B, se lokalne
+spremenljivke funkcije A najprej shranijo na sklad, doda se še naslov za vrnitev, in lokalne spremenljivke funkcije B
+gredo v registre. Ker je sklad struktura tipa LIFO, funkcija A konča z izvajanjem zadnja.
+```
+
+26.3 Kratka zgodovina procesorjev
+
+```
+Procesorji na začetku niso imeli DMA krmilnika, ampak registre za shranjevanje naslovov DI, SI, SP, BP, PC, ... To je bilo počasno.
 ```
 
 27 Slika pomnilnika
 
 ```
 Pomnilnik v glavnem sestoji iz štirih segmentov (od višjega proti nižjemu naslovu), za ketere pa imamo tudi segmentne registre:
-* Sklad - dinamičen segment za shranjevanje lokalnih podatkov - pri menjavi konteksta se tja shranijo lokalne spremenljivke (registri)
+* Sklad - dinamičen segment za shranjevanje lokalnih podatkov - pri menjavi konteksta se tja shranijo lokalne spremenljivke (registri) - širi se navzdol
 * Kopica - dinamičen segment za dinamično alokacijo pomnilnika (malloc, new, free, delete)
-* Podatkovni segment - statični segment (fiksne velikosti) za shranjevanje globalnih spremenljivk
+* Podatkovni segment - statični segment (fiksne velikosti) za shranjevanje globalnih spremenljivk - statično alocirane spremenljivke
 * Tekst segment (koda) - statični segment (fiksne velikosti) za shranjevanje kode
 ```
 
@@ -347,13 +384,14 @@ Za ta namen imamo tudi AGU enoto.
 
 ```
 Gre za dinamičen del (segment) pomnilnika, ki služi kot prostor za začasno shranjevanje lokalnih spremenljivk (registrov).
-To nam pride prav pri npr. zamenjavi konteksta. Za ta nam imamo tudi kazalec na začetek (vrh) sklada (RSP) in kazalec na
+To nam pride prav pri npr. zamenjavi konteksta. Za ta namen imamo tudi kazalec na začetek (vrh) sklada (RSP) in kazalec na
 okvir sklada (RBP) - ta predstavlja začetek trenutnega dela sklada, ki ga uporabljamo.
 Z vsako zamenjavo konteksta tako nastane nov okvir in se doda na sklad (push, ovijanje sklada) oz. vzame iz sklada (pop, 
 odvijanje sklada), ko se vračamo iz funkcije.
 
 Pred začetkom sklada (torej pred RSP) imamo še 128 bajtov rdeče cone (Linux/MacOS, x64). Gre za zavarovan del pomnilnika pred RSP, do katerega
-naj signali in interrupt handlerji ne bi dostopali. Omogoča shranjevanje podatkov na stack brez spreminjanja RSP.
+naj signali in interrupt handlerji ne bi dostopali. Omogoča shranjevanje podatkov na stack brez spreminjanja RSP. Načeloma boljše da ga
+ne uporabljaš, če ne veš kaj delaš.
 ```
 
 30 Sklad vsebina – 32 vs 64 bit
@@ -390,35 +428,35 @@ Kot omenjeno že prej, gre za dinamičen segment pomnilnika, ki služi za dinami
 34 Ostranjevanje (paging)
 
 ```
-Ostranjevanje (paging) je razdelitev glavnega pomnilnika na enako velike enote (strani) - ponavadi velikosti 4kB.
+Ostranjevanje (paging) je razdelitev glavnega pomnilnika na enako velike enote (strani) - ponavadi velikosti 4kB (12-bit).
 Tako namesto da naslvljamo direktne lokacije v pomnilniku, naslovimo stran in povemo še odmik znotraj strani.
 Ostranjevanje prepreči zunanjo razdrobljenost, omili notranjo razdrobljenost, poenostavi delo OS in omogoča virtualni
 pomnilnik - če zmanjka prostora v GP, lahko strani "odložimo" na disk.
 OSu tudi omogoča lažjo zaščito pomnilnika in manj režije.
 
 2⁵² strani nam je na voljo.
-Poleg tega uvedemo večstopenjsko tabelo strani, kjer shranjujemo informacije o straneh - kje se nahajajo, ali so 
-veljavne (v glavnem pomnilniku) in nekatere druge zastavice.
+Poleg tega uvedemo **večstopenjsko tabelo** strani, kjer shranjujemo informacije o straneh - kje se nahajajo, ali so 
+veljavne (v glavnem pomnilniku) in nekatere druge zastavice. Večstopenjsko pa zato, ker vseh strani v eno samo
+tabelo nebi mogli shraniti (premajhen pomnilnik).
 
 Rabimo uvesti preslikavo virualnih naslovov v fizične (ker strani niso nujno v pomnilniku, jih celo lahko celo več, kot
 pa je velikost pomnilnika in ni nujno da so na lokaciji v pomnilniku, ki je enaka fizični lokaciji strani) - uvedemo
 preslikovalne tabele.
 ```
 
-35 Little magic box - Intel allocator
+35 Little magic box - Intel allocator - preimenovanje registrov
 
 ```
-Ideja je, da imamo več logičnih registrov, kateri pa se med izvajanjem preslikajo na fizične registre.
-Imamo pa več fizičnih registrov za vsak logični register. To omogoča izvajanje več ukazov hkrati brez premikanja spremenljivk v pomnilnik.
-Imamo namreč več ALU enot in tako lahko npr. izračunamo več stvari hkrati (out of order execution), če so deli
-kode med sabo neodvisni.
+Ideja je, da imamo za vsak logični register več fizičnih registrov v ozadju. To omogoča izvajanje več ukazov hkrati brez 
+premikanja spremenljivk v pomnilnik. Imamo namreč več ALU enot in tako lahko npr. izračunamo več stvari hkrati 
+(out of order execution), če so deli kode med sabo neodvisni.
 ```
 
 36 AGU
 
 ```
-AGU je enota v procesorju, ki služi za izračun efektivnega naslova. S tem pohtri računanje naslovov za dostop 
-do pomnilnika in zmanjša število ciklov, ki bi jih sicer procesor porabil za ta izračun.
+AGU (address generating unit) je enota v procesorju, ki služi za izračun efektivnega naslova. S tem pohtri računanje
+naslovov za dostop do pomnilnika in zmanjša število ciklov, ki bi jih sicer procesor porabil za ta izračun.
 ```
 
 37 ALU
@@ -433,19 +471,22 @@ Aritmetično logična enota - služi za izvajanje aritmetičnih in logičnih ope
 Floating point unit - služi za izvajanje operacij z realnimi števili (float, double).
 ```
 
-39 MMX
+39 MMX in SSE
 
 ```
 MultiMedia eXtensions - služi za izvajanje operacij z 64-bitnimi celoštevilskimi števili ali grupami manjših števil.
 Nekako ostanek iz preteklosti.
-```
 
-40 SSE
-
-```
 Streaming SIMD Extensions - služi za izvajanje operacij z 128-bitnimi celoštevilskimi števili ali grupami manjših števil.
 Uvede 8 novih XMM registrov in več ukazov za računanje z njimi. So širine 128 bitov in omogočajo računanje z več
 števili hkrati (2x64, 4x32...). Njihov namen je pohitritev takšnih računskih operacij.
+```
+
+40 Cache - predpomnilnik
+
+```
+Cache je majhen ampak zelo hiter pomnilnik, ki ga najdemo v procesorju. Njegov namen je pohitritev dostopa do podatkov
+na ta način, da se najpogosteje uporabljeni podatki iz GP shranijo v cache.
 ```
 
 41 Out of order execution
@@ -462,14 +503,14 @@ Primer je računanje dveh neodvisnih spremenljivk.
 Cevovodi omogočajo nek nivo paralelizacije s tem, da izvajajo več ukazov hkrat s tega vidika, da ko je en ukaz
 pridobljen in gre v dekodiranje, da se začne pridobivati že naslednji ukaz.
 Cevovod sestoji iz več faz/nivojev: fetch, decode, execute, writeback.
-Potlej ko je specifičen ukaz v eni izmed faz, gre naslednji ukaz v že prejšnjo fazo.
+Potlej ko je specifičen ukaz v eni izmed faz, gre naslednji ukaz v prejšnjo fazo.
 
 Fetch - pridobivanje ukazov iz pomnilnika
 Decode - dekodiranje ukaza
 Execute - izvajanje ukaza
 Writeback - zapis rezultata v pomnilnik
 
-Tu pa pride na vrsto predikcija vejitev. Predikcija vejitev je predvidevanje, katera pot bo izbrana pri veji.
+Tu pa pride na vrsto predikcija vejitev. Predikcija vejitev je predvidevanje, katera pot bo izbrana pri veji (if, while, for...).
 Če pot uganemo, super, jo upoštevamo, sicer je treba celoten cevovod zavreči in začeti znova.
 Imamo več načinov predikcije vejitev, ki pa so danes že zelo učinkoviti (Intel kar 97%).
 
@@ -483,7 +524,8 @@ Primeri predikcije vejitev:
 ```
 Ideja tu je, da prevajalnik išče kodo neodvisno od vejitve in jo izvede šele po vejitvi.
 Izvede jo šele za vejitvijo - to pride prav, da v primeru da se za vejitev zmoti, ne zavržemo od vejitve 
-neodvisne kode v cevovodu.
+neodvisne kode v cevovodu. Na ta način vejitev lahko izvaja že, ko se v cevovodu izvaja neodvisna koda.
+To pohitri izvajanje kode, saj je manj čakanja na vejitve.
 
 Zakasnitve so omejene z dolžino cevovoda.
 ```
@@ -556,7 +598,7 @@ mov rax, 0x12345678  ; 64-bit
 V glavnem bodi pozoren na tipe registrov in na podatkovne tipe (BYTE [8], WORD [16], DWORD [32], QWORD [64]...).
 ```
 
-48 Kontekstni preklop in preimenovanje registrov
+48.1 Kontekstni preklop in preimenovanje registrov
 
 ```
 Pri zamenjavi/preklopu konteksta je potrebno shraniti trenutno stanje registrov. To je mogoče pohitriti z uporabo
@@ -564,6 +606,16 @@ preimenovanja registrov. Za vsak logičen/navidezen register imamo v ozadju več
 za preslikavo med njimi. Tako ob preklopu konteksta samo zamenjamo skupino registrov, ki jo uporabljamo.
 To pride prav tudi pri nitenju, dkjer ima vsaka nit svoje lokalne spremenljivke (registere).
 ```
+
+48.2 Programski števec
+
+```
+Vsaka nit ima svoj programski števec. Vsak proces oz. nit ima svojo banko registrov (preimenovanje registrov).
+Tu pa pride tudi do manjše razlike med nitmi in procesi: niti si delijo pomnilniški prostor, procesi pa ne.
+
+Vsak dostop do sistemskih virov zahteva dovoljenje od OS. Med čakanjem je nit oz. program v kernel načinu, in vmes
+lahko drugi procesi izvajajo svoje ukaze. Spet, to se da pohitriti z uporabo preimenovanja registrov.
+``` 
 
 49 Zakaj te zamenjave sploh delamo?
 
@@ -578,6 +630,19 @@ rehistrov storjeno zelo hitro. Point: učinkovitost. Poleg tega je to potrebno z
 ```
 Lokalne spremenljivke funkcije so shranjene na stacku. Ob klicu nove funkcije so tako na stacku shranjene
 lokalne spremenljivke in pa naslov za vrnitev (in pa ponavadi na začetku še kazalec na prejšnji okvir).
+```
+
+50.5 Načini delovanja programov glede na privilegije
+
+```
+- realni način - ostaja iz obdobja 16-bitnih procesorjev
+- virtualni način - 32-bitni procesorji - emulira realni način
+- protected način - 32-bitni procesorji
+- long mode - 64-bitni procesorji
+   - 64-bitni način - 64-bitni procesorji
+   - compatibility mode - 64-bitni procesorji - podpora za 32/16-bitne programe
+   
+Število SSE registrov je v 32-bit 8, v 64-bit 16.
 ```
 
 51 Delitev naslovitvenega prostora OS in uporabnika
@@ -707,17 +772,29 @@ Skratka uvedemo te virtualne naslove, ki pa jih AGU preračuna v fizične naslov
 ```
 ```
 
-60 Windows vs Linux – naslavljanje, AGU, registri
+60 Windows vs Linux – naslavljanje, AGU, registri, relokacija**
 
 ```
+Recimo imamo proces A na nekem mestu. Nato tja dodamo še proces B, ampak za C pa zmanjka prostora.
+Imamo dve opciji: relocirati enega izmed programov ali pa procesu C dodelimo lokalno kopijo. Nič od tega ni optimalno.
+
+Unix se teh naslovov loti z uporabo registra + odmik - relativno naslavlanje. To je lahko kar PC.
 ```
+
+** Ta odgovor je škrbina, če ga želite izboljšati, kontaktirajte avtorja.
 
 61 Prenaslovitvena tabela
 
 ```
 Prenaslovitvena tabela služi za prenaslovitev klicev funkcij iz knjižnic, ko le-te premaknemo v pomnilnik.
 Npr. neko knjižnico x smo najprej imeli naloženo takoj za programom, a se kasneje premakne dugam zaradi določenih razlogov.
+
+Uglavnem nam pove, kjer vse je ob spremembah treba naslove popraviti.
 ```
+
+Zelo dobra razlaga celotnega procesa prevajanja programa in ustvarjanja relokacijske, simbolne tabele.
+
+[Relocation and Symbol Table](https://stevenschmatz.gitbooks.io/eecs-370/content/Lecture_Notes/lecture_7.html)
 
 62 Prevajanje višjih programskih jezikov
 
@@ -747,7 +824,7 @@ Ker pa uporabljamo virtuali pomnilnik, je v ozadju potrebno izračunavati fizič
 ```
 Simbolna tabela
 
-Vsebuje imena spremenljivk, funkcij, objektov, razredov, vmesnikov, ... in njihove naslove.
+Vsebuje imena spremenljivk, funkcij, objektov, razredov, vmesnikov, ... in njihove naslove. Se dinamično gradi med zbiranjem.
 Zgradi in uporablja jo compiler in pomaga določiti:
  - preslikavo imen v naslove/vrednosti,
  - scope (obseg),
@@ -758,14 +835,15 @@ Zgradi in uporablja jo compiler in pomaga določiti:
  - konstante, keterim pa so določene vrednosti, ne pa naslovi...
 
 Načeloma delamo novo tabelo simbolov za vsak scope (obseg). In le-te so lahko organizirane v drevo.
-Tabela se polni med zbiranjem dinamično.
-Lokalne spremenljivke gredo v registre.
+Tabela se polni med zbiranjem dinamično. Lokalne spremenljivke gredo v registre.
 
+Dinamično povezovanje knjižnic:
 Ena izmed pomembnih uporab te tabele je dinamično povezovanje knjižnic. Sklice na knjižnice namreč še ne moremo
 zamnjati z dejanskimi naslovi, dokler knjižnice nismo naložili. Šele, ko se knjižnica naloži, lahko zamnjamo simbole
-v programu z dejanskimi naslovi iz knjižnice.
+v programu z dejanskimi naslovi iz knjižnice. Torej med prevajanjem se na knjižnic sklicujemo, med povezovanjem
+pa se sklicevanja zamenjajo z dejanskimi naslovi.
 
-Ker so imena spremenljivk v simbolni tabeli lahko variabline dolžine, uvedemo kazalce na besede in tako prigranimo nekaj prostora.
+Ker so imena spremenljivk v simbolni tabeli lahko variabline dolžine, uvedemo kazalce na besede in tako prihranimo nekaj prostora.
 Temu rečemo tudi dvostopenjska simbolna tabela.
  
 
@@ -797,13 +875,16 @@ Hash-table!
 
 ```
 Simbolna tabela se generira v dveh fazah (generiranje tabele + zamenjava):
- - prva faza - analiza kode in zbiranje informacij o simbolih,
- - druga faza - sinteza: zamenjava simbolov z njihovimi naslovi/vrednostmi.
+ - prva faza - analiza kode in zbiranje informacij o simbolih (polnenje tabele),
+ - druga faza - sinteza: zamenjava simbolov z njihovimi naslovi/vrednostmi (prevajanje).
  
 Za dostop podatkov v simbolni tabeli lahko uporabimo hash-table. Ta omogoča hitro linearno preiskovanje podatkov O(n)
-in še hitrejše binarno preiskovanje podatkov O(log2 n).
+in še hitrejše binarno preiskovanje podatkov O(log2 n). Do vrednosti simbolnih imen zarade delovanja hash tabele
+dostopamo kar preko njihovih imen.
 
 Če je v hash tabeli lokacija zasedena, potem samo gremo za eno naprej (naslov povečamo za 1).
+
+1-prehodno polnenje pa ta dva koraka združi v enega.
 ```
 
 [Symbol table](https://www.youtube.com/watch?v=Dd3DWRpqI40)
@@ -813,7 +894,8 @@ in še hitrejše binarno preiskovanje podatkov O(log2 n).
 67 Še nekaj o simbolnih tabelah
 
 ```
-Pogosti ukazi in operandi se lahko združijo v nove ukaze.
+Pogosti ukazi in operandi se lahko združijo v nove ukaze. Recimo če imamo na voljo 8-bitov za inštrukcije, imamo pa
+samo 206 inštrukcij, lahko preostalih 50 inštrukcij zapolnimo z novimi ukazi, ki združujejo stare ukaze.
 
 Naslovi se lahko dodajo šele naknadno, ko je knjižnica vključena.
 
@@ -823,27 +905,76 @@ Te simbolne tabele ostanejo v kodi, če uporabljamo debug. Zato tudi lahko med d
 
 Za odstranjevanje teh ukazov imamo sicer ukaz strip - tega si želimo uporabiti, če želimo zavarovati našo kodo - 
 intelektualna lastnina. Zato tudi, če imamo to tabelo, lahko skoraj da dobimo originalno izvorno kodo.
+
+Iz ukazne tabele pa s pomočjo tabele dobimo dejanske ukaze.
 ```
 
 68* Stopnje prevajanja
 
 ```
-
 * Leksikalna analiza
 * Sintaktična analiza
 * Semantična analiza
 * Vmesno generiranje kode
 * Optimizacija
 * Prevajanje v strojno kodo
-
 ```
 
-69 Inline funkcije
+69 Inline funkcije - makro zbirniki
 
 ```
 Inline funkcije so funkcije, ki so vključene v kodo, kjer so klicane. To pomeni, da se funkcija ne kliče, ampak se 
-dejansko "skopira" v kodo, kjer je klicana. Tako lahko pridobimo na hitrosti.
+dejansko "skopira" v kodo, kjer je klicana. Tako lahko pridobimo na hitrosti in hkrati, ko spreminjamo vsebino funkcije
+se ta posodobi tudi vsepovsod, kjer je bila klicana.
+
+Boomerang tu je podvajanje simbolov - ko npr. dvakrat zapored kličemo isto funkcijo. V ozadju za to poskrbi prevajalnik - 
+zamenja imena simbolov, ko so uporabljeni drugič.
 ```
 
 [When to use inline functions](https://www.reddit.com/r/learnprogramming/comments/3h5dbm/c_why_not_inline_every_function/)
 
+70 Dodatne vsebine**
+
+```
+tihi - program se nadaljuje
+glasni - fatal error
+```
+
+** Ta odgovor je škrbina, če ga želite izboljšati, kontaktirajte avtorja.
+
+71 Pogojno zbiranje
+
+```
+Pogojno zbiranje je zbiranje kode, ki se izvede le, če je izpolnjen določen pogoj. Po domače povedano gre za if stavke 
+v makrojih - če je pogoj izponjen se nek makro izvede sicer ne. To nam pride prav, če recimo pišemo različno kodo
+za dve različni platformi, ampak je samo del kode različen, zato imamo v isti izvorni kodi to ločeno z npr.
+```
+
+```c++
+#ifdef __linux__
+    // linux specific code
+#else
+    // windows specific code
+#endif
+```
+
+72 Nadzorne sekcije
+
+```
+Nadzorne najdemo v objektnih modulih - gre za programsko kodo. Te nadzorne sekcije so lahko:
+ * aboslutne (niso prenosljive - začnejo se na naslovu 0),
+ * nepoimenovane (so prenosljive in jih tvori compiler - glavni program v VPJ),
+ * poiemenovane (so prenosljive in jih tvori programer - podprogrami v VPJ).
+ 
+Če ve nekem ukazu JMP uporabimo direkten naslov, je ta sekcija abosultna - neprenosljiva.
+Če uporabimo register z odmiko, postane prenosljiva - smo znotraj sekcije.
+Če pa uporabimo programski števec in odmik pa postane celo prenaslovljiva, pozicijsko neodvisna sekcija.
+```
+
+73 Prenaslovitvena tabela**
+
+```
+Prenaslovitvena tabela je tabela, ki nam pove, kje se nahaja določena sekcija v spominu.
+```
+
+** Ta odgovor je škrbina, če ga želite izboljšati, kontaktirajte avtorja.
