@@ -103,7 +103,7 @@ Ta mora biti:
 - sprejemljiva (moramo podceniti strošek) - h(n) <= h*(n), kjer je h*(n) optimalna hevristika
 - za vsako vozlišče open in closed beležimo najkrajšo pot. Če je nova pot krajša, potem
   vozlišče dodamo v open - odstranimo starega oz. posodobimo njegovo oceno. Če je vozlišče
-  v closed, ga odstranimo in ga dodamo v open ter popravimo še vse predhodnik.
+  v closed, ga odstranimo in ga dodamo v open ter popravimo še vsem naslednikom ALI (!!!!!!)
 - hevristična ocena je konsistentna oz. monotona: h(n) <= c(n, n') + h(n), torej
   velja trikotniška neenakost
 
@@ -208,8 +208,8 @@ Pojmi:
 
 - [x] Zero sum game - seštevek rezultatov enega in drugega nasprotnika je 0
 - [x] Igre s popolno informacijo - vemo vse o stanju igre
-- [ ] Kompleksnost prostora stanj - koliko je možnih stanj
-- [ ] Velikost drevesa iger - koliko je možnih stanj
+- [ ] Kompleksnost prostora stanj - število položajev dosegljivih iz začetnega stanja
+- [ ] Velikost drevesa iger - število listo v drevesu - število vseh različnih iger
 
 Cilj je iskanje čim boljše naslednje poteze. Uvedemo tudi ocenitveno funkcijo.
 Preiskujemo s pomočjo drevesa igre – v praksi se to ponavadi implementira z rekurzijo.
@@ -363,7 +363,7 @@ Recimo v primeru zgoraj:
 6. Alfa postane 2.
 7. V C-ju ugotovimo, da je F = 1, torej beta = 1.
 8. Ta poteza nam da vedeti, da bo A (MAX) zagotovo izbral B, ker ima le-ta višjo spodnjo mejo --> alfa >= beta.
-9. Ya G nam je tako vseeno. To vejo obrežemo.
+9. Za G nam je tako vseeno. To vejo obrežemo.
 
 Če bi bilo drevo urejeno (najbolj levi naslednik v vsakem poddrevesu najugodnejši za igralca na potezi), bi algoritem
 ovrednotil pol toliko listov kot običajni minimax.
