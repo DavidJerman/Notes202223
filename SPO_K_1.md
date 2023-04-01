@@ -159,13 +159,14 @@ To kako se polni struktura je načeloma odvisno od optimizacije, ki jo vklopimo.
 Skratka vedno bo šlo za poravnavao. Nikoli neka spremenljivka ne bo "gledala čez rob".
 ```
 
-```
-// Zato je takšna struktura 24 bytov
+Zato je takšna struktura 24 bytov
+
+```C
 struct {
-char e;    // 1 bajt
-int a;     // 4 bajti
-char b;    // 1 bajt
-double c;  // 8 bajtov
+    char e;    // 1 bajt
+    int a;     // 4 bajti
+    char b;    // 1 bajt
+    double c;  // 8 bajtov
 } x;
 ```
 
@@ -180,6 +181,8 @@ double c;  // 8 bajtov
 ```
 Ideja je, da imamo kazalec na kazalec. To nam pride prav, ko imamo neko tabalo kazalcev na funkcije. Ali pa tabelo kazalcev na spremenljivke.
 Na ta način, si objekti/razredi lahko delijo funkcije/spremenljivke in ne rabi vsak razred implementirati svoje funkcije.
+Poleg tega ima objekt shrajeno samo vsebine - spremenljivke - in samo kazalec na funkcijo. Tokaj, ko imamo več kot en objekt,
+smo verjetno že prihranili veliko prostora.
 Tako lahko implementiramo:
 * Statične funkcije, ki so deljenje med razredi
 * Deodovanje funkcij, kar pomeni, da otrok ne rabi ponovno implemtirati funkcije
@@ -251,12 +254,13 @@ S tem omogoča prikaz znakov (črk) v maksimalni kvaliteti pri poljubni resoluci
 19 Rasterizacija
 
 ```
-Problem rasterizacije je, da je treba vektorsko sliko pretvoriti v rastersko sliko. Tu pogosto pride do izgube kakovosti slike.
+Problem rasterizacije je, da je treba vektorsko sliko pretvoriti v rastersko sliko. Tu pogosto pride do tega problema, da slika ne izgleda dobro.
 Rešitev, ki jo pogosto uporabimo, je, da programu za rasterizacijo damo namig, kako simbol izrisati. Lahko bi npr. rekli,
 da naj se potrudi znake narediti simetrične. Za ta namen pa se uporablja tudi tehnika ClearType (anti-aliasing + smoothing).
 Slika s pomočjo ClearType izgleda bolj gladko in čisto - ni tistih kvadratnih robov.
 
-To je v bistvu sistemska podpora obliki, kar pomeni, da mi ne rabimo skrbeti za izgled znakov, ampak le za vsebino.
+To je v bistvu sistemska podpora obliki, kar pomeni, da mi ne rabimo skrbeti za izgled znakov, ampak le za vsebino, kateri
+font, barvo uporabimo ipd.
 ```
 
 20 PostScript
@@ -316,7 +320,7 @@ Program gre čez nekaj faz:
    Predprocesiranje (import, makro, ...)
    Zbiranje (zbirnik) / prevajanje (prevajalnik)
 2. Objektni moduli (.obj - strojna koda)
-   Povezovanje (povezovalnik) - tu povezujemo zato, d anebi že na izvornem nivoju imeli napak - tako lahko vsak modul posebej preverimo za napake.
+   Povezovanje (povezovalnik) - tu povezujemo zato, da nebi že na izvornem nivoju imeli napak - tako lahko vsak modul posebej preverimo za napake.
 3. Izvedljivi modul (.exe)
    Nalaganje (nalagalnik)
 4. Naložen program (v glavnem pomnilniku)
@@ -335,11 +339,11 @@ Sicer ni razloga, ker so današnji prevajalniki zelo močni: koda je hitra, zane
 26.1 Simboli, funkcije
 
 ```
-V debug načni si želimo program videti z vidika višjega programskega jezika, čeprav se ta izvaja po korakih na nizkem nivoju - na nivoju strojne kode.
-Zato tudi 1 korak v višjem programskem jeziku predstavlja več korakov v  nižjem strojnem jeziku. To preavjanje deluje kot
+V debug načinu si želimo program videti z vidika višjega programskega jezika, čeprav se ta izvaja po korakih na nizkem nivoju - na nivoju strojne kode.
+Zato tudi 1 korak v višjem programskem jeziku predstavlja več korakov v  nižjem strojnem jeziku. To prevajanje deluje kot
 neko kopiranje assembly kode za specifične ukaze višjega strojnega jezika.
 
-Zato rabimo simbole, ki nam povejo, kjer se kateri ukaz začne in konča. Tudi za funkcije rabimo simbole, ki nam povejo
+Zato rabimo simbole, ki nam povejo, kje se kateri ukaz začne in konča. Tudi za funkcije rabimo simbole, ki nam povejo
 naslove funkcij. Simboli so v bistvu tako bolj prijazna imena za naslove, ki jih lahko dodamo ukazom in funkcijam -
 na strojnem nivoju so funkcije tako ali tako nič drugega kot nek odsek kode na nekem naslovu in klic fukcij je samo 
 skok na ta naslov in shranitev trenutnega stanja.
@@ -349,14 +353,14 @@ skok na ta naslov in shranitev trenutnega stanja.
 
 ```
 Ko kličemo funkcijo A, se lokalne spremenljivke funkcije A shranijo v registre. Ko nato kličemo funkcijo B, se lokalne
-spremenljivke funkcije A najprej shranijo na sklad, doda se še naslov za vrnitev, in lokalne spremenljivke funkcije B
-gredo v registre. Ker je sklad struktura tipa LIFO, funkcija A konča z izvajanjem zadnja.
+spremenljivke funkcije A najprej shranijo na sklad, doda se še naslov za vrnitev in kazalec na prejšnji okvir, in lokalne
+spremenljivke funkcije B gredo v registre. Ker je sklad struktura tipa LIFO, funkcija A konča z izvajanjem zadnja.
 ```
 
 26.3 Kratka zgodovina procesorjev
 
 ```
-Procesorji na začetku niso imeli DMA krmilnika, ampak registre za shranjevanje naslovov DI, SI, SP, BP, PC, ... To je bilo počasno.
+Procesorji na začetku niso imeli DMA krmilnika in za ta namen registre za shranjevanje naslovov DI, SI, SP, BP, PC, ... To je bilo počasno.
 ```
 
 27 Slika pomnilnika
@@ -372,8 +376,8 @@ Pomnilnik v glavnem sestoji iz štirih segmentov (od višjega proti nižjemu nas
 28 Efektivni naslov
 
 ```
-Efektivni naslov je naslov, ki ga uporablja procesor za dostop do nekega dela pomnilnika. Najdemo ga v zbirnih ukazih
-v obliki in ga je potrebno pred uporabu izračunati. Formula se glasi: 
+Efektivni naslov je naslov, ki ga uporablja procesor za dostop do nekega dela pomnilnika. Najdemo ga v zbirnih ukazih, ko
+dostopamo do GP in ga je potrebno pred uporabu izračunati. Formula se glasi: 
 Bazni_register + Faktor*Indeksni_register + odmik
 Le-ta se nato združi z segmentnim registrom, da dobimo fizični naslov pri recimo realnem načinu delovanja.
 Efektivni naslov je namreč relativen glede na začetek programa (ta se začne z naslovom nič).
@@ -398,8 +402,8 @@ ne uporabljaš, če ne veš kaj delaš.
 
 ```
 https://eli.thegreenplace.net/2011/02/04/where-the-top-of-the-stack-is-on-x86/
-TL;DR: Pri obeh najdemo lokalne spremenljivke in naslov za vračanje ob klicu funkcije. Po klic funkcije pa še kazalec 
-       na prejšen okvir sklada (RBP oz. EBP). Tudi vrednosti funkcije se vračajo preko sklada.
+TL;DR: Pri obeh najdemo lokalne spremenljivke in naslov za vračanje ob klicu funkcije. Po klicu funkcije pa še kazalec 
+       na prejšnji okvir sklada (RBP oz. EBP). Tudi vrednosti funkcije se vračajo preko sklada.
        Pri 64-bit pa pogosto najdemo še prej omenjeno rdečo cono (128 bajtov).
 ```
 
@@ -439,7 +443,7 @@ Poleg tega uvedemo **večstopenjsko tabelo** strani, kjer shranjujemo informacij
 veljavne (v glavnem pomnilniku) in nekatere druge zastavice. Večstopenjsko pa zato, ker vseh strani v eno samo
 tabelo nebi mogli shraniti (premajhen pomnilnik).
 
-Rabimo uvesti preslikavo virualnih naslovov v fizične (ker strani niso nujno v pomnilniku, jih celo lahko celo več, kot
+Rabimo uvesti preslikavo virtualnih naslovov v fizične (ker strani niso nujno v pomnilniku, jih celo lahko celo več, kot
 pa je velikost pomnilnika in ni nujno da so na lokaciji v pomnilniku, ki je enaka fizični lokaciji strani) - uvedemo
 preslikovalne tabele.
 ```
@@ -604,7 +608,7 @@ V glavnem bodi pozoren na tipe registrov in na podatkovne tipe (BYTE [8], WORD [
 Pri zamenjavi/preklopu konteksta je potrebno shraniti trenutno stanje registrov. To je mogoče pohitriti z uporabo
 preimenovanja registrov. Za vsak logičen/navidezen register imamo v ozadju več fizičnih registrov. In procesor poskrbi
 za preslikavo med njimi. Tako ob preklopu konteksta samo zamenjamo skupino registrov, ki jo uporabljamo.
-To pride prav tudi pri nitenju, dkjer ima vsaka nit svoje lokalne spremenljivke (registere).
+To pride prav tudi pri nitenju, kjer ima vsaka nit svoje lokalne spremenljivke (registere).
 ```
 
 48.2 Programski števec
@@ -758,7 +762,7 @@ mov ax, [ebx + ecx]
 <img src="https://davidblog.si/wp-content/uploads/2023/03/Screenshot-from-2023-03-30-18-16-59.png" alt="Screenshot from 2023-03-30 18-16-59" width="800"/>
 
 ```
-Uvedemo segmente v pomnilniku, da lo;imo programe v pomnilniku. Vsakemu programu damo svoj segment.
+Uvedemo segmente v pomnilniku, da ločimo programe v pomnilniku. Vsakemu programu damo svoj segment.
 Ko želimo dostopati do nekih podatkov v segmentu, najprej dobimo efektivni naslov ZNOTRAJ SEGMENTA. Šele nato
 procesor izračuna fizični naslov, ki ga dobi preko efektivnega naslova in segmentnega registra.
 Segmenti register v descriptor tabeli pogleda, kje se naš segment nahaja in kako velik je.
@@ -961,13 +965,13 @@ za dve različni platformi, ampak je samo del kode različen, zato imamo v isti 
 72 Nadzorne sekcije
 
 ```
-Nadzorne najdemo v objektnih modulih - gre za programsko kodo. Te nadzorne sekcije so lahko:
+Nadzorne sekcije najdemo v objektnih modulih - gre za programsko kodo. Te nadzorne sekcije so lahko:
  * aboslutne (niso prenosljive - začnejo se na naslovu 0),
  * nepoimenovane (so prenosljive in jih tvori compiler - glavni program v VPJ),
  * poiemenovane (so prenosljive in jih tvori programer - podprogrami v VPJ).
  
-Če ve nekem ukazu JMP uporabimo direkten naslov, je ta sekcija abosultna - neprenosljiva.
-Če uporabimo register z odmiko, postane prenosljiva - smo znotraj sekcije.
+Če v nekem ukazu JMP uporabimo direkten naslov, je ta sekcija abosultna - neprenosljiva.
+Če uporabimo register z odmikom, postane prenosljiva - smo znotraj sekcije.
 Če pa uporabimo programski števec in odmik pa postane celo prenaslovljiva, pozicijsko neodvisna sekcija.
 ```
 
