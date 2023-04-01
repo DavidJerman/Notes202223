@@ -1,13 +1,202 @@
 # Umetna inteligenca
 
-## Pred vprašanji
+## Pred snovjo
 
 Sekcije s pojmi imajo na voljo check-marke. Le-te lahko označiš tako, da v oglate oklepaje namesto presledka vstaviš
 `x`. Na primer: `[x]` označi tole. Tako si lahko daš zaznamke, kaj si že prebral.
 
-## Vprašanja
+## Snov
 
-#### Genetski algoritem
+### Uvod
+
+#### Kaj je umetna inteligenca?
+
+Strojno oprema z inteligentnim vedenjem. Sistemu, ki pa odraža inteligenco pa rečemo agent.
+Ko neki AI zna rešiti problem rečemo učinek AI - problem je rešljiv z algoritmom, torej ni več AI.
+
+Pojmi:
+
+- [ ] Ozka (šibka) vs splošna (močna) AI
+- [ ] Točka singularnosti, superinteligenca
+- [ ] Turingov test
+
+### Reševanje problemov z iskanjem
+
+Reševanje problema je v bistvu iskanje poti od začetnega stanja do cilja, če ustvarimo prostor stanj.
+Tako lahko za reševanje takih problemov uporabimo iskalne algoritme: DFS, BFS, A*...
+Hevristika nam poda neko znanje, oceno o okolju v katerem smo, tako da lahko
+bolj učinkovito preiskujemo prostor stanj.
+
+Prostor stanj <N, A, S, G>:
+
+- N - množica vseh stanj
+- A - množica vseh akcij
+- S - začetno stanje
+- G - ciljno stanje
+
+Opis stanja je lahko popolni ali delni. Če je delen samo pomeni, da nimamo vseh
+informacij o trenutnem stanju.
+
+Cilj iskanja je lahko **najti pot do cilja** ali **najti ciljno stanje**.
+Prvo je npr. iskanje poti do doma, drugo pa rešitev sudokuja.
+
+Prostor stanj lahko vizualiziramo z grafom - stanja so vozlišča, povezave pa akcije.
+Imamo cikličen, acikličen graf in drevo. Globina d je oddaljenost od začetnega vozliššča
+do končnega vozlišča. Vejitveni faktor b je število povezav, ki vodijo iz enega
+vozlišča. Ponavadi vzamemo povprečje.
+
+#### Iskalno drevo
+
+Načini iskanja:
+
+- Iskanje z veriženjem naprej,
+- Iskanje z veriženjem nazaj,
+- Iskanje z veriženjem naprej in nazaj (dvosmerno).
+
+Potek iskanja lahko ponazorimo z iskalnim drevesom. Razvoj vozlišča pomeni, da tvorimo
+vse naslednike.
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-2023-04-01-144356.png" width="700" alt="Drevo stanj">
+
+#### Implementacija iskanja
+
+Uporabimo seznama open in closed, ter iskanje naprej.
+V open imamo obiskana vozlišča. V closed pa razvita vozlišča.
+
+Poznamo dve vrsti strategij:
+
+- [ ] Informirana - uporabljamo hevristiko
+- [ ] Neinformirana - ne uporabljamo hevristike
+
+Algoritem je poln, če rešitev vedno najde in optimalen, če najde najboljšo rešitev.
+
+#### Neinformirane strategije
+
+- [ ] BFS - iskanje v širino, _open_ je FIFO vrsta, optimalen, poln, O(b^d+1)
+- [ ] BFS z uniformnih stroškom - _open_ urejen po strošku poti, poln, optimalen, če povezave vse +
+- [ ] DFS - iskanje v globino, _open_ je LIFO vrsta, ni optimalen, je poln, O(b^m), m je max. razdalja med dvema
+  vozliščema v grafu prostora stanj
+- [ ] DFS z omejitvijo globine - se omejimo do globine l, ni nujno poln, če ne gremo dovolj globoko, O(b^l)
+- [ ] DFS z omejitvijo globine (postopno povečevanje globine) - še najbolj primerno kot neinformirana strategija
+- [ ] Dvosmerno iskanje - iskanje naprej in nazaj, O(b^(d/2)) - stik preverjamo s presekom open
+
+#### Informirane strategije
+
+Uporaba hevristike - hevristično iskanje! Reševanje optimizacijskih problemov.
+
+- [ ] Best-first search - v vsakem koraku izberemo vozlišče z najboljšo oceno f(n) v seznamu _open_ - seznam urejen po
+  f(n)
+
+Osnovna komponenta: hevristična ocena h(n) - ocena stroška do cilja. Npr. zračna razdalja
+do cilja.
+
+#### Algoritem A
+
+Za izbiro naslednje poteze uporabimo oceno f(n) = g(n) + h(n), kjer je g(n) pot do trenutnega vozlišča,
+h(n) pa ocena stroška do cilja. Ni ravno idealen.
+
+#### Algoritem A*
+
+Algoritem A* je izboljšava algoritma A. Predvsem gre za to, da uporabimo boljšo hevristiko.
+Ta mora biti:
+
+- sprejemljiva (moramo podceniti strošek) - h(n) <= h*(n), kjer je h*(n) optimalna hevristika
+- za vsako vozlišče open in closed beležimo najkrajšo pot. Če je nova pot krajša, potem
+  vozlišče dodamo v open - odstranimo starega oz. posodobimo njegovo oceno. Če je vozlišče
+  v closed, ga odstranimo in ga dodamo v open ter popravimo še vse predhodnik.
+- hevristična ocena je konsistentna oz. monotona: h(n) <= c(n, n') + h(n), torej
+  velja trikotniška neenakost
+
+Ta algoritem je poln in optimalen.
+
+Izboljšave: postopno poglabljanje, rekurzivno iskanje z izbiro najboljšega, pomnilniško omejen A*, ...
+
+[A* vs DFS vs BFS](https://github.com/DavidJerman/AStar)
+
+#### Hevristika
+
+Primeri hevristik:
+
+- [ ] Zračna razdalja
+- [ ] Število kock na nepravem/pravem mestu
+
+Poglej dodatno: pojmi na strani 71/106.
+
+#### Lokalni iskalni algoritem
+
+Ideja je, da se premikamo iz stanja v stanje, brez da bi poznali okolico. Preko tega spoznamo okolico.
+Skratka izvajamo lokalne spremembe in iščemo globalni maksimum (čeprav ponavadi najdemo nek
+lokalni maksimum).
+
+Primerno, kadar iščemo stanja z maksimalno ugodnostjo (fitness). To ugodnost dobimo
+s pomočjo hevristične ocenitvene funkcije.
+
+<img src="https://www.tutorialandexample.com/wp-content/uploads/2019/07/Working-of-a-Local-search-algorithm.png" width="700" alt="Lokalni iskalni algoritem">
+
+Primer je lahko sudoku, kjer je premik zamenjava dveh nefiksnih polj, cilj pa je najti
+končno rešitev - optimalna rešitev ima hevristično oceno 0.
+
+##### Hill climbing
+
+Začnemo iz naključnega stanja, izberemo potezo, ki prinaša največje izboljšanje trenutnega stanja.
+Zaključimo, ko najdemo optimalno rešitev (globalni maksimum oz. optimum).
+Problem platoja (ravnine) omejimo tako, da omejimo število premikov na ravnini.
+
+Izboljšave: stohastično vzpenjanje glede na hevristiko, s prvim izborom, z naključno
+ponovitvijo - nekajkrat začnemo znova iz novega naključnega stanja, ...
+
+##### Simulated annealing
+
+Kombiniramo vzpenjanje na hrib z naključnim iskanjem - polnost iskanja.
+Izberemo naključnega naslednika in če je boljši od trenutnega stanja, to sprejmemo.
+
+Ostale metode:
+
+- [ ] Iskanje s spremenljivo sosesko
+- [ ] Iskanje tabu
+- [ ] Local beam search
+- [ ] Genetski algoritem
+
+[Hill climbing](https://www.youtube.com/watch?v=oSdPmxRCWws)
+
+##### Genetski algoritem
+
+Tvorimo populacijo k naključnih začetnih stanj. Stanja so zakodirana v kromosome -
+to je lahko npr. nek array vrednosti (recimo barva, pozicija x, pozicija y, ...).
+
+Kodirano predstavitev rešitve imenujemo **genotip**, njeno dejansko interpretacijo
+pa **fenotip**. Naslednjo generacijo osebkov tvorimo s pomočjo:
+
+- [ ] Selekcije - izberemo najboljše osebke
+- [ ] Križanja - izberemo dva najboljša osebka in jih križamo
+- [ ] Mutacije - izberemo naključnega osebka in ga mutiramo - mu naključno spremenimo
+  neke lastnosti/vrednosti
+
+Primer:
+Genotip pri postavitvi kraljic na šahovnico bi lahko npr. bile številke od 1 do 8 
+v arrayu, ki bi za posamezno vrstico predstavljale stolpec, v katerem je kraljica.
+
+Imamo več oblik selekcije:
+
+- naključna selekcija,
+- proporcionalna selekcija (verjetnost izbire kromosoma proporiconalna njegovi oceni),
+- turnirska selekcija (izberemo naključno m < k osebkov in izberemo najboljšega),
+- selekcija po ranku (izberemo naključno proporcionalno indeksu kromosoma v sortiranem
+  polju kromosomov),
+- elitizem (izberemo najboljše osebke in jih prenesemo v naslednjo generacijo),
+
+Križanje se zgodi z neko verjetnostjo pc. 
+
+Oblike križanja:
+
+- uniformno križanje (vsak par genov starševskih kromosomov
+  neodvisno izmenjamo z verjetnostjo pc),
+- eno točkovno križanje (izberemo naključno točko in zamenjamo lastnosti na obeh kromosomih
+  od te točke naprej),
+- dvo točkovno križanje (izberemo dve naključni točki in zamenjamo lastnosti na obeh
+  kromosomih med njima),
+
+Mutacija z verjetnostjo pm za cel kromosom ali posamezno lastnost (gen).
 
 [Genetski algoritem](https://www.youtube.com/watch?v=1i8muvzZkPw)
 
@@ -17,10 +206,10 @@ Omejili se bomo na igre med dvema igralcema.
 
 Pojmi:
 
-- [ ] Zero sum game
-- [ ] Igre s popolno informacijo
-- [ ] Kompleksnost prostora stanj
-- [ ] Velikost drevesa iger
+- [x] Zero sum game - seštevek rezultatov enega in drugega nasprotnika je 0
+- [x] Igre s popolno informacijo - vemo vse o stanju igre
+- [ ] Kompleksnost prostora stanj - koliko je možnih stanj
+- [ ] Velikost drevesa iger - koliko je možnih stanj
 
 Cilj je iskanje čim boljše naslednje poteze. Uvedemo tudi ocenitveno funkcijo.
 Preiskujemo s pomočjo drevesa igre – v praksi se to ponavadi implementira z rekurzijo.
