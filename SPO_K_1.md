@@ -54,8 +54,7 @@ Kratice:
 5 Big Endian vs. Little Endian
 
 ```
-* Big Endian - prvi byte na prvem naslovu
-* Little Endian - prvi byte na zadnjem naslovu
+Big-endian is an order in which the "big end" (most significant value in the sequence) is stored first, at the lowest storage address. Little-endian is an order in which the "little end" (least significant value in the sequence) is stored first.
 ```
 
 6 2 komplement
