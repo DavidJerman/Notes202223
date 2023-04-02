@@ -365,7 +365,7 @@ Procesorji na začetku niso imeli DMA krmilnika in za ta namen registre za shran
 27 Slika pomnilnika
 
 ```
-Pomnilnik v glavnem sestoji iz štirih segmentov (od višjega proti nižjemu naslovu), za ketere pa imamo tudi segmentne registre:
+Pomnilnik programa v glavnem sestoji iz štirih segmentov (od višjega proti nižjemu naslovu):
 * Sklad - dinamičen segment za shranjevanje lokalnih podatkov - pri menjavi konteksta se tja shranijo lokalne spremenljivke (registri) - širi se navzdol
 * Kopica - dinamičen segment za dinamično alokacijo pomnilnika (malloc, new, free, delete)
 * Podatkovni segment - statični segment (fiksne velikosti) za shranjevanje globalnih spremenljivk - statično alocirane spremenljivke
