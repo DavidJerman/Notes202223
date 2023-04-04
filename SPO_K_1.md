@@ -392,9 +392,35 @@ okvir sklada (RBP) - ta predstavlja začetek trenutnega dela sklada, ki ga upora
 Z vsako zamenjavo konteksta tako nastane nov okvir in se doda na sklad (push, ovijanje sklada) oz. vzame iz sklada (pop, 
 odvijanje sklada), ko se vračamo iz funkcije.
 
-Pred začetkom sklada (torej pred RSP) imamo še 128 bajtov rdeče cone (Linux/MacOS, x64). Gre za zavarovan del pomnilnika pred RSP, do katerega
-naj signali in interrupt handlerji ne bi dostopali. Omogoča shranjevanje podatkov na stack brez spreminjanja RSP. Načeloma boljše da ga
-ne uporabljaš, če ne veš kaj delaš.
+Na vrhu sklada (za RSP) imamo še 128 bajtov rdeče cone (Linux/MacOS, x64). Gre za zavarovan del pomnilnika pred RSP, do katerega
+naj signali in interrupt handlerji ne bi dostopali. Omogoča shranjevanje podatkov na stack brez spreminjanja RSP - omogoča
+funkcijam začasno shranjevanje podatkov.
+
+Vrstni red nalaganja spremenljivk na stack je sledeč:
+* RBP (v začetni funkciji ga ne shranimo)
+* argumenti funkcije
+* naslov za vrnitev
+* lokalne spremenljivke
+
+Torej:
+
+high-address
+
+---------------  1
+| args for 2  |
+| ret         |
+| locals      |
+---------------  2
+| RBP         |
+| args for 3  |
+| ret         |
+| locals      |
+---------------  3
+...
+red zone
+
+low-address
+
 ```
 
 30 Sklad vsebina – 32 vs 64 bit
@@ -939,6 +965,7 @@ zamenja imena simbolov, ko so uporabljeni drugič.
 70 Dodatne vsebine**
 
 ```
+Imamo dve vrsti ne definirane vrednosti pri floatu (NaN):
 tihi - program se nadaljuje
 glasni - fatal error
 ```
@@ -974,10 +1001,22 @@ Nadzorne sekcije najdemo v objektnih modulih - gre za programsko kodo. Te nadzor
 Če pa uporabimo programski števec in odmik pa postane celo prenaslovljiva, pozicijsko neodvisna sekcija.
 ```
 
-73 Prenaslovitvena tabela**
+73 Prenaslovitvena tabela
 
 ```
-Prenaslovitvena tabela je tabela, ki nam pove, kje se nahaja določena sekcija v spominu.
-```
+The relocation table is used by the linker/loader to adjust the addresses in the object code so that they point to the 
+correct memory locations at runtime. When the object code is compiled, it contains references to various symbols, such 
+as variables, functions, and other code sections, which are located at different addresses in memory.
 
-** Ta odgovor je škrbina, če ga želite izboljšati, kontaktirajte avtorja.
+The relocation table contains information about the symbols that need to be relocated and their corresponding addresses 
+in the object code. When the linker/loader combines multiple object files into an executable program, it uses the 
+relocation table to update the addresses of these symbols to their correct values in the final program.
+
+In the context of object modules with control sections, the relocation table contains information about the symbols used
+in the control sections and their corresponding addresses in memory. This allows the linker/loader to correctly 
+relocate the control sections to their proper locations in memory when the program is loaded and executed.
+
+So, in summary, the relocation table is a crucial component in the process of creating an executable program from object
+files. It allows the linker/loader to resolve references to symbols and adjust the addresses in the object code so that
+they point to the correct memory locations at runtime.
+```
