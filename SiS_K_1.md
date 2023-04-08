@@ -30,7 +30,7 @@ fazo in prisotnost signala.
 
 2 Določi parametre sinusoide
 
-![sinusoida.png](sinusoida.png)
+![sis/sinusoida.png](sis/sinusoida.png)
 
 ```
 Frekvenca sinusoide je 3Hz, amplituda 1.5, faza pa 0.5pi.
