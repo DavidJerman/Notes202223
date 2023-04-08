@@ -114,14 +114,14 @@ Tu recimo je bila dodana faza pi / 4. To se tudi vidi na realni osi.
 7 Definicija Fourirjeve transformacije
 
 <img src="https://davidblog.si/wp-content/uploads/2023/04/ftEquation.png" alt="Fourier transform">
-    
+
 ```
 S pomočjo uteži e^(-j2pi*n*f*t) lahko ugotovimo, pri kateri frekvenci, amplitudi in fazi se 
 naš signal ujema s katero izmed sinusoid, ki tvorijo signal. 
 ```
 
 8 Digitalizacija signala
-    
+
 ```
 Naša naloga je neke signale iz realnega sveta, ki so analogni, spraviti v naš digitalni svet.
 Prva stopnja tega je diskretizacija - to dosežemo z vzorčenjem signala. Vzorčenje je 
@@ -145,9 +145,11 @@ Načeloma si želimo, da bi bila vzorčevalna frekvenca čim večja, da signal "
 11 Bitna ločljivost
 
 ```
-Bitna ločljivost je število bitov, ki jih uporabimo za predstavitev ene vzorčne vrednosti.
+Bitna ločljivost je število bitov, ki jih uporabimo za predstavitev ene vzorčne vrednosti - število kvantizacijskih nivojev.
 Če imamo 8-bitno ločljivost, to pomeni, da lahko amplitudo signala predstavimo na lestvici z 256 vrednostmi.
 Slike npr. so pogosto 8-bitne, zvok pa ponavadi že 16-bitne, da lahko predstavimo vse frekvence do 22050Hz.
+
+Želimo si, da bi naš signal padel čim bolj v to območje!
 ```
 
 12 Delovno območje A/D pretvornika
@@ -167,12 +169,158 @@ Rešitev za ta problem je ojačanje signala. Amplitudo signala spravimo na delov
 
 ```
 Dinamično ojačanje samo pomeni, da se signal avtomatsko prilagaja delovnemu območju A/D pretvornika.
+
+To je načeloma boljša opcija, kot pa povečanje bitne ločljivosti.
 ```
 
 14 Tipične vzorčevalne frekvence
-    
+
 ```
 44.1kHz - Audio
 13.56MHz - Video
 100Hz - 10kHz - Pospeškometri
 ```
+
+15 Spektralno prekrivanje
+
+```
+
+```
+
+16 Kvantizacija
+
+```
+Kvantni noviji so vrednosti na lestvici, ki jo uporabimo za predstavitev ene vzorčne vrednosti.
+A/D pretvorniki ne zaokrožujejo, temveč vzamejo spodnjo vrednost.
+Pri tem seveda nastane kvantizacijska napaka, ki je odvisna od bitne ločljivosti.
+Kvantizacijska napaka: (delovno območje) / (2^bitna_ločljivost)
+```
+
+Primer kvantizacije:
+
+![quantSignal.png](sis/quantSignal.png)
+
+17 Zasnova A/D pretvornika
+
+```
+Najprej imamo signal. Signalu sledi niykopreustni filter. Ta sfiltrira vi[je frekvence, ki bi sicer
+kr[ile Nyquistov teorem. Temu sledi [e oja;evalnik, ki pa skrbi za to, da signal ostane znotraj
+delovnega območja. Potlej imamo še nek buffer, ki zadžuje signal, dokler ga ne obdela A/D pretvornik.
+Temu bufferju rečemo vzorčevalno-zadrževalno vezje. Rabimo ga pač, ker pridobivanje vzorca nekaj
+časa traja...
+Nato imamo A/D ppretvornik, ki pa poskrbi za diskretizacijo (tu je pomembna vzorčevalna frekvenca,
+bitna ločljivost...). Na izhodu nato dobimo diskretiziran signal, ki pa ga lahko shranimo v 
+pomnilnik za nadaljno analizo.
+```
+
+18 Napake pri A/D pretvorbi
+
+```
+Prenizka vzorčevalna frekvenca vodi v sprektralno prekrivanje. Ta je določena kot:
+Fvz = 1/t
+kjer je t čas pretvorbe enega vzorca. Poleg tega moramo kot omenjeno dodati nizkoprepustni filter,
+da ni kršen Nyquistov teorem.
+
+Napako, ki pri tem nastane imenujemo kvantizacijska napaka (napaka LSB). Velika je:
+(razpon n-bitneega A/D) / 2^n
+
+Imamo še napako zaradi neenakomernega vzorčenja - trepetanje in napako rekostrukcije signala D/A.
+Probleem pri slednjem je, da nimamo idelanega filtra, ki bi čisto izločil osnovni spekter signala.
+```
+
+19 Operacije nad signali
+
+```
+Operacije, ki jih lahko izvajamo nad signali so:
+* seštevanje,
+* množenje,
+* množenje s konstanto...
+
+Primer množenja dveh signalov je tudi konvolucija. Je tudi linearna transformacija, kar pomeni, da 
+zanjo veljajo: komutativnost, ...
+```
+
+20 Linearni sistem
+
+```
+Linearni sistem je sistem, za katerega velja, da sprejme nek vhod in vrne neko izhodno vrednost. 
+Pri tem ohranja linearnost: komutativnost, ...
+```
+
+21 Konvolucija 1
+
+```
+Kovolucija je množenje in seštevanje dveh signalov. Če nad signalom x izvajamo konvolucijo s signalom
+h, potlej to pomeni, da za vsak indeks v signalu x izvedemo množenje s signalom h, ki je ponavadi
+krajši od signala x.
+```
+
+Primer konvolucije med signalom x in alfa
+
+```
+y(n) = sigma(i = 0 do n) alfa[i] x(n - i)
+```
+
+22 Pojem sistema
+
+```
+Sistem si lahko predstavljamo tudi kot črno škatlo. Ne vemo, kaj se v njem dogaja. Noter damo signal
+in ven dobimo nov signal. Delovanje sistema lahko opišemo s pomočjo impulza. To je Diracov oz. 
+enotski impulz. Gre za signal, kjer imamo samo eno vrednost (ponavadi prvo) na vrednosti nič
+in jo pošljemo čez sistem. Dobimo impulzni odziv. Le-ta nam pove obnašanje tega sistema - torej
+kaj sistem naredi s signalom. Z uporabo impulznega odziva in kovolucije lahko nato posnemamo
+tak sistem
+```
+
+23 Konvolucija 2
+
+```
+Kot omenjeno lahko s pomočjo konvolucije tvorimo signal, ki bi ga dobimi, če bi ga spustili v nek 
+sistem.
+```
+
+Primer konvolucije:
+
+```
+
+```
+
+24 Konvolucija 3 - linearnost
+
+```
+
+```
+
+25 Konvolucija 4 - frekvenčna domena
+
+```
+Razlog, da konvoluciji opravimo v frekvenčni domeni je, ker je to dosti hitrejše. Časovna kompleksnost
+pade iz O(n^2) na O(n logn). Namesto, da za vsako vrednost signala x množimo z impulznim odzivom, 
+se s pomočjo Fourirjeve transformacije premaknemo v frekvenčno domeni in tam le zmnožimo signal
+in impulzni odziv! To je dosti hitrejše!
+```
+
+26 Lastnosti sistemov
+
+```
+
+```
+
+27 Lastnosti linearne transformacije
+
+```
+
+```
+
+28 Časovna neodvisnost konvolucije in DFT?
+
+```
+
+```
+
+29 Impulzni odziv in stabilizacija konvolucije 
+
+```
+
+```
+
