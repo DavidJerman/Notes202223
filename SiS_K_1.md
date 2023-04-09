@@ -55,7 +55,8 @@ imaginarno in realno komponento.
 
 ```
 Prednost prehoda v frekvenčno domeno je, da ta uporablja manj parametrov za opis signala. Poleg tega pohitri nekatere
-matematične operacije (konvolucija) in omogoča lažjo frekvenčno analizo signala. 
+matematične operacije (konvolucija) in omogoča lažjo frekvenčno analizo signala, saj se omejimo na končno število
+sinusoid. 
 
 Vse to je mogoče, ker je vsak signal mogoče predstaviti kot kombinacijo sinusoid z različnimi frekvencami, amplitudami
 in fazami.
@@ -100,6 +101,7 @@ Na grafu se to izraža kot manjša amplituda pri frekvenci 7Hz in ustvarijo se h
 ![sis/fftExample4.png](sis/fftExample4.png)
 
 ```
+Te hribčki nastanejo zaradi frekvenčnega razlivanja. Rešitev za to so okna.
 Iz realne komponente je razvidno, da se pri frekvenci 7 Hz nekaj zgodi.
 Imaginarni graf pa točno prikazuje prisotnost frekvence 7Hz in 5Hz.
 ```
@@ -125,7 +127,7 @@ naš signal ujema s katero izmed sinusoid, ki tvorijo signal.
 ```
 Naša naloga je neke signale iz realnega sveta, ki so analogni, spraviti v naš digitalni svet.
 Prva stopnja tega je diskretizacija - to dosežemo z vzorčenjem signala. Vzorčenje je 
-"vzemanje" signalov na določenih časovnih točkah. Frekvenci, s katero to delamo, rečemo
+"izmerjanje" signalov na določenih časovnih točkah. Frekvenci, s katero to delamo, rečemo
 vzorčevalna frekvenca. Tako dobimo diskretne vrednosti - vrednosti kodiramo.
 ```
 
@@ -140,6 +142,7 @@ A/D pretvorba je pretvorba analognega signala v digitalni. Za to poskrbi A/D pre
 ```
 Nyquistov teorem pravi, da mora biti vzorčevalna frekvenca vsaj dva-krat večja od najvišje frekvence v signalu.
 Načeloma si želimo, da bi bila vzorčevalna frekvenca čim večja, da signal "izgleda dobro".
+Če ta teorem kršimo, potlej izmerjene vrednosti ne bodo več enake tistim, ki so v analognem signalu.
 ```
 
 11 Bitna ločljivost
@@ -147,22 +150,25 @@ Načeloma si želimo, da bi bila vzorčevalna frekvenca čim večja, da signal "
 ```
 Bitna ločljivost je število bitov, ki jih uporabimo za predstavitev ene vzorčne vrednosti - število kvantizacijskih nivojev.
 Če imamo 8-bitno ločljivost, to pomeni, da lahko amplitudo signala predstavimo na lestvici z 256 vrednostmi.
-Slike npr. so pogosto 8-bitne, zvok pa ponavadi že 16-bitne, da lahko predstavimo vse frekvence do 22050Hz.
+Slike npr. so pogosto 8-bitne, zvok pa ponavadi že 16-biten, da lahko predstavimo vse frekvence do 22050Hz.
 
 Želimo si, da bi naš signal padel čim bolj v to območje!
+
+Lahko bi rekli tudi, da bitna ločljivost predstavlja število stopničk v delavnem območju.
 ```
 
-12 Delovno območje A/D pretvornika
+12 Delavno območje A/D pretvornika
 
 ```
-Delvno območje nekega A/D pretvornika je območje, v katerem pretvornik "deluje". To je nek razpon vrednosti,
+Delavno območje nekega A/D pretvornika je območje, v katerem pretvornik "deluje". To je nek razpon vrednosti,
 ki jih lahko pretvornik sprejme - gre za maksimalno in minimalno amplitudo. Če ima signal večjo amplitudo,
 začnemo igubljati informacije o signalu. Temu se reče saturacija.
 
 Nasproten problem pa je, da je aplituda signala prenizka in signal niha okoli 0. V tem primeru signal lahko 
 izgleda kot da ga sploh nebi bilo, ker se pri diskretizaciji vrednosti signala pretvorijo v 0.
 
-Rešitev za ta problem je ojačanje signala. Amplitudo signala spravimo na delovno območje A/D pretvornika.
+Rešitev za ta problem je ojačanje signala. Amplitudo signala spravimo na delovno območje A/D pretvornika tako, da 
+signal ojačamo - mu zmanjšamo ali povečamo apmlitudo, da je blizu maksimalne ali minimalne vrednosti delavnega območja.
 ```
 
 13 Dinamično ojačanje
@@ -176,15 +182,24 @@ To je načeloma boljša opcija, kot pa povečanje bitne ločljivosti.
 14 Tipične vzorčevalne frekvence
 
 ```
-44.1kHz - Audio
-13.56MHz - Video
-100Hz - 10kHz - Pospeškometri
+44.1kHz: Audio
+13.56MHz: Video
+100Hz - 10kHz: Pospeškometri
 ```
 
 15 Spektralno prekrivanje
 
 ```
+Spektralno prekrivanje (aliasing) == kršenje Nyquistovega teorema:
+1. Če imamo v signalu frekvence, katere niso prisotne vsaj eno periodo, pride do sprektralnega 
+razlivanja. Vzrok tega je ravno to, da je naš signal končen, FT pa ga obravnava kot neskončen.
+Signal moramo zato navzgor omejiti s filtrom, lahko pa tudi z oknom.
+---> Nizkoprepustni filter
+2. Problem pa nastane tudi, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
+signalu pojavijo frekvence, ki v resnici v signalu niso prisotne. To lahko ponovno rešimo
+z uporabo filtra.
 
+---> Nastanejo navidezne frekvence
 ```
 
 16 Kvantizacija
@@ -194,6 +209,7 @@ Kvantni noviji so vrednosti na lestvici, ki jo uporabimo za predstavitev ene vzo
 A/D pretvorniki ne zaokrožujejo, temveč vzamejo spodnjo vrednost.
 Pri tem seveda nastane kvantizacijska napaka, ki je odvisna od bitne ločljivosti.
 Kvantizacijska napaka: (delovno območje) / (2^bitna_ločljivost)
+Ta nastane, ker ne vzamemo dejanske analogne vrednosti, temveč nek vzorec - kvant - ki pa je diskreten.
 ```
 
 Primer kvantizacije:
@@ -203,9 +219,9 @@ Primer kvantizacije:
 17 Zasnova A/D pretvornika
 
 ```
-Najprej imamo signal. Signalu sledi niykopreustni filter. Ta sfiltrira vi[je frekvence, ki bi sicer
-kr[ile Nyquistov teorem. Temu sledi [e oja;evalnik, ki pa skrbi za to, da signal ostane znotraj
-delovnega območja. Potlej imamo še nek buffer, ki zadžuje signal, dokler ga ne obdela A/D pretvornik.
+Najprej imamo signal. Signalu sledi nizkopreustni filter. Ta sfiltrira višje frekvence, ki bi sicer
+kršile Nyquistov teorem. Temu sledi še ojačevalnik, ki pa skrbi za to, da signal ostane znotraj
+delavnega območja. Potlej imamo še nek buffer, ki zadžuje signal, dokler ga ne obdela A/D pretvornik.
 Temu bufferju rečemo vzorčevalno-zadrževalno vezje. Rabimo ga pač, ker pridobivanje vzorca nekaj
 časa traja...
 Nato imamo A/D ppretvornik, ki pa poskrbi za diskretizacijo (tu je pomembna vzorčevalna frekvenca,
@@ -216,7 +232,7 @@ pomnilnik za nadaljno analizo.
 18 Napake pri A/D pretvorbi
 
 ```
-Prenizka vzorčevalna frekvenca vodi v sprektralno prekrivanje. Ta je določena kot:
+Prenizka vzorčevalna frekvenca vodi v **sprektralno prekrivanje**. Ta je določena kot:
 Fvz = 1/t
 kjer je t čas pretvorbe enega vzorca. Poleg tega moramo kot omenjeno dodati nizkoprepustni filter,
 da ni kršen Nyquistov teorem.
@@ -261,34 +277,57 @@ Primer konvolucije med signalom x in alfa
 y(n) = sigma(i = 0 do n) alfa[i] x(n - i)
 ```
 
+Enačba za konvolucijo:
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-12-53-35.png" width="300" alt="Enačba konvolucije">
+
+```
+h - impulzni odziv sistema
+x - vhodni signal
+y - izhodni signal
+
+Enačba konvolucije v diskretnem prostoru se omeji na neko omejeno dolžino signalov.
+```
+
 22 Pojem sistema
 
 ```
 Sistem si lahko predstavljamo tudi kot črno škatlo. Ne vemo, kaj se v njem dogaja. Noter damo signal
 in ven dobimo nov signal. Delovanje sistema lahko opišemo s pomočjo impulza. To je Diracov oz. 
-enotski impulz. Gre za signal, kjer imamo samo eno vrednost (ponavadi prvo) na vrednosti nič
+enotski impulz. Gre za signal, kjer imamo samo eno vrednost (ponavadi prvo) na vrednosti ena, ostale 0
 in jo pošljemo čez sistem. Dobimo impulzni odziv. Le-ta nam pove obnašanje tega sistema - torej
 kaj sistem naredi s signalom. Z uporabo impulznega odziva in kovolucije lahko nato posnemamo
-tak sistem
+tak sistem.
 ```
 
 23 Konvolucija 2
 
 ```
-Kot omenjeno lahko s pomočjo konvolucije tvorimo signal, ki bi ga dobimi, če bi ga spustili v nek 
-sistem.
+Kot omenjeno lahko s pomočjo konvolucije tvorimo signal, ki bi ga dobili, če bi ga spustili v nek 
+sistem. Pred tem seveda rabimo impulzni odziv tega sistema.
 ```
 
-Primer konvolucije:
+Program za izvajanje konvolucije:
 
 ```
+x - vhodni signal dolžine n (vrednosti pred nulo so 0)
+h - impulzni odziv sistema dolžine m
+y - izhodni signal dolžine n + m - 1
+```
 
+```python
+for i in range(n):
+    for j in range(m):
+        y[i] += x[i - j] * h[j]  # Tule predpostavljamo, da je x[i - j] = 0, če je i - j < 0
 ```
 
 24 Konvolucija 3 - linearnost
 
 ```
-
+To, da je konvolucija linearna, pomeni, da zanjo veljajo naslednje lastnosti:
+* komutativnost: y = x * h = h * x
+* asociativnost: y = (x * h) * g = x * (h * g)
+* distributivnost: y = x * (h + g) = x * h + x * g
 ```
 
 25 Konvolucija 4 - frekvenčna domena
@@ -303,24 +342,81 @@ in impulzni odziv! To je dosti hitrejše!
 26 Lastnosti sistemov
 
 ```
+Stabilnost: sistem je stabilen, če je njegov impulzni odziv končen.
 
+Vzorčenost: izhod sistema je odvisen samo od trenutnega in preteklih vhodov.
+
+Linearnost: veljasti mora slednje za x1(n), x2(n):
+a * S(x1(n)) + b * S(x2(n)) = S(a * x1(n) + b * x2(n))
+
+Časovna neodvisnost:
+x(n) --> y(n) in za x(n - k) --> y(n - k) za vsak poljuben k
 ```
 
 27 Lastnosti linearne transformacije
 
 ```
-
+Glavna ideja je, da ta velja tako za konvolucji, kot za DFT. Poleg tega velja tako v 2D
+kot tudi v 3D. Imamo svobodo izbire: signal lahko razbijemo na več signalov, ter vsakega
+posebej obdelamo in nato združimo ipd.
 ```
 
 28 Časovna neodvisnost konvolucije in DFT?
 
 ```
-
+Glej vprašanje 26.
 ```
 
-29 Impulzni odziv in stabilizacija konvolucije 
+29 Impulzni odziv in stabilizacija konvolucije
 
 ```
+Stabilizacija konvolucije: Za impulzni odziv velja, da je končno velik.
 
+! Pri konvoluciji je impulzni odziv časovno neodvisen, se ne spreminja, spreminja pa se 
+izhod sistema.
 ```
 
+30 Fourirjeva transformacija
+
+```
+Fourirjeva transformacija je v osnovi zvezna, kar pomeni, da operira z realnimi vrednostmi.
+Ker pa vemo, da pri računalniku to ne gre, uvedemo diskretno Fourirjevo transformacijo (DFT).
+Predpostavlja tudi, da je signal neskončen, da se ponavlja.
+
+Tu pa nastanejo problemi...
+
+Spektralno prekrivanje (spectral aliasing) == kršenje Nyquistovega teorema:
+1. Če imamo v signalu frekvence, katere niso prisotne vsaj eno periodo, pride do sprektralnega 
+razlivanja. Vzrok tega je ravno to, da je naš signal končen, FT pa ga obravnava kot neskončen.
+Signal moramo zato navzgor omejiti s filtrom, lahko pa tudi z oknom.
+---> Nizkoprepustni filter
+2. Problem pa nastane tudi, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
+signalu pojavijo frekvence, ki v resnici v signalu niso prisotne. To lahko ponovno rešimo
+z uporabo filtra.
+
+Spektralno razlivanje:**
+1. Tu gre za problem razločevanja med frekvencami, kjer imamo več zelo podobnih frekvenc,
+ali pa morda imajo nekatere zelo nizko amplitudo.
+
+Namen Fourirjeve transofrmacije je, da iz signalov v časovni domeni dobimo njihove frekvenčne
+komponente. Porabimo manj podatkov za opis signala in lahko lažje analiziramo signal za
+prisotnost frekvenčnih komponent.
+
+Kot že omenjeno, s tem tudi pohitrimo izračun konvolucije in še marsičesa.
+```
+
+** Tule nisem čisto gotov, ker ne vem točnega prevoda za ta izraz
+
+31 Kovolucija v frekvenčni domeni
+
+```
+Kovolucija v frekvenčni domeni je enaka konvoluciji v časovni domeni. Vendar pa je časovna
+kompleksnost O(n logn), kar je veliko hitrejše.
+```
+
+32 Nizko in visoko prepustni filter
+
+```
+Nizko prepustni filter: omogoča prehod le nizkih frekvenc, visoke pa blokira.
+Visoko prepustni filter: omogoča prehod le visokih frekvenc, nizke pa blokira.
+```
