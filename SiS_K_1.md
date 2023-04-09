@@ -33,7 +33,7 @@ fazo in prisotnost signala.
 ![sis/sinusoida.png](sis/sinusoida.png)
 
 ```
-Frekvenca sinusoide je 3Hz, amplituda 1.5, faza pa 0.5pi.
+Frekvenca sinusoide je 3Hz, amplituda 1.5, faza pa 0.5pi/3.
 ```
 
 3 Kaj nam omogoča DFT?
@@ -177,6 +177,9 @@ signal ojačamo - mu zmanjšamo ali povečamo apmlitudo, da je blizu maksimalne 
 Dinamično ojačanje samo pomeni, da se signal avtomatsko prilagaja delovnemu območju A/D pretvornika.
 
 To je načeloma boljša opcija, kot pa povečanje bitne ločljivosti.
+
+Problem pri tem pa je, da izgubimo informacije o amplitude signala. Ne vemo več npr.
+kako glasen je bil zvok skozi čas, ker dobimo "enakomerno" glasnost.
 ```
 
 14 Tipične vzorčevalne frekvence
@@ -192,7 +195,7 @@ To je načeloma boljša opcija, kot pa povečanje bitne ločljivosti.
 ```
 Spektralno prekrivanje (aliasing) == kršenje Nyquistovega teorema:
 1. Če imamo v signalu frekvence, katere niso prisotne vsaj eno periodo, pride do sprektralnega 
-razlivanja. Vzrok tega je ravno to, da je naš signal končen, FT pa ga obravnava kot neskončen.
+prekrivanja. Vzrok tega je ravno to, da je naš signal končen, FT pa ga obravnava kot neskončen.
 Signal moramo zato navzgor omejiti s filtrom, lahko pa tudi z oknom.
 ---> Nizkoprepustni filter
 2. Problem pa nastane tudi, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
@@ -397,6 +400,8 @@ z uporabo filtra.
 Spektralno razlivanje:**
 1. Tu gre za problem razločevanja med frekvencami, kjer imamo več zelo podobnih frekvenc,
 ali pa morda imajo nekatere zelo nizko amplitudo.
+2. To se pojavi tudi takrat, ko imaom v signalu necele frekvence. Signal se po DFT
+razlije med druge frekvence.
 
 Namen Fourirjeve transofrmacije je, da iz signalov v časovni domeni dobimo njihove frekvenčne
 komponente. Porabimo manj podatkov za opis signala in lahko lažje analiziramo signal za
@@ -420,3 +425,133 @@ kompleksnost O(n logn), kar je veliko hitrejše.
 Nizko prepustni filter: omogoča prehod le nizkih frekvenc, visoke pa blokira.
 Visoko prepustni filter: omogoča prehod le visokih frekvenc, nizke pa blokira.
 ```
+
+33 Konvolucija in FFT
+    
+```
+Kot že omenjeno, je konvolucija v frekvenčni domeni enaka konvoluciji v časovni domeni.
+Velika razlika pa je v časovni kompleksnosti. Časovna kompleksnost konvolucije v časovni
+domeni je O(n^2), v frekvenčni pa O(n logn). To je veliko hitrejše.
+
+Časovna domena:    y(n) = sigma x(n) * h(n - k)
+      |
+      | FFT  O(n logn)
+      V
+Frekvenčna domena:    Y(k) = X(k) * H(k)  -->  Pohitritev!  O(n)
+      |
+      | IFFT  O(n logn)
+      V
+Prvoten signal
+
+Povezava med impulznim in frekvenčnim odzivom je v FFT.
+... Elaborate more on this ... page 40, 41
+```
+
+34 Iz FT v DFT v FFT
+
+```
+Iz Fourirjeve transformacije pridemo do diskretne Fourirjeve transformacije (DFT) tako,
+da čas in frekvenco diskretiziramo. Torej omejimo se na nek razpon vrednosti.
+FFT pa je samo pohitritev DFT, ki deluje po principu deli in vladaj.
+```
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-21-05-44.png" width="300" alt="Screenshot from 2023-04-09 21-05-44">
+
+35 DFT 2 !!!
+
+```
+Nekateri pojmi:
+Krožna frekvenca: 𝛥𝜔 = 2𝜋𝛥𝑓
+Frekvenca vzorčenja: 𝛥𝑓 = 2𝜋 / 𝑁Δt
+
+Frekvenco vzorčenja tako izračunamo na sledeč način:
+Δf=1/(NΔt)
+, kjer je NΔt dolžina opazovanega signala (T)
+
+Velja tudi:
+Δf=Fvz/N
+
+
+Čim daljši je časovni vzorčevalni interval Δt (nižja vzorčevalna frekvenca), tem ožji je
+frekvenčni interval, kar pomeni, da imamo večjo frekvenčno ločljivost.
+
+Čim daljši je signalni odsek, ki ga transformiramo, tem ožji je frekvenčni interval, kar
+pomeni večjo frekvenčno ločljivost.
+```
+
+36 Enačba Fourirjeve transformacije
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-21-16-33.png" width="450" alt="DFT Equation">
+
+```
+Ničta vrednost predstavlja frekvenco nič!
+Zato s štetjem frekvenc v bistvu začneš pri 1...
+
+Dolžina DFT transformiranke je enaka originalnemu signalu!
+```
+
+In pa še inverzna Fourirjeva transformacija:
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-21-21-12.png" width="450" alt="IDFT Equation">
+
+37 Vsebina DFT transformiranke
+
+```
+Rezultat DFT transformiranke je v dveh delih: v imaginarem in realnem delu. Torej je predstavljen
+v kartezičnem koordinatnem sistemu. Sinus pripada imaginarni osi, kosinus pa realni. Kot
+med tema dvema osema pa predstavlja fazo.
+```
+
+38 Razlivanje/prepuščanje DFT - spektralno razlivanje
+
+```
+Kadar v DFT pošljemo frekvence, ki pa ne sovpadajo z razdelki DFT, takrat pride do razlivanja
+frekvence po sosednjih razdelkih.
+```
+
+39 Vsebina Fourirjeve transformacije
+
+```
+S pomočjo vrednosti na imaginarni in realni osi lahko poleg frekvenc izračunamo tudi amplitudo
+in fazo te frekvence. 
+Amplitudo dobimo s sledečo enačbo:
+A[f] = sqrt(Re(X[f])² + Im(X[f])²)
+Fazo pa:
+p[f] = arctg(Im(X[f]) / Re(X[f]))
+```
+
+<img src="https://mriquestions.com/uploads/3/4/5/7/34572113/_7316167_orig.gif" width="500" alt="DFT Re and Im">
+
+40 Časovna zahtevnost DFT in FFT
+
+```
+Časovna zahtevnost DFT je O(n²), FFT pa O(n logn). FFT to pohitritev doseže s strategijo
+deli in vladaj tako, da upošteva dejstvo, da se nekatere frekvence na določenih
+mestih ujemajo, ko izračunavamo DFT, in jih ni potrebno ponovno računati (recimo frekvence
+večkratnikov števila 2 - od tu logn).
+```
+
+41 Lastnosti DFT
+
+```
+Linearnost:
+za x1(n), x2(n), a in b: a * DFT[x1(n)] + b * DFT[x2(n)] = DFT[a * x1(n) + b * x2(n)]
+
+Simetričnost za realne signale (glej sliko pri vprašanju 6):
+če DFT[x(n)] = X(k) → Re[X(k)], |X(k)| – simetrično
+Im[X(k)], arg[X(k)] – antisimetrično
+TL;DR: Amplituda je simetrična, faza pa antisimetrična**
+
+Pomik (cikličen):
+če DFT[x(n)] = X(k) → DFT[x(n-m)] = (WN) - m * X(k), kadar n=0, ..., N-1
+
+Razlivanje (glej vprašanje 38)
+```
+
+42 Konvolucija: časovna vs. frekvenčna domena**
+
+```
+Konvolucija je simetrična glede na domeni
+```
+
+** To vprašanje bo treba še dopolniti.
