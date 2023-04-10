@@ -99,8 +99,9 @@ Slednja je prisotna z dvakrat manjšo amplitudo kot prva.
 ![sis/fftExample3.png](sis/fftExample3.png)
 
 ```
-Gre za isti signal kot pri prejšnjem primeru, le da je frekvenca 7Hz prisotna le v prvipolovici.
+Gre za isti signal kot pri prejšnjem primeru, le da je frekvenca 7Hz prisotna le v prvi polovici.
 Na grafu se to izraža kot manjša amplituda pri frekvenci 7Hz in ustvarijo se hribčki okoli frekvence 7Hz.
+Podono se zgodi tudi pri frekvenčnem razlivanje, vzrok pa je zelo podoben.
 Če pogledamo posebej imaginarno in realno komponento, dobimo slednje:
 ```
 
@@ -188,37 +189,41 @@ Problem pri tem pa je, da izgubimo informacije o amplitude signala. Ne vemo več
 kako glasen je bil zvok skozi čas, ker dobimo "enakomerno" glasnost.
 ```
 
-14 Tipične vzorčevalne frekvence
+14 Tipične vzorčevalne frekvence in bitne ločljivosti
 
 ```
+Vzorčevalne frekvence:
 44.1kHz: Audio
 13.56MHz: Video
 100Hz - 10kHz: Pospeškometri
+
+Bitne ločljivosti:
+8-bit: Slike
+16-bit: Zvok
+10-bit do 12-bit: Pospeškometri
+16-bit do 24-bit: Laboratorijska oprema
 ```
 
 15 Spektralno prekrivanje
 
 ```
 Spektralno prekrivanje (aliasing) == kršenje Nyquistovega teorema:
-1. Če imamo v signalu frekvence, katere niso prisotne vsaj eno periodo, pride do sprektralnega 
-prekrivanja. Vzrok tega je ravno to, da je naš signal končen, FT pa ga obravnava kot neskončen.
-Signal moramo zato navzgor omejiti s filtrom, lahko pa tudi z oknom.
----> Nizkoprepustni filter
-2. Problem pa nastane tudi, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
+Problem pa nastane, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
 signalu pojavijo frekvence, ki v resnici v signalu niso prisotne. To lahko ponovno rešimo
-z uporabo filtra.
-
----> Nastanejo navidezne frekvence
+z uporabo filtra (nizkofrekvenčnega).
+Signal mora biti zato navzgor omejen!
 ```
 
 16 Kvantizacija
 
 ```
-Kvantni noviji so vrednosti na lestvici, ki jo uporabimo za predstavitev ene vzorčne vrednosti.
+Kvantni (kvantizacijski) niviji so vrednosti na lestvici, ki jo uporabimo za predstavitev ene vzorčne vrednosti.
 A/D pretvorniki ne zaokrožujejo, temveč vzamejo spodnjo vrednost.
 Pri tem seveda nastane kvantizacijska napaka, ki je odvisna od bitne ločljivosti.
 Kvantizacijska napaka: (delovno območje) / (2^bitna_ločljivost)
 Ta nastane, ker ne vzamemo dejanske analogne vrednosti, temveč nek vzorec - kvant - ki pa je diskreten.
+
+Te napake lahko omlimo s tem, da signalu dodamo nekaj šuma v razponu kvantizacijske napake.
 ```
 
 Primer kvantizacije:
@@ -228,7 +233,7 @@ Primer kvantizacije:
 17 Zasnova A/D pretvornika
 
 ```
-Najprej imamo signal. Signalu sledi nizkopreustni filter. Ta sfiltrira višje frekvence, ki bi sicer
+Najprej imamo signal. Signalu sledi nizkoprepustni filter. Ta sfiltrira višje frekvence, ki bi sicer
 kršile Nyquistov teorem. Temu sledi še ojačevalnik, ki pa skrbi za to, da signal ostane znotraj
 delavnega območja. Potlej imamo še nek buffer, ki zadžuje signal, dokler ga ne obdela A/D pretvornik.
 Temu bufferju rečemo vzorčevalno-zadrževalno vezje. Rabimo ga pač, ker pridobivanje vzorca nekaj
@@ -286,7 +291,7 @@ Primer konvolucije med signalom x in alfa
 y(n) = sigma(i = 0 do n) alfa[i] x(n - i)
 ```
 
-Enačba za konvolucijo:
+Enačba za konvolucije:
 
 <img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-12-53-35.png" width="300" alt="Enačba konvolucije">
 
@@ -334,9 +339,9 @@ for i in range(n):
 
 ```
 To, da je konvolucija linearna, pomeni, da zanjo veljajo naslednje lastnosti:
-* komutativnost: y = x * h = h * x
-* asociativnost: y = (x * h) * g = x * (h * g)
-* distributivnost: y = x * (h + g) = x * h + x * g
+* komutativnost,
+* asociativnost,
+* distributivnost,
 ```
 
 25 Konvolucija 4 - frekvenčna domena
@@ -355,7 +360,7 @@ Stabilnost: sistem je stabilen, če je njegov impulzni odziv končen.
 
 Vzorčenost: izhod sistema je odvisen samo od trenutnega in preteklih vhodov.
 
-Linearnost: veljasti mora slednje za x1(n), x2(n):
+Linearnost: veljati mora slednje za x1(n), x2(n):
 a * S(x1(n)) + b * S(x2(n)) = S(a * x1(n) + b * x2(n))
 
 Časovna neodvisnost:
@@ -365,7 +370,7 @@ x(n) --> y(n) in za x(n - k) --> y(n - k) za vsak poljuben k
 27 Lastnosti linearne transformacije
 
 ```
-Glavna ideja je, da ta velja tako za konvolucji, kot za DFT. Poleg tega velja tako v 2D
+Glavna ideja je, da ta velja tako za konvolucjo, kot za DFT. Poleg tega velja tako v 2D
 kot tudi v 3D. Imamo svobodo izbire: signal lahko razbijemo na več signalov, ter vsakega
 posebej obdelamo in nato združimo ipd.
 ```
@@ -395,19 +400,17 @@ Predpostavlja tudi, da je signal neskončen, da se ponavlja.
 Tu pa nastanejo problemi...
 
 Spektralno prekrivanje (spectral aliasing) == kršenje Nyquistovega teorema:
-1. Če imamo v signalu frekvence, katere niso prisotne vsaj eno periodo, pride do sprektralnega 
-razlivanja. Vzrok tega je ravno to, da je naš signal končen, FT pa ga obravnava kot neskončen.
-Signal moramo zato navzgor omejiti s filtrom, lahko pa tudi z oknom.
----> Nizkoprepustni filter
-2. Problem pa nastane tudi, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
+1. Problem pa nastane tudi, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
 signalu pojavijo frekvence, ki v resnici v signalu niso prisotne. To lahko ponovno rešimo
-z uporabo filtra.
+z uporabo filtra, kjer odstranimo višje frekvence.
 
-Spektralno razlivanje:**
-1. Tu gre za problem razločevanja med frekvencami, kjer imamo več zelo podobnih frekvenc,
-ali pa morda imajo nekatere zelo nizko amplitudo.
-2. To se pojavi tudi takrat, ko imaom v signalu necele frekvence. Signal se po DFT
-razlije med druge frekvence.
+Spektralno razlivanje:
+1. To se pojavi tudi takrat, ko imaom v signalu necele frekvence. Oz. drugače povedano,
+da frekvence ne padejo v eno izmed diskretnih frekvenčnih intervalov DFT. Zato se signal
+razlije med druge frekvenčne komponente. To lahko omilimo z uporabo oken.
+
+Razmik med diskretnimi frekvenčnimi vzorci (koraki) lahko izračunamo na sledeč način:
+Glej vprašanje 35 "Resolucija DFT".
 
 Namen Fourirjeve transofrmacije je, da iz signalov v časovni domeni dobimo njihove frekvenčne
 komponente. Porabimo manj podatkov za opis signala in lahko lažje analiziramo signal za
@@ -416,7 +419,43 @@ prisotnost frekvenčnih komponent.
 Kot že omenjeno, s tem tudi pohitrimo izračun konvolucije in še marsičesa.
 ```
 
-** Tule nisem čisto gotov, ker ne vem točnega prevoda za ta izraz
+Frekvenčno korak 0.5 Hz, brez razlivanja:
+
+![img30_1.png](sis/img30_1.png)
+
+```python
+T = 2  # Dolžina signala
+Fvz = 15  # Frekvenca vzorčenja
+f = 1.5  # Frekvenca signala
+A = 1  # Amplituda signala
+```
+
+Potlej pa še z razlivanjem:
+
+![img30_2.png](sis/img30_2.png)
+
+```python
+T = 2  # Dolžina signala
+Fvz = 15  # Frekvenca vzorčenja
+f = 1.6  # Frekvenca signala
+A = 1  # Amplituda signala
+```
+
+In pa prekrivanje, kjer kršimo Nyquistov teorem:
+
+![img30_3.png](sis/img30_3.png)
+
+```python
+T = 2  # Dolžina signala
+Fvz = 15  # Frekvenca vzorčenja
+f = 13  # Frekvenca signala
+A = 1  # Amplituda signala
+```
+
+```
+Morali bi dobiti frekvenco 13 Hz, vendar pa dobimo 2 Hz. To je posledica prekrivanja,
+ki ga povzroči kršitev Nyquistovega teorema.
+```
 
 31 Kovolucija v frekvenčni domeni
 
@@ -433,7 +472,7 @@ Visoko prepustni filter: omogoča prehod le visokih frekvenc, nizke pa blokira.
 ```
 
 33 Konvolucija in FFT
-    
+
 ```
 Kot že omenjeno, je konvolucija v frekvenčni domeni enaka konvoluciji v časovni domeni.
 Velika razlika pa je v časovni kompleksnosti. Časovna kompleksnost konvolucije v časovni
@@ -450,7 +489,9 @@ Frekvenčna domena:    Y(k) = X(k) * H(k)  -->  Pohitritev!  O(n)
 Prvoten signal
 
 Povezava med impulznim in frekvenčnim odzivom je v FFT.
-... Elaborate more on this ... page 40, 41
+Gre samo za to, da vzamemo impulzni odziv in ga pretvorimo v frekvenčni odziv preko FFT.
+Gre za drugačno predstavitev istega sistema, samo v drugi domeni.
+Omogoča nam hitrejši izračun konvolucije.
 ```
 
 34 Iz FT v DFT v FFT
@@ -505,6 +546,10 @@ In pa še inverzna Fourirjeva transformacija:
 
 <img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-21-21-12.png" width="450" alt="IDFT Equation">
 
+Kaj se zgodi, če DFT damo signal, ki je blizu 0?
+
+![img36_1.png](sis/img36_1.png)
+
 37 Vsebina DFT transformiranke
 
 ```
@@ -516,7 +561,7 @@ med tema dvema osema pa predstavlja fazo.
 38 Razlivanje/prepuščanje DFT - spektralno razlivanje
 
 ```
-Kadar v DFT pošljemo frekvence, ki pa ne sovpadajo z razdelki DFT, takrat pride do razlivanja
+Kadar v DFT pošljemo frekvence, ki ne sovpadajo z razdelki DFT, takrat pride do razlivanja
 frekvence po sosednjih razdelkih.
 ```
 
@@ -549,8 +594,9 @@ Linearnost:
 za x1(n), x2(n), a in b: a * DFT[x1(n)] + b * DFT[x2(n)] = DFT[a * x1(n) + b * x2(n)]
 
 Simetričnost za realne signale (glej sliko pri vprašanju 6):
-če DFT[x(n)] = X(k) → Re[X(k)], |X(k)| – simetrično
-Im[X(k)], arg[X(k)] – antisimetrično
+če DFT[x(n)] = X(k) → Re[X(k)], |X(k)|    – simetrično
+                      Im[X(k)], arg[X(k)] – antisimetrično
+
 TL;DR: Amplituda je simetrična, faza pa antisimetrična**
 
 Pomik (cikličen):
@@ -559,13 +605,17 @@ Pomik (cikličen):
 Razlivanje (glej vprašanje 38)
 ```
 
-42 Konvolucija: časovna vs. frekvenčna domena**
+42 Konvolucija: časovna vs. frekvenčna domena - simetrija
 
 ```
-Konvolucija je simetrična glede na domeni
+Glavno tu je, da moramo impulzni odziv obrniti, da dobimo pravilno konvolucijo v časovni
+domeni. V frekvenčni domeni pa ga ne obračamo.
 ```
 
-** To vprašanje bo treba še dopolniti.
+Metodi sta ekvivalentni, pri čemer je frekvenčna domena hitrejša, v časovni domeni pa
+rabimo impulzni odziv obrniti.
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-10-16-00-51.png" width="800" alt="Convolution">
 
 43 Računanje konvolucije v časovni domeni
 
@@ -650,4 +700,21 @@ for k = 0, ..., N-1:
   X[k] = 0
   for n = 0, ..., N-1:
     X[k] += x[n] * exp(-j * 2 * pi * k * n / N)
+```
+
+47 exp(-j * 2 * pi * k * n / N)
+
+```
+Ta enačba vhodni signal razdeli na dve osi: na imaginarno in realno. Lahko jo razumemo kot
+seštevek sinusa (Im) in cosinusa (Re). V psevodokodu prejšnjega vprašanja tako vsako
+točko signala zmnožimo z sinom in cosinom, ki sta v odvisnosti od k in n. To je v bistvu
+tudi DFT.
+```
+
+48 Parsevalov teorem
+
+```
+Parsevalov teorem govori o tem, da je vsota kvadratov vrednosti signala enaka vsoti kvadratov
+vrednosti frekvenčnega spektra. Torej energija signala je enaka tako v časovni kot v frekvenčni
+domeni.
 ```

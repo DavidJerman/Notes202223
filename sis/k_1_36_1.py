@@ -2,16 +2,16 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 if __name__ == '__main__':
-    Fvz = 40  # vzorčevalna frekvenca
-    T = 4  # dolžina signala v sekundah
+    Fvz = 15  # vzorčevalna frekvenca
+    T = 2  # dolžina signala v sekundah
     t = np.arange(0, T, 1.0 / Fvz)  # časovni vektor
 
-    f = 0.20  # frekvenca sinusoide
+    f = 0.01  # frekvenca sinusoide
 
     y = np.sin(2 * np.pi * f * t)
 
     # Spectral leakage
-    Y = np.fft.fft(y[0:160])
+    Y = np.fft.fft(y)
 
     # Visualize
     fig, ax = plt.subplots(2, 1)
