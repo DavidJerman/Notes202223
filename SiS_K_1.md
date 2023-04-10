@@ -30,10 +30,16 @@ fazo in prisotnost signala.
 
 2 Določi parametre sinusoide
 
-![sis/sinusoida.png](sis/sinusoida.png)
+![sis/sinusoide1.png](sis/sinusoide1.png)
 
 ```
-Frekvenca sinusoide je 3Hz, amplituda 1.5, faza pa 0.5pi/3.
+Frekvenca sinusoide je 3Hz, amplituda 1.5, faza pa 0.5pi.
+```
+
+![sis/sinusoide2.png](sis/sinusoide2.png)
+
+```
+Amplituda je 1.4, faza je 1.25pi, frekvenca pa 4.5Hz.
 ```
 
 3 Kaj nam omogoča DFT?
