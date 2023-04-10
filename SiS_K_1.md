@@ -463,26 +463,31 @@ FFT pa je samo pohitritev DFT, ki deluje po principu deli in vladaj.
 
 <img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-21-05-44.png" width="300" alt="Screenshot from 2023-04-09 21-05-44">
 
-35 DFT 2 !!!
+35 Resolucija DFT
 
 ```
 Nekateri pojmi:
 Krožna frekvenca: 𝛥𝜔 = 2𝜋𝛥𝑓
 Frekvenca vzorčenja: 𝛥𝑓 = 2𝜋 / 𝑁Δt
 
-Frekvenco vzorčenja tako izračunamo na sledeč način:
-Δf=1/(NΔt)
-, kjer je NΔt dolžina opazovanega signala (T)
+Resolucija DFT oz. frekvenčni interval oz. frekvenčni korak je razmik med dvema frekvencama v **frekvenčni domeni**.
+Izračunamo ga na sledeč način:
+𝛥𝑓 = 1 / 𝑁Δt 
+oz.
+𝛥𝑓 = 1 / 𝑇
+kjer je T dolžina signala (v sekundah), Δt pa je razmik med vzorci pri vzorčenju in N število
+vseh vzorcev v **časovni domeni**.
 
 Velja tudi:
-Δf=Fvz/N
+𝛥𝑓 = 𝛥𝜔 / 2𝜋
+in
+𝛥𝑓 = Fvz / N
+kje je Fvz frekvenca vzorčenja in N število vseh vzorcev v **časovni domeni**.
 
-
-Čim daljši je časovni vzorčevalni interval Δt (nižja vzorčevalna frekvenca), tem ožji je
-frekvenčni interval, kar pomeni, da imamo večjo frekvenčno ločljivost.
-
-Čim daljši je signalni odsek, ki ga transformiramo, tem ožji je frekvenčni interval, kar
-pomeni večjo frekvenčno ločljivost.
+Primer izračuna:
+Δt = 0.001s
+N = 2100
+𝛥𝑓 = 1 / (2100 * 0.001) = 0.4762 Hz
 ```
 
 36 Enačba Fourirjeve transformacije
@@ -561,3 +566,88 @@ Konvolucija je simetrična glede na domeni
 ```
 
 ** To vprašanje bo treba še dopolniti.
+
+43 Računanje konvolucije v časovni domeni
+
+```
+-1  0  1  -> impulzni odziv h
+ 1  0  2  1  0  -> vzorec x
+ 
+Preobrazimo h v (ga obrnemo):
+ 1  0  -1
+
+X nato obdamo z ničlami spredaj (da poenostavimo računanje) in zadaj, zato da dobimo celoten signal:
+ 0  0  1  0  2  1  0  0  0
+
+Nato sledi postopek kovolucije:
+ 0  0  1  0  2  1  0  0  0
+ 1  0 -1
+    1  0 -1
+       1  0 -1
+          1  0 -1
+             1  0 -1
+                1  0 -1
+                   1  0 -1
+--------------------------
+      -1  0 -1 -1  2  1  0
+      
+To, kolikšen izhodni signal dobimo je odvisno tudi od tip konvolucije: v primeru zgoraj gre za polno
+konovlucijo. Če bi šlo za konvolucijo tipa "same", bi odrezali zadnji dve vrednosti izhodnega signala.
+```
+
+44 Računanje impulznega odziva sistema
+
+```
+Recimo, da imamo sistem:
+y(n) = 0.5 * x(n) + 0.25 * x(n-1) + 0.125 * x(n-2)
+in impulz:
+x(n) = [1, 0, 0]
+
+Izračunajmo impulzni odziv sistema (isti postopek kot konvolucija, samo da uporabimo impulz
+namesto impulznega odziva) za n = 0, 1, 2:
+
+ n = 0:
+  h(0) = y(0) 
+       = 0.5 * x(0) + 0.25 * x(-1) + 0.125 * x(-2)
+       = 0.5 * 1 + 0.25 * 0 + 0.125 * 0
+       = 0.5  -> a0
+
+ n = 1:
+  h(1) = y(1) 
+       = 0.5 * x(1) + 0.25 * x(0) + 0.125 * x(-1)
+       = 0.5 * 0 + 0.25 * 1 + 0.125 * 0
+       = 0.25  -> a1
+
+ n = 2:
+  h(2) = y(2) 
+       = 0.5 * x(2) + 0.25 * x(1) + 0.125 * x(0)
+       = 0.5 * 0 + 0.25 * 0 + 0.125 * 1
+       = 0.125  -> a2
+       
+Dobimo impulzni odziva sistema:
+h = [a0, a1, a2] = [0.5, 0.25, 0.125]
+
+Tako brez da bi poznali sistem, lahko izračunamo njegov impulzni odziv, ki pa nam v bistvu pove,
+kaj sistem s signalom naredi. Črna škatla postane bela škatla. V praksi bi rabili dolžina impulza
+prilagoditi namesto da dodaš ničle.
+
+Daljši impulz kot imamo, bolj natančen opis sistema dobimo.
+```
+
+45 Psevdokod konvolucije v časovni domeni
+
+```pseudocode
+for n = 0, ..., N-1:
+  y[n] = 0
+  for m = 0, ..., M-1:
+    y[n] += x[n-m] * h[m]
+```
+
+46 Psevdokod DFT
+
+```pseudocode
+for k = 0, ..., N-1:
+  X[k] = 0
+  for n = 0, ..., N-1:
+    X[k] += x[n] * exp(-j * 2 * pi * k * n / N)
+```
