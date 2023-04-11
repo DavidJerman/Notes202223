@@ -154,6 +154,31 @@ Načeloma si želimo, da bi bila vzorčevalna frekvenca čim večja, da signal "
 Če ta teorem kršimo, potlej izmerjene vrednosti ne bodo več enake tistim, ki so v analognem signalu.
 ```
 
+Kršitev Nyquistovega teorema:
+
+![img10_1.png](sis/img10_1.png)
+
+```
+f1 = 5Hz
+f2 = 75Hz
+Fvz = 80Hz
+
+Iz slike je lepo razvidna kršitev Nyquistovega teorema. 2x se pojavi signal s frekvenco 5Hz, čeprav
+je v resnici prisoten samo enkrat. Signal 75Hz se pri vzorčenju 80Hz "spremeni v 5Hz", poleg tega
+pa se pojavi še faza velikosti pi.
+
+Spodaj pa je še seštevek teh dveh frekvenc, ki je zaradi kršitve enak 0 in bi v resnici moral izgledati
+takole:
+```
+
+![img10_2.png](sis/img10_2.png)
+
+```
+Torej: vzorčevalna frekvenca mora biti vsaj 2x večja od najvišje frekvence v signalu!
+```
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-11-16-51-02.png" width="600" alt="https://www.dspguide.com/ch3/2.htm">
+
 11 Bitna ločljivost
 
 ```
@@ -235,13 +260,21 @@ Primer kvantizacije:
 17 Zasnova A/D pretvornika
 
 ```
-Najprej imamo signal. Signalu sledi nizkoprepustni filter. Ta sfiltrira višje frekvence, ki bi sicer
-kršile Nyquistov teorem. Temu sledi še ojačevalnik, ki pa skrbi za to, da signal ostane znotraj
-delavnega območja. Potlej imamo še nek buffer, ki zadžuje signal, dokler ga ne obdela A/D pretvornik.
+Najprej imamo signal. 
+
+Signalu sledi nizkoprepustni filter. Ta sfiltrira višje frekvence, ki bi sicer
+kršile Nyquistov teorem. 
+
+Temu sledi še ojačevalnik, ki pa skrbi za to, da signal ostane znotraj delavnega območja. 
+
+Potlej imamo še nek buffer, ki zadžuje signal, dokler ga ne obdela A/D pretvornik.
 Temu bufferju rečemo vzorčevalno-zadrževalno vezje. Rabimo ga pač, ker pridobivanje vzorca nekaj
-časa traja...
+časa traja - čas pretvorbe enega vzorca. Vhodni vzorec pa se med kvantizacijo ne sme spreminjati.
+
 Nato imamo A/D pretvornik, ki pa poskrbi za diskretizacijo (tu je pomembna vzorčevalna frekvenca,
-bitna ločljivost...). Na izhodu nato dobimo diskretiziran signal, ki pa ga lahko shranimo v 
+bitna ločljivost...). 
+
+Na izhodu nato dobimo diskretiziran signal, ki pa ga lahko shranimo v 
 pomnilnik za nadaljno analizo.
 ```
 
@@ -297,6 +330,10 @@ Enačba za konvolucije:
 
 <img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-09-12-53-35.png" width="300" alt="Enačba konvolucije">
 
+V diskretiziranem prostoru:
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-11-10-51-46.png" width="300" alt="Enačba konvolucije">
+
 ```
 h - impulzni odziv sistema
 x - vhodni signal
@@ -305,7 +342,7 @@ y - izhodni signal
 Enačba konvolucije v diskretnem prostoru se omeji na neko omejeno dolžino signalov.
 ```
 
-22 Pojem sistema
+22 Pojem sistema - transformacija signala
 
 ```
 Sistem si lahko predstavljamo kot črno škatlo. Ne vemo, kaj se v njem dogaja. Noter damo signal
@@ -427,6 +464,11 @@ Namen Fourirjeve transofrmacije je, da iz signalov v časovni domeni dobimo njih
 komponente. Porabimo manj podatkov za opis signala in lahko lažje analiziramo signal za
 prisotnost frekvenčnih komponent. Kot že omenjeno, s tem tudi pohitrimo izračun konvolucije 
 in še marsičesa.
+
+Poleg tega je vredno pomniti:
+This decomposition is part of an important concept in DSP called circular symmetry. It is based on viewing the end of 
+the signal as connected to the beginning of the signal. Skratka na signal gledamo kot na krožno funkcijo - signal ni
+končen, ampak se ponavlja.
 ```
 
 Frekvenčno korak 0.5 Hz, brez razlivanja:**
@@ -571,6 +613,14 @@ v kartezičnem koordinatnem sistemu. Sinus pripada imaginarni osi, kosinus pa re
 med tema dvema osema pa predstavlja fazo.
 ```
 
+Enačba DFT:
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-11-18-05-01.png" width="450" alt="DFT Equation">
+
+In pa IDFT:
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-11-18-07-05.png" width="350" alt="IDFT Equation">
+
 38 Razlivanje/prepuščanje DFT - spektralno razlivanje
 
 ```
@@ -618,7 +668,7 @@ Pomik (cikličen):
 Razlivanje (glej vprašanje 38)
 ```
 
-42 Konvolucija: časovna vs. frekvenčna domena - simetrija
+42 Časovna vs. frekvenčna domena - simetrija
 
 ```
 Glavno tu je, da moramo impulzni odziv obrniti, da dobimo pravilno konvolucijo v časovni
