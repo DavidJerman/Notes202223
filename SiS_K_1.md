@@ -184,7 +184,7 @@ Torej: vzorčevalna frekvenca mora biti vsaj 2x večja od najvišje frekvence v 
 ```
 Bitna ločljivost je število bitov, ki jih uporabimo za predstavitev ene vzorčne vrednosti - število kvantizacijskih nivojev.
 Če imamo 8-bitno ločljivost, to pomeni, da lahko amplitudo signala predstavimo na lestvici z 256 vrednostmi.
-Slike npr. so pogosto 8-bitne, zvok pa ponavadi že 16-biten, da lahko predstavimo vse frekvence do 22050Hz.
+Slike npr. so pogosto 8-bitne, zvok pa ponavadi že 16-biten, da lahko predstavimo vse glasnosti.
 
 Želimo si, da bi naš signal padel čim bolj v to območje!
 
