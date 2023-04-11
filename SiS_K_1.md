@@ -630,6 +630,8 @@ frekvence po sosednjih razdelkih.
 
 39 Vsebina Fourirjeve transformacije
 
+<img src="https://mriquestions.com/uploads/3/4/5/7/34572113/_7316167_orig.gif" width="500" alt="DFT Re and Im">
+
 ```
 S pomočjo vrednosti na imaginarni in realni osi lahko poleg frekvenc izračunamo tudi amplitudo
 in fazo te frekvence. 
@@ -639,7 +641,7 @@ Fazo pa:
 p[f] = arctg(Im(X[f]) / Re(X[f]))
 ```
 
-<img src="https://mriquestions.com/uploads/3/4/5/7/34572113/_7316167_orig.gif" width="500" alt="DFT Re and Im">
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-11-18-15-35.png" width="450" alt="DFT Equation">
 
 40 Časovna zahtevnost DFT in FFT
 
@@ -781,3 +783,5 @@ Parsevalov teorem govori o tem, da je vsota kvadratov vrednosti signala enaka vs
 vrednosti frekvenčnega spektra. Torej energija signala je enaka tako v časovni kot v frekvenčni
 domeni.
 ```
+
+<img src="https://davidblog.si/wp-content/uploads/2023/04/Screenshot-from-2023-04-11-18-12-39.png" width="300" alt="Parseval's theorem">
