@@ -16,6 +16,8 @@ Kratice:
 * DFT – diskretna Fourierjeva transformacija
 * FFT – hitra Fourierjeva transformacija
 
+Nekateri grafi nimajo pravilno označene x-osi... morda jih popravim v prihodnje.
+
 ## Vprašanja
 
 1 Vrste signalov
@@ -62,7 +64,7 @@ imaginarno in realno komponento.
 ```
 Prednost prehoda v frekvenčno domeno je, da ta uporablja manj parametrov za opis signala. Poleg tega pohitri nekatere
 matematične operacije (konvolucija) in omogoča lažjo frekvenčno analizo signala, saj se omejimo na končno število
-sinusoid. 
+sinusoid - na nek frekvenčni korak (glej vprašanje 35).
 
 Vse to je mogoče, ker je vsak signal mogoče predstaviti kot kombinacijo sinusoid z različnimi frekvencami, amplitudami
 in fazami.
@@ -147,7 +149,7 @@ A/D pretvorba je pretvorba analognega signala v digitalni. Za to poskrbi A/D pre
 10 Nyquistov teorem
 
 ```
-Nyquistov teorem pravi, da mora biti vzorčevalna frekvenca vsaj dva-krat večja od najvišje frekvence v signalu.
+Nyquistov teorem pravi, da mora biti vzorčevalna frekvenca vsaj dvakrat večja od najvišje frekvence v signalu.
 Načeloma si želimo, da bi bila vzorčevalna frekvenca čim večja, da signal "izgleda dobro".
 Če ta teorem kršimo, potlej izmerjene vrednosti ne bodo več enake tistim, ki so v analognem signalu.
 ```
@@ -175,7 +177,7 @@ Nasproten problem pa je, da je aplituda signala prenizka in signal niha okoli 0.
 izgleda kot da ga sploh nebi bilo, ker se pri diskretizaciji vrednosti signala pretvorijo v 0.
 
 Rešitev za ta problem je ojačanje signala. Amplitudo signala spravimo na delovno območje A/D pretvornika tako, da 
-signal ojačamo - mu zmanjšamo ali povečamo apmlitudo, da je blizu maksimalne ali minimalne vrednosti delavnega območja.
+signal ojačamo - mu zmanjšamo ali povečamo apmlitudo, da je blizu maksimalne oz. minimalne vrednosti delavnega območja.
 ```
 
 13 Dinamično ojačanje
@@ -211,14 +213,14 @@ Spektralno prekrivanje (aliasing) == kršenje Nyquistovega teorema:
 Problem pa nastane, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
 signalu pojavijo frekvence, ki v resnici v signalu niso prisotne. To lahko ponovno rešimo
 z uporabo filtra (nizkofrekvenčnega).
-Signal mora biti zato navzgor omejen!
+Signal mora biti zato navzgor omejen z najvišjo frekvenco Fvz/2.
 ```
 
 16 Kvantizacija
 
 ```
 Kvantni (kvantizacijski) niviji so vrednosti na lestvici, ki jo uporabimo za predstavitev ene vzorčne vrednosti.
-A/D pretvorniki ne zaokrožujejo, temveč vzamejo spodnjo vrednost.
+A/D pretvorniki ponavadi ne zaokrožujejo, temveč vzamejo spodnjo vrednost.
 Pri tem seveda nastane kvantizacijska napaka, ki je odvisna od bitne ločljivosti.
 Kvantizacijska napaka: (delovno območje) / (2^bitna_ločljivost)
 Ta nastane, ker ne vzamemo dejanske analogne vrednosti, temveč nek vzorec - kvant - ki pa je diskreten.
@@ -238,7 +240,7 @@ kršile Nyquistov teorem. Temu sledi še ojačevalnik, ki pa skrbi za to, da sig
 delavnega območja. Potlej imamo še nek buffer, ki zadžuje signal, dokler ga ne obdela A/D pretvornik.
 Temu bufferju rečemo vzorčevalno-zadrževalno vezje. Rabimo ga pač, ker pridobivanje vzorca nekaj
 časa traja...
-Nato imamo A/D ppretvornik, ki pa poskrbi za diskretizacijo (tu je pomembna vzorčevalna frekvenca,
+Nato imamo A/D pretvornik, ki pa poskrbi za diskretizacijo (tu je pomembna vzorčevalna frekvenca,
 bitna ločljivost...). Na izhodu nato dobimo diskretiziran signal, ki pa ga lahko shranimo v 
 pomnilnik za nadaljno analizo.
 ```
@@ -246,12 +248,12 @@ pomnilnik za nadaljno analizo.
 18 Napake pri A/D pretvorbi
 
 ```
-Prenizka vzorčevalna frekvenca vodi v **sprektralno prekrivanje**. Ta je določena kot:
+Prenizka vzorčevalna frekvenca vodi v *sprektralno prekrivanje*. Ta je določena kot:
 Fvz = 1/t
 kjer je t čas pretvorbe enega vzorca. Poleg tega moramo kot omenjeno dodati nizkoprepustni filter,
 da ni kršen Nyquistov teorem.
 
-Napako, ki pri tem nastane imenujemo kvantizacijska napaka (napaka LSB). Velika je:
+Napako, ki pri tem nastane, imenujemo kvantizacijska napaka (napaka LSB). Velika je:
 (razpon n-bitneega A/D) / 2^n
 
 Imamo še napako zaradi neenakomernega vzorčenja - trepetanje in napako rekostrukcije signala D/A.
@@ -267,14 +269,14 @@ Operacije, ki jih lahko izvajamo nad signali so:
 * množenje s konstanto...
 
 Primer množenja dveh signalov je tudi konvolucija. Je tudi linearna transformacija, kar pomeni, da 
-zanjo veljajo: komutativnost, ...
+zanjo veljajo: komutativnost, asociativnost, distributivnost.
 ```
 
 20 Linearni sistem
 
 ```
-Linearni sistem je sistem, za katerega velja, da sprejme nek vhod in vrne neko izhodno vrednost. 
-Pri tem ohranja linearnost: komutativnost, ...
+Linearni sistem je sistem za katerega velja, da sprejme nek vhod in vrne neko izhodno vrednost. 
+Pri tem ohranja linearnost: komutativnost, asociativnost, distributivnost.
 ```
 
 21 Konvolucija 1
@@ -282,7 +284,7 @@ Pri tem ohranja linearnost: komutativnost, ...
 ```
 Kovolucija je množenje in seštevanje dveh signalov. Če nad signalom x izvajamo konvolucijo s signalom
 h, potlej to pomeni, da za vsak indeks v signalu x izvedemo množenje s signalom h, ki je ponavadi
-krajši od signala x.
+krajši od signala x. Primer računanja konvolucije: vprašanje 43.
 ```
 
 Primer konvolucije med signalom x in alfa
@@ -306,10 +308,10 @@ Enačba konvolucije v diskretnem prostoru se omeji na neko omejeno dolžino sign
 22 Pojem sistema
 
 ```
-Sistem si lahko predstavljamo tudi kot črno škatlo. Ne vemo, kaj se v njem dogaja. Noter damo signal
+Sistem si lahko predstavljamo kot črno škatlo. Ne vemo, kaj se v njem dogaja. Noter damo signal
 in ven dobimo nov signal. Delovanje sistema lahko opišemo s pomočjo impulza. To je Diracov oz. 
-enotski impulz. Gre za signal, kjer imamo samo eno vrednost (ponavadi prvo) na vrednosti ena, ostale 0
-in jo pošljemo čez sistem. Dobimo impulzni odziv. Le-ta nam pove obnašanje tega sistema - torej
+enotski impulz. Gre za signal, kjer imamo samo eno vrednost (ponavadi prvo) na vrednosti ena, ostale
+pa na 0. Signal pošljemo v sistem. Dobimo impulzni odziv. Le-ta nam pove obnašanje tega sistema - torej
 kaj sistem naredi s signalom. Z uporabo impulznega odziva in kovolucije lahko nato posnemamo
 tak sistem.
 ```
@@ -317,7 +319,7 @@ tak sistem.
 23 Konvolucija 2
 
 ```
-Kot omenjeno lahko s pomočjo konvolucije tvorimo signal, ki bi ga dobili, če bi ga spustili v nek 
+Kot omenjeno, lahko s pomočjo konvolucije tvorimo signal, ki bi ga dobili, če bi ga spustili v nek 
 sistem. Pred tem seveda rabimo impulzni odziv tega sistema.
 ```
 
@@ -335,6 +337,14 @@ for i in range(n):
         y[i] += x[i - j] * h[j]  # Tule predpostavljamo, da je x[i - j] = 0, če je i - j < 0
 ```
 
+Signal lahko podaljšamo, da efekt slišimo do konca:
+
+```python
+for i in range(n + m - 1):
+    for j in range(m):
+        y[i] += x[i - j] * h[j]  # Tule predpostavljamo, da je x[i - j] = 0, če je i - j < 0 ali i - j >= n
+```
+
 24 Konvolucija 3 - linearnost
 
 ```
@@ -347,8 +357,8 @@ To, da je konvolucija linearna, pomeni, da zanjo veljajo naslednje lastnosti:
 25 Konvolucija 4 - frekvenčna domena
 
 ```
-Razlog, da konvoluciji opravimo v frekvenčni domeni je, ker je to dosti hitrejše. Časovna kompleksnost
-pade iz O(n^2) na O(n logn). Namesto, da za vsako vrednost signala x množimo z impulznim odzivom, 
+Konvoluciji opravimo v frekvenčni domeni, ker je to dosti hitrejše. Časovna zahtevnost
+pade iz O(n^2) na O(n logn). Namesto, da vsako vrednost signala x množimo z impulznim odzivom, 
 se s pomočjo Fourirjeve transformacije premaknemo v frekvenčno domeni in tam le zmnožimo signal
 in impulzni odziv! To je dosti hitrejše!
 ```
@@ -400,12 +410,13 @@ Predpostavlja tudi, da je signal neskončen, da se ponavlja.
 Tu pa nastanejo problemi...
 
 Spektralno prekrivanje (spectral aliasing) == kršenje Nyquistovega teorema:
-1. Problem pa nastane tudi, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
+1. Problem nastane, ko je kršen Nyquistov teorem. V tem primeru se v izmerjenem
 signalu pojavijo frekvence, ki v resnici v signalu niso prisotne. To lahko ponovno rešimo
 z uporabo filtra, kjer odstranimo višje frekvence.
 
 Spektralno razlivanje:
-1. To se pojavi tudi takrat, ko imaom v signalu necele frekvence. Oz. drugače povedano,
+1. To se pojavi takrat, ko imaom v signalu frekvence, ki ne padejo v nobenega izmed razdelkov
+frekvenc v frekvenčnem prostoru - če ne sovpadajo s frekvenčnim korakom. Oz. drugače povedano,
 da frekvence ne padejo v eno izmed diskretnih frekvenčnih intervalov DFT. Zato se signal
 razlije med druge frekvenčne komponente. To lahko omilimo z uporabo oken.
 
@@ -414,20 +425,19 @@ Glej vprašanje 35 "Resolucija DFT".
 
 Namen Fourirjeve transofrmacije je, da iz signalov v časovni domeni dobimo njihove frekvenčne
 komponente. Porabimo manj podatkov za opis signala in lahko lažje analiziramo signal za
-prisotnost frekvenčnih komponent.
-
-Kot že omenjeno, s tem tudi pohitrimo izračun konvolucije in še marsičesa.
+prisotnost frekvenčnih komponent. Kot že omenjeno, s tem tudi pohitrimo izračun konvolucije 
+in še marsičesa.
 ```
 
-Frekvenčno korak 0.5 Hz, brez razlivanja:
+Frekvenčno korak 0.5 Hz, brez razlivanja:**
 
 ![img30_1.png](sis/img30_1.png)
 
 ```python
-T = 2  # Dolžina signala
+T = 2     # Dolžina signala
 Fvz = 15  # Frekvenca vzorčenja
-f = 1.5  # Frekvenca signala
-A = 1  # Amplituda signala
+f = 1.5   # Frekvenca signala
+A = 1     # Amplituda signala
 ```
 
 Potlej pa še z razlivanjem:
@@ -435,10 +445,10 @@ Potlej pa še z razlivanjem:
 ![img30_2.png](sis/img30_2.png)
 
 ```python
-T = 2  # Dolžina signala
+T = 2     # Dolžina signala
 Fvz = 15  # Frekvenca vzorčenja
-f = 1.6  # Frekvenca signala
-A = 1  # Amplituda signala
+f = 1.6   # Frekvenca signala
+A = 1     # Amplituda signala
 ```
 
 In pa prekrivanje, kjer kršimo Nyquistov teorem:
@@ -446,16 +456,18 @@ In pa prekrivanje, kjer kršimo Nyquistov teorem:
 ![img30_3.png](sis/img30_3.png)
 
 ```python
-T = 2  # Dolžina signala
+T = 2     # Dolžina signala
 Fvz = 15  # Frekvenca vzorčenja
-f = 13  # Frekvenca signala
-A = 1  # Amplituda signala
+f = 13    # Frekvenca signala
+A = 1     # Amplituda signala
 ```
 
 ```
 Morali bi dobiti frekvenco 13 Hz, vendar pa dobimo 2 Hz. To je posledica prekrivanja,
 ki ga povzroči kršitev Nyquistovega teorema.
 ```
+
+** Na grafih zgoraj je os-x napačno označena, saj frekvenčni korak ni 1Hz, temveč 0.5Hz.
 
 31 Kovolucija v frekvenčni domeni
 
@@ -511,19 +523,19 @@ Nekateri pojmi:
 Krožna frekvenca: 𝛥𝜔 = 2𝜋𝛥𝑓
 Frekvenca vzorčenja: 𝛥𝑓 = 2𝜋 / 𝑁Δt
 
-Resolucija DFT oz. frekvenčni interval oz. frekvenčni korak je razmik med dvema frekvencama v **frekvenčni domeni**.
+Resolucija DFT oz. frekvenčni interval oz. frekvenčni korak je razmik med dvema frekvencama v *frekvenčni domeni*.
 Izračunamo ga na sledeč način:
 𝛥𝑓 = 1 / 𝑁Δt 
 oz.
 𝛥𝑓 = 1 / 𝑇
 kjer je T dolžina signala (v sekundah), Δt pa je razmik med vzorci pri vzorčenju in N število
-vseh vzorcev v **časovni domeni**.
+vseh vzorcev v *časovni domeni*.
 
 Velja tudi:
 𝛥𝑓 = 𝛥𝜔 / 2𝜋
 in
 𝛥𝑓 = Fvz / N
-kje je Fvz frekvenca vzorčenja in N število vseh vzorcev v **časovni domeni**.
+kje je Fvz frekvenca vzorčenja in N število vseh vzorcev v *časovni domeni*.
 
 Primer izračuna:
 Δt = 0.001s
@@ -537,7 +549,8 @@ N = 2100
 
 ```
 Ničta vrednost predstavlja frekvenco nič!
-Zato s štetjem frekvenc v bistvu začneš pri 1...
+Zato pri programskih jezikih, kjer s štetjem pričneš z indeksom 1 pazi na to, da je frekvenca na
+indeksu 1 v bistvu frekvenca 0!
 
 Dolžina DFT transformiranke je enaka originalnemu signalu!
 ```
@@ -678,8 +691,8 @@ Dobimo impulzni odziva sistema:
 h = [a0, a1, a2] = [0.5, 0.25, 0.125]
 
 Tako brez da bi poznali sistem, lahko izračunamo njegov impulzni odziv, ki pa nam v bistvu pove,
-kaj sistem s signalom naredi. Črna škatla postane bela škatla. V praksi bi rabili dolžina impulza
-prilagoditi namesto da dodaš ničle.
+kaj sistem s signalom naredi. Črna škatla postane bela škatla. V praksi bi rabili dolžino impulza
+prilagoditi namesto da dodati ničle.
 
 Daljši impulz kot imamo, bolj natančen opis sistema dobimo.
 ```
@@ -707,7 +720,7 @@ for k = 0, ..., N-1:
 ```
 Ta enačba vhodni signal razdeli na dve osi: na imaginarno in realno. Lahko jo razumemo kot
 seštevek sinusa (Im) in cosinusa (Re). V psevodokodu prejšnjega vprašanja tako vsako
-točko signala zmnožimo z sinom in cosinom, ki sta v odvisnosti od k in n. To je v bistvu
+točko signala zmnožimo z sinusom in cosinusom, ki sta v odvisnosti od k in n. To je v bistvu
 tudi DFT.
 ```
 
