@@ -286,7 +286,7 @@ Fvz = 1/t
 kjer je t čas pretvorbe enega vzorca. Poleg tega moramo kot omenjeno dodati nizkoprepustni filter,
 da ni kršen Nyquistov teorem.
 
-Napako, ki pri tem nastane, imenujemo kvantizacijska napaka (napaka LSB). Velika je:
+Napako, ki pa nastane pri kvantizaciji, imenujemo kvantizacijska napaka (napaka LSB). Velika je:
 (razpon n-bitneega A/D) / 2^n
 
 Imamo še napako zaradi neenakomernega vzorčenja - trepetanje in napako rekostrukcije signala D/A.
