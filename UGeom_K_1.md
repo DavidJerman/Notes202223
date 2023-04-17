@@ -31,7 +31,7 @@ O(h*n), kjer je h število točk na izbočeni lupini
 
 Najprej izberemo poljubno točko o, ki je lahko npr. povprečje treh naključno izbranih točk.
 Ta točka bo izhodišče polarnega koordinatnega sistema. Vse točke nato uredimo glede na polarni
-kot - točke, ki imajo enak kot, pa glede na razdaljo od o (bližje središču je prej). Točke
+kot – točke, ki imajo enak kot, pa glede na razdaljo od o (bližje središču je prej). Točke
 nato vstavimo v dvojno povezan seznam. Nato po vrsti izbiramo točke: p1, p2, p3 in tvorimo
 trikotnike. Če je trikotnik p1p2p3 pozitivno orientiran, točko p2 dodamo na lupino, sicer
 odstranimo točko p2 iz seznama in gremo po seznamu za eno mesto nazaj.
@@ -152,3 +152,6 @@ navzven.
 
 Algoritem lahko izboljšamo z uporabo **kd dreves**. V kd drevesu imamo razdeljeno ravnino na
 kvadratne celice. V vsaki celici pa se zgodba ponovi... (2D - 4-drevo, 3D - 8-drevo, ...)
+
+Še ena izboljšava pa je drevo BSP. Tu namesto na kvadratke drevo razdelimo glede na število
+točk – najprej po osi y, nato x, nato y...
