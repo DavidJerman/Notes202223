@@ -38,7 +38,7 @@ Objektni module sestoi iz sledečih delov:
 * prenaslovitvena tabela,
 * programska koda.
 Primer:
-https://davidblog.si/wp-content/uploads/2023/05/Screenshot-2023-05-13-151020.png
+![Zasnova objektnega modula](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-2023-05-13-151020.png)
 
 ## ELF format
 Sestava ELF formata je slednja:
@@ -178,4 +178,83 @@ naslove**. Vnnaprej se tudi določi izvajalni naslov. Če je ta naslov zaseden, 
 opraviti prenaslavljanje.
 
 ## Sekcije PE formata
-[!Sekcije PR formata](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-2023-05-13-160347.png)
+![Sekcije PR formata](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-2023-05-13-160347.png)
+
+## Statično povezovanje
+Po tem, ko dobimo objektne module, je čas za povezovanje. 
+Ideja je, da imamo na vhodu več objektnih modulov, ki pa jih moramo povezati v en izvedljiv 
+modul. Modulu dodelimo pomnilniški prostor, povežemo posamezne objekte simbole, prenaslovimo
+vse potrebno in dopolnimo izvedljiv program s ssitemskimi klici. Zatem je program pripravljen
+za nalaganje.
+
+Ker vse to storimo pred zagonom, ima program zelo dober response time.
+
+Na izhodu pa tudi lahko dobimo različne vrste programov: prenaslovljiv in absolutno izvedljiv
+modul ali pa izhodni objektni modul.
+
+Za podrobnosti glej še enkrat prosojnice na strani 35 do 37.
+
+## Programske knjižnice
+Tu gre ponavadi za zbirko programskih modulov istega tipa, ki imajo dogovorjen dostop do
+posameznih modulov oz. vsebin. Knjižnice so lahko ali statično ali dinamično povezane s
+programi. Če so dinamično, ne rabijo biti del programa in se naložijo v pomnilnik ob
+nalaganju v program ali ob klicu te knjižnice. Če pa si statične, pa se vsebina celotne
+knjižnice doda kar k vsebini modula programa. Če so knjižnice dinamične, potlej so ponavadi
+tudi deljene med programi. Zato morajo biti dostopne preko nekega sistemskega direktorija. 
+Zato tudi rabimo verzioniranje, ki je na Linuxu dobro urejeno, na Windows pa ravno ne.
+.NET je to nekako izboljšal z uporabo globalnih repozitorijev knjižnic. Ponavadi imamo več
+knjižnic za različne funkcionalnosti, zato da lahko v programu uporabimo samo tiste, ki jih
+dejansko rabimo.
+
+Java ima te knjižnice urejene zelo dobro, pa tudi na Linuxu je to kar dobro urejeno, sploh
+z vidika verzioniranja. Na Windowsu je to že večji problem. Če si kaj več programiral v C++,
+ti je to verjetno že jasno.
+
+### Dinamično povezljive knjižnice
+Pri takšnih knjižnicah pogosto tudi najdemo razne ukaze za predprocesor? Poleg tega kot 
+že omenjeno, se dinamične knjižnice lahko naložijo ali zgodaj ali pozno. Torej takoj ob
+nalaganju programa ali šele, ko so klicane oz. rabljene. V win se lahko na funkcije 
+zglasuješ kar preko indeksov. Hash-vrednosti?
+
+Dinamično povezovanje omogoča večjo prilagodljivost. Recimo imamo aplikacijo strojnega učenja,
+ki backend naloži šele naknadno. Npr., da zazna, da je na našem računalniku prisotna grafična
+kartica. Namesto basckenda za CPU lahko nato naknadno naloži backend za GPU. 
+
+Kar pa se tiče verzioniranja na Linuxu:
+deljene knjižnice (shared library)
+   • naložijo se ob prvem klicu, nato dostopni za vse programe
+   • fizično in logično ime (knjižnica “primer”, različica 3.1):
+      • /usr/lib/libprimer.so.3.1 – fizično ime
+      • /usr/lib/libprimer.so.3 – logično ime (“so”-ime; “shared object”)
+      • /usr/lib/libprimer.so – ime za povezovanje
+      
+Za primere glej PP stran 6, 7...
+
+## Dinamične knjižnjice na Linux-u
+Za delo z dinamičnimi knjižnicami na Linuxu imamo knjižnico dlfcn.h. Ta poskrbi za dinamično
+nalaganje knjižnice v programu. Za ta namen obstaja funkcija dlopen(), dlclose(), dlsym()...
+Te knjižnice se na Linuxu končajo s .so.
+
+## Dinamične knjižnjice na Windows-u
+Zgodba tu je podobna v smislu deljenja knjižnic. Tudi povezovanje je lahko tako implicitno
+kot eksplicitno. Po povezovanju dobimo import tabelo. V času izvajanja se ta tabela polni z
+naslovi te DLL knjižnice. Vsako funkcijo, ki jo DLL izvaža lahko identificiramo po zaporedni
+številki (numeric ordinal) ali pa po imenu. Zaporedna številka predstavlja vstop kazalca na
+funkcijo v DLL-ovi vstopni tabeli (Export Address Table – EAT). Vstopne tabele EAT imajo 
+vstope urejene po abecednem vrstnem redu imen funkcij in omogočajo binarno iskanje po
+imenu funkcij.
+
+Primer dll knjižnice (implicitno):
+
+```c
+#include <windows.h>
+#include <stdio.h>
+
+extern  "C" __declspec(dllimport) double AddNumbers(double a, double b);
+
+int main(int argc, char *argv[]) {
+   double result = AddNumbers(1, 2);
+   printf("The result was: %f\n", result);
+   return 0;
+}
+```
