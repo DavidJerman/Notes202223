@@ -258,3 +258,33 @@ int main(int argc, char *argv[]) {
    return 0;
 }
 ```
+
+## Nalagalnik
+Gre za izvedljiv program v pomnilniku, katerega namen je nalaganje programov, da so ti
+pripravljeni za izvajanje. **Inicializira** izvajanje programa tako da dodeli pomnilniški
+prostor programu in prenaslovi izvedljiv modul (torej pripredi naslove iz virtualnih na
+fizične po potrebi, ter priredi naslove, če ti kažejo na druge sekcije). Tak program je nato
+naložen v glavni pomnilnik in je pripravljen za izvajanje.
+
+### Vrste nalagalnikov
+* TURBO prevajalnik - prevedi in poženi
+* absolutni nalagalnik - kaj takega najdemo na embedded napravah ali pa MBR
+* nalagalnik s prenaslavljanjem - to pa najdemo na modernih OS
+
+### Absolutni nalagalnik
+Takšen nalagalnik najdemo v BIOSu. Izvedljiv modul se naloži z zunanje pomnilniške enote v 
+delovni pomnilnik. Namen tega programa v BIOSu je samopreizkušanje komponent. Danes se nalagalnik
+takšne vrste v modernih računalnikih ne uporablja več. MBR pa je del pomnilnika na boot napravi,
+kjer so zapisani podatki o particijah in ostalo.
+
+Narava absolutnega nalagalnika je taka, da programi namesto virtualnih naslovov uporabljajo že 
+kar direktno fiizične naslove - zato se to danes tudi več ne uporablja.
+
+Zgradba absolutnega nalagalnika je sledeča:
+* dolžina modula
+* nalagalni naslov
+* absolutna sekcija (programska koda)
+* začetni izvajalni naslov
+* kontrolni znaki
+
+### Začetni nalagalnik
