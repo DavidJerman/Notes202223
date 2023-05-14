@@ -344,3 +344,61 @@ Prevedi nadzor zagona: Nalagalnik (bootloader), ki je del particijskega nalagaln
   delovanja**
   
 ### GRUB
+Naloga GRUB je nalaganje jedra OS. Tako je pri linuxu, in po nalaganju GRUB preda nadzor OS. Pri Windows-u pa ni
+tako. Pri Windows-u kliče GRUB začetni nalagalnik od Windows-a. Ta se nahaja ne preddoločeni lokaciji na disku,
+podobno kot da bi se zadeva zaganjala iz MBR.
+
+### BIOS alternative
+* Slabost BIOSa je, da deluje b 16-bitnem načinu in smo omejeni na 1MB naslovnega prostora. To je kar malo, glede
+  na to, da BIOS rabi tudi svoje gonilnike.
+
+Nadgradnja BIOSa je potlej UEFI. Uporablja jezik EFI Byte Code in GUID partition table. Podpira pa tudi recimo
+Secure Boot.
+
+#### UEFI
+Imamo več sistemskih razredov UEFI:
+* BIOS,
+* UEFI CMS,
+* UEFI and CSM,
+* UEFI only.
+
+Ostale načine rabimo večinoma še zaradi kompatibilnosti z določenimi operacijskimi sistemi. Linux zna včasih
+delati problema tu, oz. nasploh nalaganje večih operacijskih sistemov na eno napravo.
+
+Omogoča nalaganje iz velikih particij s pomočjo GUID tabele. Je neodvisen od CPE - tudi njegovi gonilniki
+so neodvisni od CPE. Definirajo se samo komunikacijski protokoli v jeziku UEFI Byte Code, ki pa jo interpreetira
+procesor.
+
+![UEFI structure](https://en.wikipedia.org/wiki/UEFI#/media/File:Efi_flowchart_extended.svg)
+
+#### Lastnosti UEFI
+* Podpira tako 32 kot 64-bitni način delovanja,
+* interakcija nalagalnika strojne opreme (firmware loader) in nalagalnika OS (OS loader),
+* podpira GUID tabelo,
+* nudi storitve (aplikacije UEFI - nalagalniki SO) in tudi med delovanjem OS (čas, datum, NVRAM - trajni pomnilnik),
+* EFI Byte Code / Executable - procesorsko neodvisne aplikacije - interpreter je v sistemskem firmware,
+* varno nalaganje - preverja podpis nalagalnika OS - če ta ni veljaven, ga ne požene (to uporablja Windows),
+* CMS (emulacija BIOS),
+* GOP (neodvisnost od standarda VGA),
+* uporabniški vmesnika mora razviti proizvajalec.
+
+#### Ostale alternative
+Ostale alternative so še Coreboot in pa OpenBIOS.
+
+### Microsoft gonilniki
+Ena izmed prednoti gonilnikov Windowsa je ta, da so vsi podpisani. Npr.:
+1. Naredimo gonilnik za Windows,
+2. Gonilnik pošljemo Microsoftu, da ga potrdi in certificira - torej podpiše,
+3. Tako vsakič, ko se ta gonilnik naloži v Windowsu, se najprej preveri, če je podpisan preko MS strežnikov, kjer
+   dobi hash kode od veljavnih gonilnikov.
+   
+Podobno funkcionalnost najdemo tudi pri Linuxu, le da je na Windowsu vse vodeno s strani MS.
+
+### Secure Boot
+Secure Boot deluje zelo podobno tako, da preverja podpis nalagalnika. Za ta namen na današnjih matičnih ploščah
+najdemo TPM modul. NAmen njega he shranjevanje RSA ključev za gonilnike, strojno opremo, gesla in podobno. Ideja
+je, da bi se TPM modul uporabljal tudi za ščitenje programske opreme. Nekaj podobnega skuša narediti Apple.
+
+### GUID tabela
+Kot omenjeno gre za večjo particijsko tabelo. Več o njej na strani 12 do 13 na prosojnicah.
+
