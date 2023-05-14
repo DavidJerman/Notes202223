@@ -288,3 +288,59 @@ Zgradba absolutnega nalagalnika je sledeča:
 * kontrolni znaki
 
 ### Začetni nalagalnik
+Gre za kodo oz. nalagalnik (tudi bootloader), ki se zažene ob prižigu naprave - torej računalnika.
+Nahaja se v MBR (to je ponavadi na začetku diska, ki se uporablja za boot). Njegovo delovanje je
+sledeče:
+* BIOS se požene in opravi samopreverjanje strojne opreme,
+* BIOS prebere prvi sektor za zagon diska imenovan MBR. Tu se tudi nahaja začetni nalagalnik,
+* začetni nalagalnik izvede nadaljne nalaganje diskov, gonilnikov itd.
+
+Njegova naloga je tako poiskati bootloader, ki nato požene operacijski sistem, ki se nahaja na eni
+izmed particij. Ta bootloader je npr. GRUB, ki ga ponavadi najdemo pri Linuxu. GRUB omogoča tudi
+multi-boot. 
+
+Vredno je še dodati, da BIOS potrebuje naložiti svoje gonilnike, ppreden se uporabijo tisti od OS.
+
+#### Zgradba začetnega nalagalnika - MBR
+To kodo najdemo na na začetku diska v MBR.
+* Koda nalagalnika,
+* podpis diska,
+* 2 zloga?,
+* particijska tabela (do 4 particije),
+* podpis MBR.
+
+MBRju sledijo ponavadi sektorji diska. Velikost sektorjev in MBR je 512 B.
+
+Če imamo več kot 4 particije, lahko uporabimo večnivojsko particijsko tabelo.
+
+#### Particijski nalagalni sektor
+Kot omenjeno lahko posamezne primarne particije nadomestimo z razširjenimi particijami. Te v bistvu
+kažejo na novo tabelo particij - gre kot omenjeno za večstopenjsko tabelo.
+
+Potlej imamo notranje razširjene particije in logične particije - te so notranje particije, ki pa
+niso razširjene.
+
+Potlej pa imamo še particijski nalagalni sektor (ang. partition boot sector). To je poseben sektor,
+ki se nahaja na začetku vsake particije na shranjevalni napravi, kot je trdi disk. Tu so vsi podatki
+potrebni za zagon OS na tej particiji. Deluje kot mini-bootloader za posamezno particijo.
+
+#### Particijski nalagalni sektor
+Postopek:
+
+Preberi particijski nalagalni sektor: BIOS prebere prvi sektor na aktivni particiji, ki vsebuje particijski nalagalni sektor.
+
+Izvedi nalaganje: Programska koda v particijskem nalagalnem sektorju se izvede in nadaljuje z nalaganjem nadaljnjih komponent operacijskega sistema.
+
+Prevedi nadzor zagona: Nalagalnik (bootloader), ki je del particijskega nalagalnega sektorja, prenese nadzor nad nadaljnjim zagonom na glavni zaganjalnik operacijskega sistema.
+
+#### Začetni nalagalnik v osebnem računalniku - postopek nalaganja
+* Naloži se BIOS ukaz na naslovu CS:IP
+* Skok na kodo za samopreizkušanje
+* BIOS gre čez seznam zagonskih enot, da najde pravo
+* Iz posamezne zagonske naprave prebere kodo iz MBR
+* Koda MBR v particijski tabeli poišče aktivno particijo in naloži kodo iz njenega glavnega sektorja - ponavadi to
+  že zadeva od OS
+* Ta koda iz glavnega sektorja aktivne particije nalaga OS - **jedro OS gre iz realnega načina v zaščiten način
+  delovanja**
+  
+### GRUB
