@@ -59,7 +59,7 @@
 ### Pravila sklepanja
 
 + **Modus ponens** - A če potem B, A, torej B
-+ **Modus tollens** - A če potem B, ne B, torej ne A
++ **Modus tolens** - A če potem B, ne B, torej ne A
 + **Dokaz s protislovjem** - A, ne A, torej B
 
 + Aksiomi --> izpeljani stavki (teoremi) --> dokažemo z dokazom zgoraj
@@ -88,3 +88,18 @@ Rezultat se lahko preveri tudi z *resničnostno tabelo*.
 
 ### Predikatna logika prvega reda
 
+#### Simboli
+
++ **Konstante** - A, B, Franc, Maribor, ... - dejanski objekti
++ **Simboli spremenljivk** - x, y, z, ... - splošni objekti
++ **Predikatni simboli** - P, Q, R, Rdeč, Sin ... - lastnosti/relacije med objekti
++ **Funkcijski simboli** - f, g, h, ... - preslikave med objekti
+
+Primeri:
+- Napadalec(Messi)
+- Velikost(Maribor, 95.000)
+
+#### Atomarni stavek
+
+Atomarni stavek je sestavljen iz **predikata** in **argumentov**. Argumenti so lahko
+konstante, spremenljivke ali funkcije - **termi**.
