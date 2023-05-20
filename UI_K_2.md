@@ -467,7 +467,7 @@ Predstavitev polne skupne verjetnostne porazdelitve v obliki acikličnega grafa.
 
 Za primer glej prosojnico stran 38.
 
-TODO
+[//]: # (TODO: Finish this)
 
 ## 7. Mehka logika
 
@@ -508,6 +508,7 @@ Bazo znanja v mehki logiki izrazimo v obliki mehkih pravil tipa če-potem. Prime
 osebe za smučarskega skakalca.
 
 Baza:
+
 + IF starost=mlad in teža=lahek THEN primernost=zelo_primeren
 + IF starost=mlad in teža!=lahek THEN primernost=primeren
 + IF starost=srednje_mlad and teža!=lahek THEN primernost=primeren
@@ -516,3 +517,149 @@ Baza:
 Izpolnjenost pogojev se prenese na sklep?
 
 ### Sistem mehkega sklepanja
+
+Mehka domena - definicije vhodnih in izhodnih mehkih spremenljivk. Baza znanja v obliki
+množice mehkih pravil.
+Postopek sklepanja:
+
+- fuzifikacija ali zmehčanje - pretvorba numeričnih vrednosti v pripadnost mehkim množicam
+- sklepanje - izpeljava sklepov iz mehkih pravil - prenos aktivacije pogojev na sklepe mehkih pravil
+- defuzifikacija ali odmehčanje - pretvorba mehkih sklepov v numerične vrednosti
+
+Zgornje si lahko predstavljamo tudi kot nevronsko mrežo.
+
+### Defuzifikacija
+
+Postopek:
+
+- grafe pripadnostnih funkcij za izhodne mehke vrednosti obrežemo in skaliramo na višino dosežene aktivacije
+- površine pod skaliranimi grafi združimo v en likin izračunamo njegovo **karakteristično točko** (npr. težišče)
+
+Glej stran 22 do 26.
+
+### Mehki krmilnik
+
+Primer: tempomat. Prejema podatke o varnostni razdalji, hitrost približevanja in razliko od željene
+hitrosti.
+
+Vhodne spremenljivke:
+
+- razdalja (majhna, srednja, velika)
+- približevanje (počasno, srednje, hitro)
+- hitrost (nizka, ustrezna, visoka)
+
+Izhodne spremenljivke:
+
+- pospešek (zaviraj, vzdržuj, pospešuj)
+
+Baza znanja:
+
+- IF razdalja=majhna AND približevanje!=počasno THEN signal=zaviraj
+- IF razdalja=srednja AND približevanje=hitro THEN signal=zaviraj
+- ...
+
+Za slike glej prosojnice stran 30+.
+
+Rešitev primera:
+
+- Varnostna razdalja: 1.8s
+- Hitrost približevanja: 15km/h
+- Trenutna hitrost: 8km/h nižja od željene
+
+Postopek reševanja:
+
+- fuzifikacija:
+    - razdalja je 0.2 majhna, 0.8 srednja, 0.0 velika
+    - približevanje je 0.5 počasno, 0.5 srednje, 0.0 hitro
+    - ...
+- mehko sklepanje:
+    - gremo čez vsa pravila:
+        - min(0.2, 0.5) = 0.2 -> zaviraj
+        - min(0.8, 0) = 0 -> zaviraj
+        - ...
+- skupne aktivacije sklepov so 0.2 zaviraj, 0.8 vzdržuj in 0 pospešuj.
+- defuzifikacija:
+    - y = (0.2 * -3.24 + 0.8 * 0 + 0 * 3.24) / (0.2 + 0.8 + 0.0) = -0.648
+
+## 9. Uvod v nevronske mreže
+
+### Nevronska mreža
+
+Gre za matematični model, katerega namen je posnemanje delovanja bioloških nevronskih mrež.
+Nevronske mreže so sestavljene iz nevronov, ki so med seboj povezani z utežmi. Možgani so
+zelo kompleksni in paralelno delujoči.
+
+### Umetni nevron
+
+Struktura:
+
+- numerični vhodi
+- vsak vhod ima utež w
+- vsak vhod ima pristranskost/bias b ali prag (threshold) za aktivacijo, -1 ali +1
+- vhodi se seštejejo in se glede na aktivacijsko funkcijo pretvorijo v izhod
+
+Danes se večinoma uporablja bias +1. Nevron se imenuje tudi **enota**. V literaturi se
+**aktivacija** včasih imenuje tudi izhod sam. Vrednost **v** pa imenujemo uteženi vhod za
+aktivacijsko funkcijo.
+
+Vhod: [x1, x2, x3, ..., xn]^T
+
+Uteži: [w1, w2, w3, ..., wn]^T
+
+Aktivacija: v = **w**^T * **x** + b ali v = **w**^T * **x** - prag
+
+Izhod: y = f(v)
+
+Vrste aktivacijskih funkcij:
+
+- pragovna/stopničasta - y = 0 ali 1
+- linearna - y = v
+- Popravljena linearna ReLU - y = max(0, v)
+- leaky ReLU - y = max(0.01 * v, v)
+- softplus - y = ln(1 + e^v)
+- ELU (exponential linear unit) - y = v, če v >= 0, y = a * (e^v - 1), če v < 0
+- sigmoidna - y = 1 / (1 + e^-v)
+- hiperbolični tangens - y = (1 - e^-2v) / (1 + e^-2v)
+
+### Ciljna aplikacija
+
+- regresija - izhod je realno število na podlagi vhodnih podatkov
+- klasifikacija - izhod je razred na podlagi vhodnih podatkov
+
+### Pragovna logična enota - TLU
+
+Uporablja stopničasto aktivacijsko funkcijo. Delovanje TLU določeno z uteženim vektorjem
+w = [w0, w1, w2, ..., wn]^T in pragom, ki je utež w0. y = 1, če v >= 0, y = 0, če v < 0.
+
+x = [x0, x1, x2, ..., xn]^T je vhodni vzorec, ki je opisan z množico **numeričnih atributov**
+ali **značilk**.
+
+Prednost TLU: **pohlevna degredacija** oz. odpornost na šum ter strojne napake.
+
+Primer:
+
+Glej prosojnico stran 20 do 27.
+
+Delovanje TLU lahko razumemo kot **linearni klasifikator** - torej ločitev vhodnih vzorcev v
+dva razreda. Razred 0, ki ima na izhodu 0 in razred 1, ki ima na izhodu 1. Meja med razredoma je
+določena z **hiper-ravnino** - bodisi premica v 2D ali ravnina v 3D.
+
+Delitvena premica: w1 * x1 + w2 * x2 = w0
+
+Zadevo lahko izrišemo v 2D ravnino.
+
+#### Učenje TLU
+
+Učenje TLU je postopek, pri katerem se določijo uteži w. Učenje TLU je **nadzorovano** in
+**iterativno**. Za učenje uporabljamo **učno množico**. Učna množica je množica vhodnih
+vzorcev, ki so opisani z značilkami in pripadajočimi razredi. Vzorez označimo z (x, d),
+x^(p) in d^(p) pa sta p-ti vzorec in p-ti razred. Število učnih vzorcev je v praksi
+dosti manjše od števila vseh možnih razredov.
+
+Cilj je, da se TLU nauči posploševati.
+
+Ker gre za iterativen postopek, učenje poteka v **epohah**. Ko TLU naredi napako pri učenju,
+uteži popravimo s pomočjo **učnega pravila**. Osnovno pravilo je **učno pravilo perceptrona**.
+
+### Učno pravilo perceptrona
+
