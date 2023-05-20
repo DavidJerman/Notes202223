@@ -1,6 +1,6 @@
 # Umetna inteligenca kolokvij 2
 
-## Predstavitev znanja
+## 4. Predstavitev znanja
 
 + Znanje predstavimo z **izjavami (dejstva)**, iz njih tvorimo **sklepe**.
 + V računalništvu jim rečemo **stavki**. **Baza znanja** pa je množica vseh teh stavkov.
@@ -243,7 +243,7 @@ Prosojnica stran 56 in 57.
 
 + Planiranje - recimo kako bo robot nekaj naredil - potrebno spreminjanje stanja
 
-## Sklepanje v predikatni logiki
+## 5. Sklepanje v predikatni logiki
 
 ### Resolucijska ovržba
 
@@ -300,4 +300,103 @@ S pomočjo tega drevesa lahko nato uporabimo razne iskalne algoritme:
   strategije z obliko linearnega vhoda)
 
 ### Poizvedbe
+
+Glej prosojnice stran 41 do 45. Franc in Janez.
+
+### Slabosti resolucije
+
++ Pri pretvorbi v klavzulsko obliko izgubimo nekaj informacij.
++ Pretvorba v klavzule lahko privede do neučinkovitega reševanja - podvajanje resolucijskih korakov.
++ Ni naravno za človeka razmišljati na tak način, zato imamo alternative avtomatskega sklepanja:
+    + veriženje naprej oz. podatkovno vodeno sklepanje
+    + veriženje nazaj oz. ciljno vodeno sklepanje
+
+### Veriženje naprej
+
+**Hornova klavzula** je klavzula, ki ima največ en pozitiven literal. Vsako tako klavzulo lahko
+zapišemo kot implikacijo. Npr. klavzula !P or !L or B lahko zapišemo kot implikacijo (P in L) => B.
+
+Algoritem veriženja naprej določa, ali ciljna formula W sledi iz baze znanja v obliki Hornovih klavzul
+
+Glej prosojnice 60+.
+
+#### Veriženje naprej v predikatni logiki
+
+Glej prosojnice 72+.
+
+## 6. Verjetnostno sklepanje
+
+**Negotovost** je pomanjkanje informacij, ki bi omogočile sklepanje in planiranje z zanesljivostjo.
+Viri negotovosti so:
+
++ preveč informacij, neobvladljiva količina podatkov
++ nepopolne informacije, teoretično neznanje
++ praktično neznanje - manjka testov ipd.
+
+Dogodki tako dobijo **stopnjo zaupanja** glede na zaznane pokazatelje.
+
+### Teorija verjetnosti
+
+Pojmi:
+
++ **dogodek** - nekaj, kar se lahko zgodi ali ne
++ **verjetnost** - stopnja zaupanja, da se bo dogodek zgodil
++ **verjetnostno sklepanje** - sklepanje, ki upošteva verjetnost dogodkov
++ prisotnost določenega dogodka opisujemo z **naključno/slučajno spremenljivko**
++ **zaloga vrednosti/domena** - množica vseh možnih vrednosti naključne spremenljivke
++ binarne, diskretne in zvezne naključne spremenljivke
++ **atomarni dogodki** - popolna specifikacija okolja
++ **apriorna/nepogojena verjetnost** - verjetnost dogodka samega po sebi
+
+### Naključne spremenljivke
+
++ **Boolova** - vrednosti true in false
++ **Diskretna** - vrednosti so iz končne množice - kot verjetnost, da nekaj spada v nek razred
++ **Zvezna** - vrednosti so iz neskončne množice - **funkcija gostote verjetnosti**
+
+### Preglednica verjetnosti
+
+Z njo lahko prikažemo skupno verjetnostno porazdelitev.
+
+Primer:
+
+Vreme = {sončno, oblačno, deževno, nevihtno}
+Vročina = {da, ne}
+Gripa = {da, ne}
+
+Tabela: 4 x 2 x 2 = 16 možnih kombinacij
+
+### Pogojna verjetnost
+
+Verjetnost dogodka A, če se je zgodil dogodek B.
+
+Pravilo produkta:
+
+![Pravilo produkta](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-from-2023-05-20-13-27-03.png)
+
+### Aksiomi verjetnosti
+
+Za vsako izjavo velja, da je v razponu 0 do 1.
+Velja tudi:
+
+* P(a ∨ b) = P(a) + P(b) − P(a ∧ b)
+* P(a) = 1 − P(¬a)
+
+### Sklepanje s skupno verjetnostno porazdelitvijo
+
+Seštevek atomarnih dogodkov je 1.
+
+Primer:
+![Skupna verjetnostna porazdelitev primer](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-from-2023-05-20-13-34-22.png)
+
+**Marginalizacija** je izločitev podmnožice naključnih spremenljivk z izračunom vsote
+verjetnosti pri vseh možnih vrednostih teh spremenljivk.
+**Robna verjetnost** je verjetnost, ki jo dobimo z marginalizacijo.
+
+V bistvu si rečeš, ok zanimajo me spremenljivke A in B. Potlej pa izračunaš verjetnost za vse možne kombinacije
+glede na ostale spremenljivke.
+
+Za primere glej prosojnico stran 15.
+
+V tabeli se te različne kombinacije spremenljivk zelo dobro vidijo.
 
