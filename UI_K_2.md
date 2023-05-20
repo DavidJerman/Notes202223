@@ -213,3 +213,91 @@ Ideja je, da poskrbimo, da se nobena spremenljivka v različnih klavzulah ne poj
 ### Splošna resolucija
 
 + Gre za pravilo sklepanja nad stavki s spremenljivkami.
+
+![Splošna resolucija](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-from-2023-05-20-10-49-48.png)
+
+![Splošna resolucija](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-from-2023-05-20-10-54-05.png)
+
+Glej prosojnico stran 44+ za primer.
+
+### Uporaba predikatne logike
+
++ Dokazovanje teoremov (avtomatsko sklepanje)
++ Planiranje
+
+Aksiom --(sklepanje z resolucijo)--> ciljni stavek / ciljna formula / teorem
+
+Neustrezna resolucija lahko zakasni sklepanje, ne pa ga nujno ustavi.
+
+#### Zgled
+
+Prosojnica stran 56 in 57.
+
+#### Slabosti
+
++ Veliko časa - eksponentni časovni potek
++ Opis znanja zahteva veliko truda
++ Če se informacij ne da predstaviti v obliki stavkov, potem ne moremo uporabiti predikatne logike
+
+#### Uporaba predikatne logike
+
++ Planiranje - recimo kako bo robot nekaj naredil - potrebno spreminjanje stanja
+
+## Sklepanje v predikatni logiki
+
+### Resolucijska ovržba
+
++ Enako **dokazu s protislovjem**.
++ Če W sledi iz S, torej velja, da če je S resničen, W ne more biti neresničen. Želimo priti do protislovja.
+
+#### Dokaz z resolucijsko ovržbo
+
+Imamo stavek S => W, kjer je W ciljni stavek, ki ga želimo dokazati.
+Tako postopek sledi:
+
++ Predpostavimo, da je W neresničen.
++ Pokažemo, da S unija negacija W vodi v protislovje.
++ Ker so S resnični, sklepamo, da je W resničen.
+
+Pred izvedbo stavke pretvorimo v klavzulsko obliko. Tej množici rečemo **temeljna množica**.
+Izbiro dveh klavzul, s katerima lahko izračunamo resolvento, imenujemo **kontrolna strategija**.
+
+#### Primer
+
+Imamo sledečo množico stavkov:
+
++ Ob nekaterih dnevih je sončno in ni toplo.
++ Ob dnevih, ko dežuje, ni sončno.
++ Če ni toplo, je hladno.
+
+In dokazujemo:
+
++ Ob nekaterih hladnih dnevih ne dežuje.
+
+1. Pretvorimo stavke v klavzulsko obliko (glej prejšnje poglavje).
+2. Dobimo temeljno množico klavzul.
+3. Izvajamo unifikacijo, dokler ne pridemo do protislovja.
+
+#### Kontrolna strategija
+
+Namen le-te je **iskanje protislovja** - določa, katere klavzule izbiramo za izvedbo resolucijskih korakov.
+
++ Strategija je **polna**, če vedno najde klavzulo NIL, ko ta obstaja.
++ Delovanje lahko opišemo z **grafom izvajanja**.
+
+![Graf izvajanja](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-from-2023-05-20-12-31-59.png)
+
+S pomočjo tega drevesa lahko nato uporabimo razne iskalne algoritme:
+
++ **iskanje v širino** - polna, a neefektivna
++ **strategija s podporno množico** (klavzule, ki izhajajo iz negacije ciljnega stavka ali naslednikov) - strategija
+  pri tvorbi klavzule vzame najmanj enega očeta iz podporne množice - polna in bolj efektivna
++ **strategija s prednostjo enote** - poskušamo najprej izbrati klavzule z enim literalom - dopolnitev
+  strategije s podporno množico - polna in bolj efektivna
++ **strategija z obliko linearnega vhoda** - vsaka resolventa ima najmanj enega očeta iz temeljne množice - ni polna,
+  enostavna za implementacijo
++ **sestavljene strategije** - kombinacija zgornjih strategij (ponavadi sestavljene iz strategije s podporno množico in
+  strategije z obliko linearnega vhoda)
+
+### Poizvedbe
+
