@@ -400,3 +400,119 @@ Za primere glej prosojnico stran 15.
 
 V tabeli se te različne kombinacije spremenljivk zelo dobro vidijo.
 
+**Normalizacijska konstanta** je vrednost 1/P, ki poskrbi za to, da je seštevek verjetnosti vedno 1.
+
+Primer je na prosojnici stran 23 in 24 ter naprej.
+
+### Sklepanje s polno skupno verjetnostno porazdelitvijo
+
+Postopek je sledeč, kjer so X spremenljivka vprašanja (ali imamo bolezen), E so spremenljivke evidence
+(simptomi) in Y neopazovana spremenljivka - neugotovljena prisotnost drugega simptoma.
+
+```
+P(X|e) = [P(x1|e), P(x2|e), ---, P(xn|e)] = alfa * P(X, e) = alfa * sum(P(X, e, Y))
+```
+
+Glej primere od prej za boljše razumevanje.
+
+### Neodvisnost
+
+Spremenljivki sta neodvisni, če velja:
+
+- P (X | Y) = P(X)
+- P (Y | X) = P(Y)
+- P (X , Y) = P(X) P(Y)
+
+Neodvisnost zmanjša količino informacij potrebnih za določitev polne skupne porazdelitve.
+
+### Bayesovo pravilo
+
+```
+P(Y | X) = P(X | Y) * P(Y) / P(X)
+```
+
++ diagnostično stanje
++ vzročno stanje
++ vzrok
++ normalizacijska konstanta
+
+Glej primer prosojnica stran 31.
+
+Več ko imamo spremenljivk, bolj neučinkovit postopek postaja.
+
+#### Pogojna neodvisnost
+
+Če sta dve spremenljivki pogojno neodvisni, potem velja:
+
+```
+P(X, Y | Z) = P (X | Z) * P(Y | Z)
+```
+
+Tako dobimo novo tabelo verjetnosti - stran 35.
+Tako lahko tabelo zapišemo z manj spremenljivkami in prihranimo nekaj prostora in časa.
+
+### Naivni Bayesov model ali Bayesov klasifikator
+
+Gre za model verjetnostnega sklepanja, ki prepostavlja pogojno neodvisnost spremenljivk
+evidence.
+Model deluje zelo dobro.
+
+### Bayesova mreža
+
+Predstavitev polne skupne verjetnostne porazdelitve v obliki acikličnega grafa.
+
++ naključne spremenljivke so vozlišča mreže
++ povezava od vozlišča X do Y predstavlja odvisnost Y od X
++ vsako vozlišče dobi pogojno verjetnostno porazdelitev P(X | Parent(X))
+
+Za primer glej prosojnico stran 38.
+
+TODO
+
+## 7. Mehka logika
+
+Gre za razširitev klasične logike. Omogoča obdelavo negotovih, nepopolnih informacij.
+Uporabljeno v krmilnih napravah, nevronskih mrežah, sklepanje na podlagi pravil...
+
+### Mehke množice
+
+Ideja je, da elementi le delno pripadajo neki množici. Kot da bi bili robovi množice
+zamegljeni. Pretvorba numerične lastnosti objekta v pripadnost mehki množici se imenuje
+**fuzifikacija** in je opisana z **pripadnostno funkcijo**. Recimo, ko mi poskušamo
+oceniti kako star je nekdo - srednje star, mlad, star? Recimo si 60% da je mlad, 40%
+da je srednje star.
+
+### Predstavitev mehkih množic
+
+Najpogosteje pripadnost mehkim množicam prikažemo s pomočjo trapezoidnih grafov.
+Prehod med posameznimi množicami je ponavadi postopen in zato se sosednji trapezoidi sekajo,
+lahko pa je prehod tudi takšen, da trapezoidi postanejo štirikotniki. Velja pa ponavadi,
+da je seštevek 1, ni pa to nujno.
+
+### Mehka spremenljivka
+
+Mehka spremenljivka je spremenljivka, katere vrednosti so izrazi v naravnem jeziku. Npr.
+kot zgoraj omenjeno različne starostne skupine.
+
+### Operacije nad mehkimi množicami
+
++ negacija (1 - verjetnost)
++ disjunkcija (max ali Pa + Pb - Pa * Pb)
++ konjunkcija (min ali Pa * Pb)
+
+Zgoraj naštete operacije lahko med sabo tudi kombiniramo.
+
+### Sklepanje v mehki logiki
+
+Bazo znanja v mehki logiki izrazimo v obliki mehkih pravil tipa če-potem. Primer: primernost
+osebe za smučarskega skakalca.
+
+Baza:
++ IF starost=mlad in teža=lahek THEN primernost=zelo_primeren
++ IF starost=mlad in teža!=lahek THEN primernost=primeren
++ IF starost=srednje_mlad and teža!=lahek THEN primernost=primeren
++ ...
+
+Izpolnjenost pogojev se prenese na sklep?
+
+### Sistem mehkega sklepanja
