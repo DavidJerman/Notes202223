@@ -214,7 +214,7 @@ metodo ustvarjanja filtra (npr. Butterworth, Chebyshev, ...).
 
 Filtri s pomočjo teh koeficientov in vhodnega signala izračunajo izhodni signal.
 
-#### Šum in motnje
+### Šum in motnje
 
 Izhodni signal pa seveda ni popoln. Malce se pokvari zaradi šuma in motenj. Razmerje med šumom
 in motnjami opišemo z **SNR** (Signal to Noise Ratio). SNR je razmerje med močjo signala in močjo
@@ -223,3 +223,170 @@ in motnjami opišemo z **SNR** (Signal to Noise Ratio). SNR je razmerje med moč
 ```text
 SNR = 10 * log10(Es / En)    [dB]
 ```
+
+#### Odstranjevanje šuma in motenj s filtriranjem
+
+Recimo imamo signal, kjer je SNR=10dB, torej je moč signala 10x večja od moči šuma.
+Šum je nad 1.5 kHz.
+Tvorimo nizko sito z lomno frekvenco 1 kHz.
+
+```matlab
+[B, A] = butter(5, 1000/22050, 'low');
+y = filter(B, A, x);
+```
+
+### 2D digitalni filtri
+
+Princip delovanja 2D filtrov je enak kot pri 1D filtrih. Razlika je samo v še eni dimenziji in
+implementaciji. Enako je 2D filtriranje 2D konvolucija med impulznim odzivom 2D filtra in vhodnim
+signalom (sliko).
+
+2D filtrom rečemo tudi **lokalni slikovni operatorji**, **maske** ali **kerneli** (jedra).
+
+Delovanje tega filtra je takšno, da jedro premikamo preko slike, množimo s sliko in seštevamo
+rezultate. Rezultat je nov pixel v izhodni sliki.
+
+POZOR: pri tem pogosto pride do ojačenja, zato je potrebno rezultat normalizirati.
+
+#### 2D nizko sito
+
+2D nizko sito je v bistvu uporaba filtra, kjer so vse vrednosti filtra enake 1/N, kjer je N
+število vrednosti v jedru filtra. Gre v bistvu za glajenje, blur, smoothing.
+
+Ta metoda iz slike odstrani šum, je pa res da slika s tem izgubi nekaj informacij v smislu
+ostrosti.
+
+#### Gradient v sliki
+
+Na sliko lahko gledamo tudi kot na spektrogram, kjer osi x, y predstavljata piksle, os z pa
+intenziteto. Potlej vidimo, da razlike v barvah v bistvu predstavljajo gradient - naklon -
+slike. Po tem principu tudi deluje iskanje robov.
+
+#### Zaznava robov
+
+Naklon v sliki - torej rob - dobimo kot razliko sosednjih pikslov. Večja kot je razlika, bolj
+strm je naklon, bolj strm je naklon, bolj verjetno je da gre za rob.
+
+Če med piksli ni razlike, potem je naklon 0, torej ni roba.
+
+Slikovni operatorji, ki zaznavajo robove:
+
+Robertsov operator:
+
+```text
+c0 = [-1  0]   c1 = [ 0 -1]
+     [ 0  1]        [ 1  0]
+```
+
+c0 zaznava desno diagonalo, c1 pa levo diagonalo.
+
+Laplaceov operator:
+
+```text
+c0 = [ 0 -1  0]   c1 = [-1 -1 -1]
+     [-1  4 -1]        [-1  8 -1]
+     [ 0 -1  0]        [-1 -1 -1]
+``` 
+
+c0 zaznava vodoravne in navpične robove, c1 pa vse robove.
+Laplaceov operator je bolj občutljiv na šum.**
+
+Sobelov operator:
+
+```text
+c0 = [-1  0  1]   c1 = [-1 -2 -1]
+     [-2  0  2]        [ 0  0  0]
+     [-1  0  1]        [ 1  2  1]
+```
+
+c0 zaznava navpične robove, c1 pa vodoravne robove.
+
+Najbolje je, da kombiniramo dva Sobelova operatorja namesto da uporabimo Laplaceov operator.
+Dobimo lepšo zaznavo robov, manj šuma.
+
+#### Frekvenčni odziv 2D filtrov
+
+Nizko sito prepušča nizke frekvence, visoke pa duši, kar se na sliki kaže kot to, da se hitre
+spremembe sivin izločijo - torej se slika "zamegli" oz zgladi.
+
+Operatorji za odkrivanje robov namreč računajo gradient. Ta operacija pa ustreza Laplaceovemu
+ali Sobelovemu situ. Odkrivanje robov duši nizke frekvence in poudarja visoke frekvence - torej
+robove, spremembe sivin.
+
+#### Canyev detektor robov
+
+Problem zaznave robov je, da je detekcija pogosto taka, da so robovi natrgani. Canny predlaga
+postopek, kako te robove povezati.
+
+Cannyev postopek:
+
+1. Obdelava slike z Gaussian filtrom
+2. Določanje slikovnih gradientov z Robertsovim operatorjem
+3. Izbira vstopnega in izstopnega praga - basically meja med tem kaj je in ni rob
+4. Iskanje dovolj visokih gradientov, ki se dajo povezati v sklenjene robove - definicija
+   sosedstev med piksli
+
+### Odkrivanje in razpoznavanje oblik
+
+Posamezne lastnosti slik lahko izločimo s pomočjo filtrov. Tem lastnostim rečemo tudi značilke
+(features). Izločanje značil pa imenujem feature extraction.
+Te značilke lahko nato posredujemo nevronski mreži. To je v bistvu tudi nadgradnja zaznave.
+Recimo vemo, da gre za jabolko, če je okroglo in rdeče.
+
+#### Razpoznavalni sistemi
+
+Pojavom in objektom rečemo **oblike** (patterns). Če lahko izločimo vse značilnice, lahko
+te objekte klasificiramo. Razpoznavanje oblik lahko opravi **razpoznavalni sistem**.
+
+Postopek:
+
+1. zaznava objekta v realnem svetu in pretvorba v sliko
+2. izločitev značilnic --> prehod v prostor značilnic
+3. klasifikacija --> prehod v prostor razredov / odločitveni prostor
+
+#### Zaznavanje oblik
+
+Da lahko dobimo značilke, moramo najprej zaznati objekt. Oblike zaznamo v **času** ali
+**prostoru**. Zaznave imajo svojo razsežnost - bodisi dimenzije ali časovno razsežnost.
+Skratka naš cilj je zaznava začetka in konca objekta.
+Temu postopku rečemo segmentiranje, ker izberemo segment signala, kjer se objekt nahaja.
+
+#### Segmentacija
+
+Segmentiranje lahko opravimo ali v časovnem/slikovnem prostoru ali v frekvenčnem prostoru.
+
+Glede na prag se nato odločimo, ali je objekt prisoten ali ne. To je binarna odločitev.
+Rečemo, da signal **binariziramo**. Rečimo, če iščemo rdeče jaboljko, določimo nek
+prag za rdečo, modro in zeleno.
+
+#### Določanje pragov
+
+Prag moramo pač dobiti s poskušanjem, dokler le-ta ne izloči vseh neželenih objektov.
+V veliko pomoč tu nam je histogram.
+
+#### Histogram
+
+Histogram je grafični prikaz porazdelitve vrednosti v signalu, kjer recimo opazujemo neko
+značilko, kot je recimo sivina. Tako bo histogram prikazoval koliko katerega nivoja sivine
+je prisotnega v sliki.
+
+Tako najpogosteje tvorimo histogram amplitud. Primeri historgramov so tako: histogram za
+elektrodiagram in sivinsko umetno sliko.
+
+Histogram ima tako neko maksimalno in minimalno vrednost, poleg tega pa ima določeno število
+razredov. Razred je neka skupina vrednosti. Tako lahko histogram razdelimo na 256 razredov za
+sivinsko sliko.
+
+#### Uporabnost histogramov
+
+Z uporabo linearizacije lahko na sliki izboljšamo kontrast, če recimo so vse vrednosti histograma
+pod neko vrednostjo - razporedimo vrednosti čez celotno x-os in s tem dobimo boljši kontrast ter
+posledično lažjo ekstrakcijo značilnic oz. segmentacijo še pred tem. Še ena podobna izboljšava je
+ekvalizacija histograma, kjer razporedimo vrednosti histograma tako, da je porazdelitev čim bolj
+enakomerna. Na sliki se to vidi kot izenačitev svetlosti, nam pa pomaga pri segmentaciji.
+
+Pri segmentaciji nato kot že omenjeno izberemo dva praga, ki določata, katere vrednosti bomo 
+sprejeli in katere ne.
+
+#### Pragovna segmentacija
+
