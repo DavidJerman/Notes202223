@@ -506,6 +506,7 @@ Skrbi za varnost, sistemsko neodvisnost in pa omrežno prenosljivost.
 ### Interpretiranje kode
 
 Poznamo naslednje načine interpretiranja kode:
+
 * interpretiranje (ukaz za ukazom) - enostavno, a počasno,
 * JIT (just in time) - prevajanje v strojno kodo med izvajanjem,
 * AOT (ahead of time) - prevajanje v strojno kodo pred izvajanjem ob namestitvi,
@@ -529,6 +530,7 @@ za izvajanje. Vsak JVM ima tudi svoj programski števec.
 Zgradba je zelo podobna zgradbi skladov procesorjev.
 
 Sklad JVM sestoji iz:
+
 * lokalnih spremenljivk,
 * režijske informacije za delo s skladom,
 * operandnega sklada.
@@ -536,7 +538,7 @@ Sklad JVM sestoji iz:
 #### Ostale lastnosti
 
 Enako kot pri običajnih nitih, si vse niti javanskega programa delijo isti pomnilniški
-prostor. Tako lahko niti med seboj komunicirajo. 
+prostor. Tako lahko niti med seboj komunicirajo.
 
 Podatkovni tipi so v Javi malce drugačni - recimo bool je velik 4 byte.
 
@@ -550,7 +552,7 @@ Podatkovni tipi so v Javi malce drugačni - recimo bool je velik 4 byte.
 ### Zložna koda
 
 Glavna razlika v tej kodi je, da ni platformno odvisna kot recimo strojna koda.
-Poleg tega večino ukazov ne dela z registri, ampak z operandnim skladom (skladovno 
+Poleg tega večino ukazov ne dela z registri, ampak z operandnim skladom (skladovno
 orientiran stroj), skladom in kopico.
 
 Pri tej zložni kodi je zanimivo tudi to, da najdemo if stavke, ki jih pri običajnem
@@ -559,6 +561,7 @@ zbirniku ne najdemo. Ukazi so tudi hitri, saj so zelo preprosti.
 ### Razredna zbirka
 
 Razredna zbirka je zbirka razredov, ki so na voljo za uporabo. Med njih spadajo:
+
 * razredi,
 * niti,
 * vsi podatkovni tipi - tudi int, float, double je razred,
@@ -603,8 +606,8 @@ Označbe omogočajo programerjem, da dodajo dodatne informacije ali navodila kod
 primer, v Javi obstaja označba @Deprecated, ki označuje, da je neka metoda, razred
 ali spremenljivka zastarela in se ne priporoča več za uporabo. S to označbo
 razvijalci prejmejo opozorilo, da bi morali namesto zastarelega elementa uporabiti
-alternativne pristope ali funkcionalnosti. Ta metainformacija pomaga razvijalcem 
-razumeti, kako naj pravilno uporabljajo določene dele kode in zagotavlja smernice 
+alternativne pristope ali funkcionalnosti. Ta metainformacija pomaga razvijalcem
+razumeti, kako naj pravilno uporabljajo določene dele kode in zagotavlja smernice
 za vzdrževanje in nadgradnjo programske opreme.
 
 Primer C++:
@@ -612,11 +615,11 @@ Primer C++:
 En primer metainformacije v programskem jeziku C++ je uporaba predloženih (template)
 razredov. Predloženi razredi omogočajo programerjem, da parametrizirajo tip podatkov,
 ki jih razred manipulira ali uporablja. Na primer, lahko ustvarimo predložen razred
-`ArrayList`, ki omogoča shranjevanje elementov poljubnega tipa. Pri ustvarjanju 
-instance tega razreda lahko programer poda želeni tip podatkov, na primer 
-`ArrayList<int>` za shranjevanje celih števil ali `ArrayList<string>` za 
+`ArrayList`, ki omogoča shranjevanje elementov poljubnega tipa. Pri ustvarjanju
+instance tega razreda lahko programer poda želeni tip podatkov, na primer
+`ArrayList<int>` za shranjevanje celih števil ali `ArrayList<string>` za
 shranjevanje nizov. To omogoča prilagodljivost in ponovno uporabo kode, saj se
-razred prilagodi glede na podani tip podatkov. Predloženi razredi v C++ 
+razred prilagodi glede na podani tip podatkov. Predloženi razredi v C++
 predstavljajo metainformacijo, ki opisuje, kako se bo določen razred uporabljal in
 prilagajal glede na podane parametre.
 
@@ -666,6 +669,179 @@ Na vrhu razredne hierarhije je Object, iz katerega izhajajo vsi ostali razredi.
 
 ### Izjeme
 
-... Tu še kaj pride ...
+V glavnem tu je pomembna ideja: če se zgodi izjema, se izvajanje programa
+prekine in se začne iskanje bloka, ki bi lahko obravnaval izjemo - tabela
+vektorjev z ISR (interrupt service routine).
 
-## Dinamično povezovanje
+Izjeme delujejo tako, da zajemajo nek del programa. Povemo, od kje do kje
+naj se izjema nahaja. Kar pa to povzroči je, da je izvajanje programa
+počasnejše.
+
+### Dinamično povezovanje
+
+Pri Javi gre za **pozno** (ali zgodnje) dinamično povezovanje, kar pa nas stane
+tako performanse kot varnosti. Catch je v tem, da se knjižnice naložijo naknadno,
+torej med izvajanjem programa. Pri tem se knjižnice pogosto naložijo rekurzivno,
+torej potrebujemo celo drevo knjižnic zaradi odvisnosti. To pomeni ŠE več časa.
+Takšno nalaganje tako NI realno časovno, ker se izvaja med izvajanjem programa.
+
+Takšno nalaganje tudi pomeni rekurzivno iskanje knjižnic. Za nalaganje poskrbi
+JVM. Ukazi s sklicom na objekt obdržijo zaporedno številko vstopa v nabor
+konstant, dokler sklic ni razrešen – torej se povežemo s knjižnico.
+
+Takšno nalaganje knjižnic je lahko tudi nevarno, saj lahko napadalec zlahka
+zamenja knjižnico z drugo, ki ima isti vmesni vmesnik, vendar pa ima drugačno
+implementacijo. Primer take zlorabe je DLL hijacking. Če se spomnimo, so DLL
+knjižnice dinamične knjižnice v Windows okolju.
+
+Postopek povezovanja:
+
++ Preverjanje - verifikacija - ali je binarna koda vmesnika/objekta pravilna,
++ Priprava - priprava pomnilnika - razporejanje pomnilnika (statična inicializacija
+  polj ipd.),
++ Razreševanje - razreševanje simbolov,
+
+#### Razreševanje simbolov**
+
+1. Nalaganje - nalaganje podatkovnih tipov,
+2. Preverjanje tipa - preveri se sintaksa,
+3. Priprava tipa - rezervacija pomnilnika,
+4. Razrešitev tipa - razrešitev referenc (rekurzivno),
+5. Inicializacija tipa - najprej incializirajo vsi nadrejeni tipi,
+6. Preverjanje dostopnih pravic - ali klicoči tip lahko dostopa do klicanega.
+
+### Razredni nalagalniki
+
+Začetni razredni nalagalnik - nalaga lokalne razredne zbirke - isti jezik kot JVM.
+
+Uporabniški razredni nalagalnik - nalaga uporabniške razredne zbirke - napisan v Javi.
+
+Java ti tudi omogoča imeti svoj nalagalnik, ki pa deduje iz starševskega nalagalnika -
+torej iz razreda `ClassLoader`.*
+
+### Dalvik
+
+Dalvik je **registersko usmerjen stroj**, ki je bil razvit za Android. Več .class datotek
+združi v eno .dex datoteko. Uporablja tudi drugačen nabor ukazov. Poleg tega pa 
+uporablja tudi sprotno prilagodljivo optimiranje. 
+
+ART format - Android Runtime: uporablja ahead-of-time kompilacijo in ob času namestitve
+se koda prevede v .dex datoteko, ki je hranjena v ELF formatu.
+
+APK - ZIP + jar, CERT.RSA, AndroidManifest.xml, direktorij lib z domorodno kodo, MANIFEST.MF,
+classes.dex, Resources.arsc, ...
+
+## .NET
+
+.NET je platforma, ki je bila razvita za Windows. Lahko bi rekli, da posnema Javo. Preko
+skupnega vmesnega jezika CIL (Common Intermediate Language) podpira več deset programskih
+jezikov. CIL se hrani v PE formatu (podoben ELF formatu).
+
+CIL teče znotraj platforme CLI (Common Language Infrastructure), kjer najdemo JIT in
+AOT (generator strojne kode). To zelo spominja na JVM.
+
+### CIL
+
+Gre za nivo skupka objektov, ki so neodvisni od jezika (.NET assembly).
+
+Podpira obdelavo izjem, garbage collection, varnost, itd.
+
+Microsoft: CLR (Common Language Runtime) - to je izvajalno okolje na Windows, ki vključuje:
+
+- CTS (Common Type System) - skupni tipovni sistem,
+- Metadata - opis podatkov,
+- CLS (Common Language Specification) - skupni jezikovni standard,
+- VES (Virtual Execution System) - virtualni izvajalni sistem,
+- BCL (Base Class Library) - knjižnice.
+
+Pazi na drugačne tipe kot v Javi ali C++.
+
+### PE objektni format
+
+PE (Portable Executable) je objektni format, ki ga uporablja Windows. To so moduli tipa
+EXE, DLL, SYS, OCX, CPL, SCR, DRV, FON, itd.
+
+Ceč na strani 6+, PP 7.
+
+### Ostalo
+
+Tu je še nekaj glede hash kod, ki se verjetno uporabljajo za preverjanje pristnosti, kot
+neke vrste verzioniranje.
+
+## Sistemski klici in gonilniki
+
+### Sistemski klici
+
+Le-te se izvajajo ves čas. Recimo na linuxu lahko to preveriš z `strace` ukazom.
+
+Primer:
+
+![Sistemski klici](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-from-2023-05-23-20-21-26.png)
+
+Ti klici tudi pomenijo stalen prehod iz uporabniškega načina v jedrni način in nazaj. To 
+pa stane veliko časa.
+
+Aplikacija in OS imata oba svoj podatkovni vmesnik. 
+
+#### Pot sistemskega klica
+
+1. Uporabnik pokliče sistemski klic,
+2. Aplikacija kliče OS in podatki o klicu se shranijo kot glava zahteve - glava zahteve
+   je kot nakupovalni listek,
+3. Podatki se prenesejo v jedro,
+4. Jedro preveri pravice in preveri, če je klic veljaven,*
+5. Jedro aktivira gonilnik,
+6. Gonilnik kliče napravo,
+7. Aktivira se prekinitvena rutina,
+8. Prekinitvena rutina prebere podatke,
+9. Prekinitvena rutina prenese podatke v jedro,
+10. Jedro prenese podatke v aplikacijo.
+11. Aplikacija nadaljuje z delom.
+
+Za prenos podatkov skrbi DMA (Direct Memory Access). 
+
+V glavnem pomembno si je zapomniti, da gre vse preko jedra, tudi podatki, ki gredo najprej
+v buffer. Ta buffer ni tako velik in moramo ga sproti sprazniti, sicer se nam povozijo 
+podatki. Ukaza: **copy from/to user space**.
+
+Gonilnikov si NE želimo v jedru, da nam ne povzročijo blue screena. Zato jih imamo v
+uporabniškem načinu, če je le mogoče.
+
+Bolj, ko gremo navzdol, bolj specifični smo, kaj od naprave želimo.
+
+### Vrste jeder
+
+#### Monolitno jedro
+
+Vse je v jedru. To je najhitrejša rešitev, vendar je tudi najbolj nestabilna. Še vedno pa
+imamo module, ki jih lahko nalagamo ali odložimo. Primer je Linux. Vse funkcionalnosti so
+v kernel načinu, zato je veliko preklopov. Moduli so objektno orientiran pristop.
+
+#### Mikrojedro
+
+V jedru imamo le najnujnejše funkcionalnosti. Vse ostalo je v uporabniškem načinu.
+Vse storitve/servise imamo v uporabniškem načinu. Primer je NT jedro. Tako je malo 
+preklopov, vendar je tudi počasnejše in jedro se težje sesuje. Jedro je tudi
+majhno in lažje za vzdrževanje. Večja varnost.
+
+Primeri teh storitev so: datotečni sistem, gonilniki, omrežje, itd.
+
+#### Hibridno jedro
+
+Imamo nekaj funkcionalnosti v jedru, nekaj pa v uporabniškem načinu. Primer je Windows 7 in
+pa načeloma tudi novi Windows-i.
+
+### Kontekstni preklop
+
+Kontekstni preklop stane čas. Tu pride do vprašanja, ali pri preklopu želimo shraniti vse
+registre ali ne. Strojni (HW) preklop si shrani vse, ampak razvijalci OS pa lahko shranimo
+samo tisto, kar vemo, da rabimo - to tudi zakomplicira prevajalnike. Večina OS tako sama
+izvaja kontekstne preklope.
+
+Jedro ima svoj sklad in se ter tako poskrbi za te kontekstne preklope. Pri tem uporablja
+tudi tabelo GDT - Global Descriptor Table.
+
+Za več podrobnosti glej stran 7 do 11.
+
+### Prehodi med obročem 3 in 0
+
