@@ -1,4 +1,4 @@
-# Zapiski za SPO koolokvij 2
+# Zapiski za SPO kolokvij 2
 
 ## Sekcije glede na način naslavljanja.
 
@@ -845,3 +845,63 @@ Za več podrobnosti glej stran 7 do 11.
 
 ### Prehodi med obročem 3 in 0
 
+#### Prekinitve
+
+Sprva so se ti prehodi izvajali s pomočjo prekinitvenih rutin. To je bilo zelo počasno,
+saj je potreben dostop do pomnilnika (GDT in TSS).
+CPU se privzeto nahaja v ringu 0. Nato pa v programu naletimo na programsko prekinitev.
+Ta učinkuje kot sistemski klic. Gremo iz user mode v kernel mode. 
+
+Prekinitve najdemo v obliki ukazov **int 3**, **int 0x80** na Linuxu in **int 0x2E** na
+Windows. Na novejših sistemih lahko v prekinitev tudi vstavimo parametre.
+
+Do preklopa pa seveda pride, ker lahko do V/I naprav dostopamo le iz jedra.
+
+#### LDT
+
+...
+
+### Sistemski klici na novejših procesorjih
+
+Intel: SYSENTER, SYSEXIT
+
+AMD: SYSCALL, SYSRET
+
+Ta način je dosti hitrejši! Uporablja posebne registre, ki nam iz asm niso dostopni kot
+uporabniku. Se pa s pomočjo njih implementira ta kontekstni preklop in je, zato tudi
+hitrejši. So pa ti registri modelno specifični.
+
+#### Prenos parametrov v sistemske klice
+
+Podatke lahko v sistemske klice prenašamo preko:
+
+- registrov - hitro, manjša količina podatkov, omejeno št. parametrov,
+- v bloku pomnilnika - naslov je v registru, veliko podatkov, večji overhead,
+- v skladu - isti princip kot pri bloku pomnilnika.
+
+Jedro vedno kopira vse parametre sistemskih klicev iz uporabniškega naslovnega prostora
+v naslovni prostor jedra.
+
+## Gonilniki
+
+### Postopek klica gonilnika
+
+1. Opravilo OS kliče gonilnik - zahteva lahko pride iz jedra ali iz neke aplikacije,
+2. Glava zahteve [nakupovalni listič] se shrani v vhodno vrsto gonilnika,
+   1. Glava zahteve se postavi v vrsto,
+   2. Strategijska rutina izbira zahteve po nekem vrstnem redu,
+   3. Ponavadi je določena neka prioriteta,
+3. Ko gonilnik obdela zahtevo, sproži prekinitev,
+4. Sproži se prekinitvena rutina:
+   1. To rutino kliče CPU, ko dobi prekinitev od gonilnika,
+   2. Gonilnik določa, kaj se zgodi, ko se zgodi prekinitev,
+   3. Glede na pomembnost prekinitve imamo dve možni rutini. Ideja je, da če se rutina
+      ne izvede v zgornji polovici, se izvede v spodnji polovici:
+      1. Zgornja polovica - hitra rutina,
+      2. Spodnja polovica - počasna rutina,
+5. Ta čas se podatki iz V/I naprave preko gonilnika, preko DMA prenesejo v sistemski vmesnik.
+
+### Model prekinitev
+
+Spodaj opisano model še vedno uporablja ARM, je pa precej počasen. Je pa njegova prednost,
+da zlahka registriramo nove rutine.
