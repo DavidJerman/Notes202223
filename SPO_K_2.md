@@ -1,6 +1,14 @@
 # Zapiski za SPO kolokvij 2
 
-## Sekcije glede na način naslavljanja.
+# Kazalo
+
+* [Kazalo](#kazalo)
+* [Snov](#snov)
+* [Vprašanja](#vprašanja)
+
+# Snov
+
+## Sekcije glede na način naslavljanja
 
 Glede na način naslavljanja imamo:
 
@@ -158,7 +166,7 @@ RW - namreč gre za neicinilarizirane podatke, ki so berljivi in zapisljivi.
 ## Povezovanje vs. nalaganje
 
 Glavna razlika, ki izda, ali je program pripravljen za povezovanje ali že za nalaganje, je da
-pri nalaganju najdemo segmente, pri povezovanju pa še seckije.
+pri nalaganju najdemo segmente, pri povezovanju pa seckije.
 
 ## Še nekaj o objektnih modulih
 
@@ -205,7 +213,7 @@ Zgradba tega formata pa je sledeča:
 Po tem, ko dobimo objektne module, je čas za povezovanje.
 Ideja je, da imamo na vhodu več objektnih modulov, ki pa jih moramo povezati v en izvedljiv
 modul. Modulu dodelimo pomnilniški prostor, povežemo posamezne objekte simbole, prenaslovimo
-vse potrebno in dopolnimo izvedljiv program s ssitemskimi klici. Zatem je program pripravljen
+vse potrebno in dopolnimo izvedljiv program s sistemskimi klici. Zatem je program pripravljen
 za nalaganje.
 
 Ker vse to storimo pred zagonom, ima program zelo dober response time.
@@ -324,17 +332,17 @@ sledeče:
 
 * BIOS se požene in opravi samopreverjanje strojne opreme,
 * BIOS prebere prvi sektor za zagon diska imenovan MBR. Tu se tudi nahaja začetni nalagalnik,
-* začetni nalagalnik izvede nadaljne nalaganje diskov, gonilnikov itd.
+* začetni nalagalnik izvede nadaljnje nalaganje diskov, gonilnikov itd.
 
 Njegova naloga je tako poiskati bootloader, ki nato požene operacijski sistem, ki se nahaja na eni
 izmed particij. Ta bootloader je npr. GRUB, ki ga ponavadi najdemo pri Linuxu. GRUB omogoča tudi
 multi-boot.
 
-Vredno je še dodati, da BIOS potrebuje naložiti svoje gonilnike, ppreden se uporabijo tisti od OS.
+Vredno je še dodati, da BIOS potrebuje naložiti svoje gonilnike, preden se uporabijo tisti od OS.
 
-#### Zgradba začetnega nalagalnika - MBR
+#### Zgradba začetnega nalagalnika – MBR
 
-To kodo najdemo na na začetku diska v MBR.
+To kodo najdemo na začetku diska v MBR.
 
 * Koda nalagalnika,
 * podpis diska,
@@ -357,8 +365,6 @@ niso razširjene.
 Potlej pa imamo še particijski nalagalni sektor (ang. partition boot sector). To je poseben sektor,
 ki se nahaja na začetku vsake particije na shranjevalni napravi, kot je trdi disk. Tu so vsi podatki
 potrebni za zagon OS na tej particiji. Deluje kot mini-bootloader za posamezno particijo.
-
-#### Particijski nalagalni sektor
 
 Postopek:
 
@@ -386,7 +392,7 @@ nadaljnjim zagonom na glavni zaganjalnik operacijskega sistema.
 
 Naloga GRUB je nalaganje jedra OS. Tako je pri linuxu, in po nalaganju GRUB preda nadzor OS. Pri Windows-u pa ni
 tako. Pri Windows-u kliče GRUB začetni nalagalnik od Windows-a. Ta se nahaja ne preddoločeni lokaciji na disku,
-podobno kot da bi se zadeva zaganjala iz MBR.
+podobno, kot da bi se zadeva zaganjala iz MBR.
 
 ### BIOS alternative
 
@@ -490,7 +496,9 @@ jezik C#, ki pa bo deloval na .NET platformi. Tako je C# v bistvu Microsoftova J
 #### JVM
 
 JVM je torej virtualni stroj, ki izvaja vmesno kodo. Njegove naloge so poleg izvajanja kode še
-garbage collection, varnost, optimizacija kode, ...
+garbage collection, varnost, optimizacija kode, ... Zaradi njegovega načina delovanje - torej
+da se vsa koda programa, ki se izvaja nahaja na kopici, je izvajanje počasnejše, ampak
+lahko pa kodo spreminjamo on the fly.
 
 #### Javanska zložna koda
 
@@ -722,8 +730,8 @@ torej iz razreda `ClassLoader`.*
 ### Dalvik
 
 Dalvik je **registersko usmerjen stroj**, ki je bil razvit za Android. Več .class datotek
-združi v eno .dex datoteko. Uporablja tudi drugačen nabor ukazov. Poleg tega pa 
-uporablja tudi sprotno prilagodljivo optimiranje. 
+združi v eno .dex datoteko. Uporablja tudi drugačen nabor ukazov. Poleg tega pa
+uporablja tudi sprotno prilagodljivo optimiranje.
 
 ART format - Android Runtime: uporablja ahead-of-time kompilacijo in ob času namestitve
 se koda prevede v .dex datoteko, ki je hranjena v ELF formatu.
@@ -778,10 +786,10 @@ Primer:
 
 ![Sistemski klici](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-from-2023-05-23-20-21-26.png)
 
-Ti klici tudi pomenijo stalen prehod iz uporabniškega načina v jedrni način in nazaj. To 
+Ti klici tudi pomenijo stalen prehod iz uporabniškega načina v jedrni način in nazaj. To
 pa stane veliko časa.
 
-Aplikacija in OS imata oba svoj podatkovni vmesnik. 
+Aplikacija in OS imata oba svoj podatkovni vmesnik.
 
 #### Pot sistemskega klica
 
@@ -798,10 +806,10 @@ Aplikacija in OS imata oba svoj podatkovni vmesnik.
 10. Jedro prenese podatke v aplikacijo.
 11. Aplikacija nadaljuje z delom.
 
-Za prenos podatkov skrbi DMA (Direct Memory Access). 
+Za prenos podatkov skrbi DMA (Direct Memory Access).
 
 V glavnem pomembno si je zapomniti, da gre vse preko jedra, tudi podatki, ki gredo najprej
-v buffer. Ta buffer ni tako velik in moramo ga sproti sprazniti, sicer se nam povozijo 
+v buffer. Ta buffer ni tako velik in moramo ga sproti sprazniti, sicer se nam povozijo
 podatki. Ukaza: **copy from/to user space**.
 
 Gonilnikov si NE želimo v jedru, da nam ne povzročijo blue screena. Zato jih imamo v
@@ -820,7 +828,7 @@ v kernel načinu, zato je veliko preklopov. Moduli so objektno orientiran pristo
 #### Mikrojedro
 
 V jedru imamo le najnujnejše funkcionalnosti. Vse ostalo je v uporabniškem načinu.
-Vse storitve/servise imamo v uporabniškem načinu. Primer je NT jedro. Tako je malo 
+Vse storitve/servise imamo v uporabniškem načinu. Primer je NT jedro. Tako je malo
 preklopov, vendar je tudi počasnejše in jedro se težje sesuje. Jedro je tudi
 majhno in lažje za vzdrževanje. Večja varnost.
 
@@ -850,7 +858,7 @@ Za več podrobnosti glej stran 7 do 11.
 Sprva so se ti prehodi izvajali s pomočjo prekinitvenih rutin. To je bilo zelo počasno,
 saj je potreben dostop do pomnilnika (GDT in TSS).
 CPU se privzeto nahaja v ringu 0. Nato pa v programu naletimo na programsko prekinitev.
-Ta učinkuje kot sistemski klic. Gremo iz user mode v kernel mode. 
+Ta učinkuje kot sistemski klic. Gremo iz user mode v kernel mode.
 
 Prekinitve najdemo v obliki ukazov **int 3**, **int 0x80** na Linuxu in **int 0x2E** na
 Windows. Na novejših sistemih lahko v prekinitev tudi vstavimo parametre.
@@ -888,20 +896,193 @@ v naslovni prostor jedra.
 
 1. Opravilo OS kliče gonilnik - zahteva lahko pride iz jedra ali iz neke aplikacije,
 2. Glava zahteve [nakupovalni listič] se shrani v vhodno vrsto gonilnika,
-   1. Glava zahteve se postavi v vrsto,
-   2. Strategijska rutina izbira zahteve po nekem vrstnem redu,
-   3. Ponavadi je določena neka prioriteta,
+    1. Glava zahteve se postavi v vrsto,
+    2. Strategijska rutina izbira zahteve po nekem vrstnem redu,
+    3. Ponavadi je določena neka prioriteta,
 3. Ko gonilnik obdela zahtevo, sproži prekinitev,
 4. Sproži se prekinitvena rutina:
-   1. To rutino kliče CPU, ko dobi prekinitev od gonilnika,
-   2. Gonilnik določa, kaj se zgodi, ko se zgodi prekinitev,
-   3. Glede na pomembnost prekinitve imamo dve možni rutini. Ideja je, da če se rutina
-      ne izvede v zgornji polovici, se izvede v spodnji polovici:
-      1. Zgornja polovica - hitra rutina,
-      2. Spodnja polovica - počasna rutina,
+    1. To rutino kliče CPU, ko dobi prekinitev od gonilnika,
+    2. Gonilnik določa, kaj se zgodi, ko se zgodi prekinitev,
+    3. Glede na pomembnost prekinitve imamo dve možni rutini. Ideja je, da če se rutina
+       ne izvede v zgornji polovici, se izvede v spodnji polovici:
+        1. Zgornja polovica - hitra rutina,
+        2. Spodnja polovica - počasna rutina,
 5. Ta čas se podatki iz V/I naprave preko gonilnika, preko DMA prenesejo v sistemski vmesnik.
 
 ### Model prekinitev
 
 Spodaj opisano model še vedno uporablja ARM, je pa precej počasen. Je pa njegova prednost,
 da zlahka registriramo nove rutine.
+
+# Vprašanja
+
+## Sekcija vs. segment
+
+Sekcije predstavljajo različne dele programa in jih najdemo v objektnih modulih - .o
+datotekah. Segmente pa najdemo v izvršljivih datotečnih formatih - npr. .exe. Sekcije se
+tako združujejo v segmente. Namen segmentov je bolj ali manj organizacija pomnilnika -
+kako se program naloži v pomnilnik.
+
+Primeri sekcij so:
+
+- **.text** - koda programa,
+- **.data** - inicializirani podatki,
+- **.rodata**/.rdata - read only podatki,
+- **.bss** - neinicializirani podatki,
+- .interp - dinamični linker,
+- .shstrtab - imena sekcij,
+- .symtab - tabela simbolov,
+- .strtab - tabela nizov znakov.
+
+Kar se tiče zastavic, pa samo logičen pomislek: ali se ta koda izvaja, rabimo pravice
+za pisanje? Branje je vedno ena izmed zastavic.
+
+Konstante so lahko v .rodata/.rdata ali pa v .text. Ker te dve sekciji padeta v isti
+segment, je tudi potrebno paziti na zastavice in na to, da ponesreči ne začnemo
+izvajati konstant kot kodo.
+
+## Izvedljivi vs. objektni modul
+
+Izvedljivi modul je končna datoteka, ki je pripravljena za nalaganje in izvajanje. Vsebuje
+segmente in vstopno točko. Sekcije so tu že združene v segmente, da se lahko program
+direktno naloži v pomnilnik. Objektni modul je predhodnik te datoteke pri prevajanju in
+zato še ni izvedljiv, vsebuje samo sekcije in nima vstopne točke.
+
+## VDSO
+
+VDSO je pohitritev na Linuxu, ki deluje tako, da del pomnilnika jedra preslika v pomnilniški
+prostor uporabnika. Tako lahko se lahko določeni sistemski klici opravijo brez preklopa v
+kernel način.
+
+## Statično povezovanje
+
+Po tem, ko dobimo objektne module, je čas za povezovanje.
+Ideja je, da imamo na vhodu več objektnih modulov, ki pa jih moramo povezati v en izvedljiv
+modul. Modulu dodelimo pomnilniški prostor, povežemo posamezne objekte simbole, prenaslovimo
+vse potrebno in dopolnimo izvedljiv program s sistemskimi klici. Zatem je program pripravljen
+za nalaganje.
+
+Ker vse to storimo pred zagonom, ima program zelo dober response time.
+
+Na izhodu pa tudi lahko dobimo različne vrste programov: prenaslovljiv in absolutno izvedljiv
+modul ali pa izhodni objektni modul.
+
+Želimo si, da povezovalnik naredi čim več stvari, da je program čim bolj pripravljen za zagon.
+
+Glavna stvar tu pa je, da sekcije, ki pašejo skupaj damo skupaj v dotične segmente.
+
+### V zvezi s sekcijami...*
+
+Ko se povezujejo objektni moduli, se sekcije združujejo v segmente. Segmenti so pa tisti,
+ki se naložijo v pomnilnik.
+
+### Sekcije
+
+Nekaj več o sekcijah glede na način naslavljanja: [Sekcije](#sekcije-glede-na-način-naslavljanja).
+
+Imamo več vrst sekcij:
+
+- absolutna sekcija,
+- nepoimenovana sekcija,
+- poimenovana sekcija.
+
+Kdaj se absolutne sekcije zlivajo? Kadar se sekciji prekrivata – njun pomnilniški prostor sovpada.
+Takrat se sekciji združita v eno absolutno sekcijo.
+
+### Prenaslovitvena tabela
+
+Glej [Prenaslovitvena tabela](#prenaslovitvena-tabela).
+
+## PE vs. ELF
+
+Glavna razlika je v tem, da so viri vključeni v izvedljivi modul, medtem ko so pri ELF
+ti viri zunanje reference. Recimo primer je ikona aplikacije, ki jo moramo pri PR formatu
+priložiti k programu, ki ga prevajamo.
+
+## Povezovanje knjižnic in verzioniranje
+
+Knjižnice lahko povežemo na sledeče načine:
+
+1. Statistično povezovanje,
+2. Dinamično povezovanje:
+    1. Dinamično povezovanje ob zagonu - zgodnje povezovanje,
+    2. Dinamično povezovanje ob prvem klicu knjižnice - pozno povezovanje.
+
+Težavice, ki nastanejo, so sledeče:
+
+- **Kako zagotoviti, da se bo program izvajal tudi v prihodnosti?** - verzioniranje - major in minor version,
+  kjer major version spremeni tudi vmesnik, minor version pa ponavadi samo notranje delovanje knjižnice.
+- **Problem varnosti** - ker gre za dinamične knjižnice, so te lažje nadomeščene z zlonamernimi
+  programi oz. knjižnicami. Pa tudi posodabljanje je problem, ker se lahko zgodi, da se knjižnica
+  posodobi, program pa ne. Tako lahko pride do težav.
+- **Klic po imenu vs. klic po številki** - Slednje je sicer hitrejše, ampak problem je, kaj če
+  se številka funkcije spremeni? Tako je bolje klicati po imenu, ker se to ne spremeni - imamo tabelo
+  funkcij z imeni in naslovi. Takšna zgodba je tudi pri DLL-ih, kjer se funkcije zato kličejo po imenu.
+
+Več o tem najdeš v [Programske knjižnice](#programske-knjižnice).
+
+## MBR in BIOS
+
+Kaj je MBR? MBR je Master Boot Record, ki je prvi sektor na disku. Vsebuje pa:
+
+* Koda nalagalnika,
+* podpis diska,
+* 2 zloga?,
+* particijska tabela (do 4 particije),
+* podpis MBR.
+
+V MBR najdemo particijsko tabelo, ki vsebuje podatke o particijah.
+
+_Kaj je BIOS? BIOS je Basic Input Output System, ki je firmware, ki se nahaja na matični plošči.
+Njegov namen je samopreverjanje in zagon računalnika - torej inicializacija V/I naprav, pregled
+predpripravljenega seznama zagonskih enot, dokler ne najde ustrezne. BIOS nato prebere
+kodo iz sektorja MBR in jo preda v izvajanje. MBR poišče aktivno particijo in prebere
+kodo iz njenega glavnega sektorja. Sledi nalaganje jedra OS._
+
+Več o tem najdeš v [Nalagalnik](#nalagalnik).
+
+### GRUB Multiboot
+
+Glej [GRUB](#grub).
+
+Postopek nalaganja GRUB je sledeč:
+
+1. BIOS poišče zagonsko enoto v seznamu,
+2. BIOS prebere MBR kodo in začne izvajanje,
+3. MBR koda vsebuje prvo stopnjo nalagalnika GRUB, ki naloži še drugi del GRUB,
+4. GRUB na zaslon izpiše seznam operacijskih sistemov in njihovih jeder,
+5. Uporabnik izbere jedro, ki ga želi zagnati,
+6. Po izbiri se začne nalaganje jedra OS. Pri Windows se kliče Windows-ov nalagalnik.
+
+#### Varnost
+
+[//]: # (TODO: Finish this)
+
+Ker je nalagalnik prvi program, ki se izvede, je pomembno, da je ta program zaupanja vreden...
+
+## Java
+
+Kaj je Java: [Java](#java).
+
+### Virtualizacija
+
+Kaj je virtualizacija: [JVM](#jvm) in [Delovanje JVM](#delovanje-jvm).
+
+### Prednosti
+
+Glavne prednosti so:
+
+- platformna neodvisnost - ker se programi izvajajo na JVM, so ti programi neodvisni od platforme,
+- varnost - ker se programi izvajajo na JVM, so ti programi varni v smislu:
+  - memory management - imamo garbage collector, ki skrbi za čiščenje pomnilnika,
+  - uporaba sandboxa - recimo Java web appleti rečejo v sandbox, ki je varno okolje,
+- možnost spreminjanja kode on the fly in nasploh večji nadzor nad izvajanjem programa.
+
+### Slabosti
+
+Glavne slabosti so:
+
+- počasnost - ker se programi izvajajo na JVM, so ti programi počasnejši od programov, ki se izvajajo na strojni opremi,
+- kodo težje optimiziramo za ciljno platformo, saj smo odvisni od izvajanega okolja,
+- težje je delati z nizkimi nivoji, saj je vse skrito za JVM-om.
+
