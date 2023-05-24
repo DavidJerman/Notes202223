@@ -5,6 +5,7 @@
 * [Kazalo](#kazalo)
 * [Snov](#snov)
 * [Vprašanja](#vprašanja)
+* [Dodatki](#dodatki)
 
 # Snov
 
@@ -525,12 +526,12 @@ Poznamo naslednje načine interpretiranja kode:
 Javanski stroj zelo spominja na stack. Imamo OS in znotraj OS imamo nato lahko več
 JVM - načeloma enega za vsak thread. Vsak JVM ima svoj pomnilniški prostor. Podobno
 kot pri OS imamo tudi tukaj virtualni pomnilniški prostor, ki je razdeljen na
-več delov: stack, heap, .data, .text. NA heap dajemo kodo, ki se izvaja, na stack
+več delov: stack, heap, prostor za metode. Na heap dajemo kodo, ki se izvaja, na stack
 pa podatke, ki jih potrebujemo za izvajanje - vključno s spremenljivkami, ki bi
 jih ponavadi dajali v registre. JVM je namreč skladovno orientiran stroj.
 
 Vsak javanski program tako teče znotraj svojega JVM. Imamo razredne zbirke, iz katerih
-lahko naložimo objekte - te nato damo v omenjeni heap. Iz heap pa podatke nato jemujemo
+lahko naložimo objekte - te nato damo v omenjeni heap. Iz heap pa podatke nato jemljemo
 za izvajanje. Vsak JVM ima tudi svoj programski števec.
 
 #### Sklad JVM
@@ -542,6 +543,13 @@ Sklad JVM sestoji iz:
 * lokalnih spremenljivk,
 * režijske informacije za delo s skladom,
 * operandnega sklada.
+
+Poleg tega najdemo še sledeče registre:
+
+- programski števec,
+- vars - kazalec na lokalne spremenljivke,
+- frame - kazalec na režijske informacije,
+- optop - kazalec na vrh operandnega sklada.
 
 #### Ostale lastnosti
 
@@ -1066,7 +1074,8 @@ Kaj je Java: [Java](#java).
 
 ### Virtualizacija
 
-Kaj je virtualizacija: [JVM](#jvm) in [Delovanje JVM](#delovanje-jvm).
+Kaj je virtualizacija: [JVM](#jvm) in [Delovanje JVM](#delovanje-jvm) in
+[Na dolgo o JVM pomnilniku](#na-dolgo-o-jvm-pomnilniku-chatgpt).
 
 ### Prednosti
 
@@ -1074,8 +1083,8 @@ Glavne prednosti so:
 
 - platformna neodvisnost - ker se programi izvajajo na JVM, so ti programi neodvisni od platforme,
 - varnost - ker se programi izvajajo na JVM, so ti programi varni v smislu:
-  - memory management - imamo garbage collector, ki skrbi za čiščenje pomnilnika,
-  - uporaba sandboxa - recimo Java web appleti rečejo v sandbox, ki je varno okolje,
+    - memory management - imamo garbage collector, ki skrbi za čiščenje pomnilnika,
+    - uporaba sandboxa - recimo Java web appleti rečejo v sandbox, ki je varno okolje,
 - možnost spreminjanja kode on the fly in nasploh večji nadzor nad izvajanjem programa.
 
 ### Slabosti
@@ -1086,3 +1095,70 @@ Glavne slabosti so:
 - kodo težje optimiziramo za ciljno platformo, saj smo odvisni od izvajanega okolja,
 - težje je delati z nizkimi nivoji, saj je vse skrito za JVM-om.
 
+### Načini izvajanja javanske kode
+
+Glej [Interpretiranje kode](#interpretiranje-kode) in [Interpretacija javanske kode](#interpretacija-javanske-kode).
+
+### Okvirji na skladu
+
+Glej [Okvirji na skladu](#sklad-jvm).
+
+### Primerjava ELF z Java class datoteko
+
+Glavna razlika, ki jo opazimo takoj je, da simbolna tabela ostane pri class datoteki, medtem ko se
+pri ELF datoteki po zamenjavi naslovov ponavadi odstrani. Drugače povedano, pri .class datoteki
+ostane nerazrešena.
+
+### Sintaktično popolno ime metode
+
+Celotno ime metode v Javi sestoji iz:
+
+- imena razreda - recimo `java.lang.String`,
+- imena metode - recimo `substring`,
+- tipov argumentov - recimo `(int, int)`,
+- tipa vrnjenega podatka - recimo `String`.
+
+Oz drugače povedano: `java.lang.String.substring(int, int): String`.
+
+Oz.: _ime razreda + ime metode + tipi argumentov in tip vrnjenega podatka_.
+
+### Problem rekurzivnega povezovanja
+
+Glavni problem tu je, da, ko se s poznim nalaganjem neka knjižnica začne nalagati, da je le-ta
+pogosto v odvisnosti z drugimi knjižnicami, kar pomeni rekurzivno iskanje odvisnih knjižnic.
+To vodi v nerealno časovno delovanje programa, upočasni program, sploh, če so knjižnice ogromne.
+
+## Dalvik
+
+Dalvik bi lahko rekli je nek naslednjik Jave, ker združi več .class datotek v eno Java datoteko.
+Razlog je v tem, da se sicer med temi .class datotekami ponavlja constant pool - večji programi.
+Po združitvi teh datotek dobimo eno datoteko, ki vsebuje skupen constant pool in vse metode.
+
+Več o Dalvik-u: [Dalvik](#dalvik).
+
+# Dodatki
+
+### Na dolgo o JVM pomnilniku [ChatGPT]
+
+The JVM operates in a manner similar to a stack. Within an operating system, we can have multiple JVM instances,
+typically one for each thread. Each JVM has its own memory space. Similar to an operating system, the JVM has a
+virtual memory space divided into several parts: stack, heap, and method area.
+
+* Stack: Each thread in the JVM has its own stack, which is used to store local variables, method call information,
+  and partial results. The stack is organized as a stack data structure, with method calls and local variable data
+  pushed and popped as functions are invoked and completed. The stack also includes space for variables that would
+  typically be stored in registers.
+* Heap: The JVM's heap is where objects are dynamically allocated. It is the memory area where Java objects reside.
+  The heap is used for dynamic memory allocation and deallocation. Objects are created and stored on the heap, and
+  the JVM's garbage collector is responsible for managing the heap and reclaiming memory occupied by objects that
+  are no longer in use.
+* Method Area: The Method Area, also known as the Permanent Generation (prior to Java 8) or the Metaspace (from
+  Java 8 onwards), is where the JVM stores class-level structures. It includes the bytecode of loaded classes,
+  field and method information, and constant pool data.
+
+Each Java program runs within its own JVM instance. We can load objects from class libraries into the JVM,
+and these objects are then placed in the heap. Data from the heap is used for program execution. Additionally,
+each JVM has its own program counter, which keeps track of the currently executing instruction.
+
+It's worth noting that while this description provides a general overview of how the JVM operates, the specific
+implementation and memory organization may vary across different JVM implementations and versions.
