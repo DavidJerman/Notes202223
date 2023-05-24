@@ -13,7 +13,7 @@
 
 Glede na način naslavljanja imamo:
 
-1. Aboslutne sekcije. Te dobimo, če v kodi pri skoku ali vejitvi skočimo direktno na
+1. Absolutne sekcije. Te dobimo, če v kodi pri skoku ali vejitvi skočimo direktno na
    nek absoluten naslov.
 2. Prenaslovljive sekcije. Tu pri skoku uporabimo register in odmik.
 3. Pozicijsko neodvisna. Tu pri skoku uporabimo programski števec. Ideja je, da ne glede
@@ -24,7 +24,7 @@ Glede na način naslavljanja imamo:
 ## Prenaslovitvena tabela
 
 Tu pa nastane manjši problem. Relativni odnosi znotraj sekcij se lepo ohranijo, odnosi
-med različnimi sekicijami pa se ne. Zato rabimo prenaslovitveno tabelo, ki poskrbi za to,
+med različnimi sekcijami pa se ne. Zato rabimo prenaslovitveno tabelo, ki poskrbi za to,
 da se ob spremembi lokacije sekcij v pomnilniku naslovi ažurirajo. Dinamično povezovanje
 ni mačji kašelj!
 
@@ -35,7 +35,7 @@ Import tabela je tabela simbolov, ki vsebuje simbole, katere smo dobili od drugi
 pa simbole, katere ponujamo drugim. Te tabele se kot že omenjeno uporabljajo za
 nadomestitev simbolov z dejanskimi naslovi ali vrednostmi. Skratka te table vsebujejo
 in pa kazalce na mesta, kjer so bili ti simboli uporabljeni.
-S pomočjo teh tabel lahko iščemo varnostne lunkje, poleg tega pa otežujejo varovanje
+S pomočjo teh tabel lahko iščemo varnostne lunje, poleg tega pa otežujejo varovanje
 avtorskih pravic.
 
 ## Lokacijski števec
@@ -44,7 +44,7 @@ avtorskih pravic.
 
 ## Zasnova objektnega modula
 
-Objektni module sestoi iz sledečih delov:
+Objektni modul sestoji iz sledečih delov:
 
 * dolžina tabele globalnih simbolov,
 * dolžina vstopne tabele,
@@ -91,19 +91,19 @@ ELF Header:
 
 ## Pomen sekcij v ELF
 
-.text - koda programa
-.data - inicializirane globalne spremenljivke
-.rodata - read only data
-.bss - neinicializicane globalne spremenljivke
-.interp - ACSII niz z imenom dinamičnega povezovalnika
-.shstrtab - seckija z imeni sekcij
-.symtab - simbolna tabela za statično povezovanje
-.strtab - tabela nizov znakov
+.text – koda programa
+.data – inicializirane globalne spremenljivke
+.rodata – read only data
+.bss – ne-inicializicane globalne spremenljivke
+.interp – ACSII niz z imenom dinamičnega povezovalnika
+.shstrtab – sekcija z imeni sekcij
+.symtab – simbolna tabela za statično povezovanje
+.strtab – tabela nizov znakov
 
-## Čemu služu magično število
+## Čemu služi magično število
 
-Namen magičnega števila je, da identificira tip datoteke - torej da gre za ELF datoteko in
-ne kaj drugega. Namreč če vrednosti magičnega števila preko ASCII tabele pretvorimo, dobimo
+Namen magičnega števila je, da identificira tip datoteke – torej, da gre za ELF datoteko in
+ne nekaj drugega. Namreč, če vrednosti magičnega števila preko ASCII tabele pretvorimo, dobimo
 izpis ELF!
 
 ## Primer izvedljivega module (s segmenti)
@@ -152,31 +152,31 @@ Program Headers:
 ### Kam se preslika .text? Kakšne so zastavice?
 
 .text se preslika v tretji segment, torej na naslov 0x003000. Zastavice pa so kot pričakovano
-R in E - namreč gre za kodo in le-ta je izvedljiva.
+R in E – namreč gre za kodo in le-ta je izvedljiva.
 
 ### Kam se preslika .data? Kakšne so zastavice?
 
 .data se preslika v šesti segment, torej na naslov 0x0cfe00. Zastavice pa so kot pričakovano
-RW - namreč gre za podatkovni segment, ki je berljiv in zapisljiv.
+RW – namreč gre za podatkovni segment, ki je berljiv in zapisljiv.
 
 ### Kam se preslika .bss? Kakšne so zastavice?
 
 .bss se preslika v šesti segment, torej na naslov 0x0cfe00. Zastavice pa so kot pričakovano
-RW - namreč gre za neicinilarizirane podatke, ki so berljivi in zapisljivi.
+RW – namreč gre za neicinilarizirane podatke, ki so berljivi in zapisljivi.
 
 ## Povezovanje vs. nalaganje
 
-Glavna razlika, ki izda, ali je program pripravljen za povezovanje ali že za nalaganje, je da
+Glavna razlika, ki izda, ali je program pripravljen za povezovanje ali že za nalaganje, je, da
 pri nalaganju najdemo segmente, pri povezovanju pa seckije.
 
 ## Še nekaj o objektnih modulih
 
 Vstopna točka (preamble) se začne v sekciji .init. Treba je tudi doumeti, da v programih najdemo
-tako pojem fizičnih kot virtualnih naslovov. Catch je v tem, da ko program še ni naložen v
-v pomnilnik, da so naslovi uporabljeni v bistvu virtualni, torej relativni na začetek programa in
-ko se program naloži se ti naslovi (odvisno od OS) zamenjajo z pravimi fizičnimi naslovi. Tako
+tako pojem fizičnih kot virtualnih naslovov. Catch je v tem, da, ko program še ni naložen
+v pomnilnik, so naslovi uporabljeni v bistvu virtualni, torej relativni na začetek programa in
+ko se program naloži se ti naslovi (odvisno od OS) zamenjajo s pravimi fizičnimi naslovi. Tako
 stvari rad dela Windows, Linux pa raje za to uporablja registre in posredno naslavljanje.
-Poleg tega program pred vstopom v pomnilnik še nima kopice in stacka. Knjićnice se lahko naložijo
+Poleg tega program pred vstopom v pomnilnik še nima kopice in stacka. Knjižnice se lahko naložijo
 tudi dinamično naknadno.
 
 ## VDSO
@@ -187,8 +187,8 @@ kernel način.
 
 ## PE format - Windows
 
-V bistvu gre za zelo podobnjo zadevo. Samo malce so spremenili stvari od ELF. Primeri takšnih
-datotek so .cpl, .exem .dll, ... Izhaja pa iz formata COFF. PE se nato še razširi za .NET z
+V bistvu gre za zelo podobno zadevo. Samo malce so spremenili stvari od ELF. Primeri takšnih
+datotek so .cpl, .exe, .dll, ... Izhaja pa iz formata COFF. PE se nato še razširi za .NET z
 dodano sekcijo za metapodatke in kodo CRL. .NET koda se zažene v virtualnem stroju. Compila
 se delno z JIT compilerjem.
 Zgradba tega formata pa je sledeča:
@@ -201,8 +201,8 @@ Zgradba tega formata pa je sledeča:
 * simbolna tabela, export in import tabela
 * tabela nizov
   Tudi ta format ravno ne ščiti avtorskih pravic. Ali si pred konkurenco, ali pa produkt
-  patentiraj. Edino kar ti je skrito, je simbolna tabela. Format uporablja **relativne virtualne
-  naslove**. Vnnaprej se tudi določi izvajalni naslov. Če je ta naslov zaseden, mora nalagalnik
+  patentiraj. Edino, kar ti je skrito, je simbolna tabela. Format uporablja **relativne virtualne
+  naslove**. Vnaprej se tudi določi izvajalni naslov. Če je ta naslov zaseden, mora nalagalnik
   opraviti prenaslavljanje.
 
 ## Sekcije PE formata
@@ -229,16 +229,16 @@ Za podrobnosti glej še enkrat prosojnice na strani 35 do 37.
 Tu gre ponavadi za zbirko programskih modulov istega tipa, ki imajo dogovorjen dostop do
 posameznih modulov oz. vsebin. Knjižnice so lahko ali statično ali dinamično povezane s
 programi. Če so dinamično, ne rabijo biti del programa in se naložijo v pomnilnik ob
-nalaganju v program ali ob klicu te knjižnice. Če pa si statične, pa se vsebina celotne
-knjižnice doda kar k vsebini modula programa. Če so knjižnice dinamične, potlej so ponavadi
+nalaganju v program ali ob klicu te knjižnice. Če pa so statične, pa se vsebina celotne
+knjižnice doda k vsebini modula programa. Če so knjižnice dinamične, potlej so ponavadi
 tudi deljene med programi. Zato morajo biti dostopne preko nekega sistemskega direktorija.
 Zato tudi rabimo verzioniranje, ki je na Linuxu dobro urejeno, na Windows pa ravno ne.
 .NET je to nekako izboljšal z uporabo globalnih repozitorijev knjižnic. Ponavadi imamo več
-knjižnic za različne funkcionalnosti, zato da lahko v programu uporabimo samo tiste, ki jih
+knjižnic za različne funkcionalnosti, zato, da lahko v programu uporabimo samo tiste, ki jih
 dejansko rabimo.
 
-Java ima te knjižnice urejene zelo dobro, pa tudi na Linuxu je to kar dobro urejeno, sploh
-z vidika verzioniranja. Na Windowsu je to že večji problem. Če si kaj več programiral v C++,
+Java ima te knjižnice urejene zelo dobro, pa tudi na Linuxu je to, kar dobro urejeno, sploh
+z vidika verzioniranja. Na Windows-u je to že večji problem. Če si programiral v C++,
 ti je to verjetno že jasno.
 
 ### Dinamično povezljive knjižnice
@@ -246,11 +246,11 @@ ti je to verjetno že jasno.
 Pri takšnih knjižnicah pogosto tudi najdemo razne ukaze za predprocesor? Poleg tega kot
 že omenjeno, se dinamične knjižnice lahko naložijo ali zgodaj ali pozno. Torej takoj ob
 nalaganju programa ali šele, ko so klicane oz. rabljene. V win se lahko na funkcije
-zglasuješ kar preko indeksov. Hash-vrednosti?
+zglasuješ preko indeksov. Hash-vrednosti?
 
 Dinamično povezovanje omogoča večjo prilagodljivost. Recimo imamo aplikacijo strojnega učenja,
 ki backend naloži šele naknadno. Npr., da zazna, da je na našem računalniku prisotna grafična
-kartica. Namesto basckenda za CPU lahko nato naknadno naloži backend za GPU.
+kartica. Namesto backenda za CPU lahko nato naknadno naloži backend za GPU.
 
 Kar pa se tiče verzioniranja na Linuxu:
 deljene knjižnice (shared library)
@@ -262,13 +262,13 @@ deljene knjižnice (shared library)
 
 Za primere glej PP stran 6, 7...
 
-## Dinamične knjižnjice na Linux-u
+## Dinamične knjižnice na Linux-u
 
 Za delo z dinamičnimi knjižnicami na Linuxu imamo knjižnico dlfcn.h. Ta poskrbi za dinamično
 nalaganje knjižnice v programu. Za ta namen obstaja funkcija dlopen(), dlclose(), dlsym()...
 Te knjižnice se na Linuxu končajo s .so.
 
-## Dinamične knjižnjice na Windows-u
+## Dinamične knjižnice na Windows-u
 
 Zgodba tu je podobna v smislu deljenja knjižnic. Tudi povezovanje je lahko tako implicitno
 kot eksplicitno. Po povezovanju dobimo import tabelo. V času izvajanja se ta tabela polni z
@@ -303,19 +303,19 @@ naložen v glavni pomnilnik in je pripravljen za izvajanje.
 
 ### Vrste nalagalnikov
 
-* TURBO prevajalnik - prevedi in poženi
-* absolutni nalagalnik - kaj takega najdemo na embedded napravah ali pa MBR
-* nalagalnik s prenaslavljanjem - to pa najdemo na modernih OS
+* TURBO prevajalnik – prevedi in poženi
+* absolutni nalagalnik – kaj takega najdemo na embedded napravah ali pa MBR
+* nalagalnik s prenaslavljanjem – to pa najdemo na modernih OS
 
 ### Absolutni nalagalnik
 
-Takšen nalagalnik najdemo v BIOSu. Izvedljiv modul se naloži z zunanje pomnilniške enote v
-delovni pomnilnik. Namen tega programa v BIOSu je samopreizkušanje komponent. Danes se nalagalnik
+Takšen nalagalnik najdemo v BIOS-u. Izvedljiv modul se naloži z zunanje pomnilniške enote v
+delovni pomnilnik. Namen tega programa v BIOS-u je samopreizkušanje komponent. Danes se nalagalnik
 takšne vrste v modernih računalnikih ne uporablja več. MBR pa je del pomnilnika na boot napravi,
 kjer so zapisani podatki o particijah in ostalo.
 
 Narava absolutnega nalagalnika je taka, da programi namesto virtualnih naslovov uporabljajo že
-kar direktno fiizične naslove - zato se to danes tudi več ne uporablja.
+kar direktno fizične naslove – zato se to danes tudi več ne uporablja.
 
 Zgradba absolutnega nalagalnika je sledeča:
 
@@ -327,7 +327,7 @@ Zgradba absolutnega nalagalnika je sledeča:
 
 ### Začetni nalagalnik
 
-Gre za kodo oz. nalagalnik (tudi bootloader), ki se zažene ob prižigu naprave - torej računalnika.
+Gre za kodo oz. nalagalnik (tudi bootloader), ki se zažene ob prižigu naprave – torej računalnika.
 Nahaja se v MBR (to je ponavadi na začetku diska, ki se uporablja za boot). Njegovo delovanje je
 sledeče:
 
@@ -351,16 +351,16 @@ To kodo najdemo na začetku diska v MBR.
 * particijska tabela (do 4 particije),
 * podpis MBR.
 
-MBRju sledijo ponavadi sektorji diska. Velikost sektorjev in MBR je 512 B.
+MBR-ju sledijo ponavadi sektorji diska. Velikost sektorjev in MBR je 512 B.
 
-Če imamo več kot 4 particije, lahko uporabimo večnivojsko particijsko tabelo.
+Če imamo več kot 4 particije, lahko uporabimo več nivojsko particijsko tabelo.
 
 #### Particijski nalagalni sektor
 
 Kot omenjeno lahko posamezne primarne particije nadomestimo z razširjenimi particijami. Te v bistvu
-kažejo na novo tabelo particij - gre kot omenjeno za večstopenjsko tabelo.
+kažejo na novo tabelo particij – gre kot omenjeno za večstopenjsko tabelo.
 
-Potlej imamo notranje razširjene particije in logične particije - te so notranje particije, ki pa
+Potlej imamo notranje razširjene particije in logične particije – te so notranje particije, ki pa
 niso razširjene.
 
 Potlej pa imamo še particijski nalagalni sektor (ang. partition boot sector). To je poseben sektor,
@@ -378,29 +378,29 @@ komponent operacijskega sistema.
 Prevedi nadzor zagona: Nalagalnik (bootloader), ki je del particijskega nalagalnega sektorja, prenese nadzor nad
 nadaljnjim zagonom na glavni zaganjalnik operacijskega sistema.
 
-#### Začetni nalagalnik v osebnem računalniku - postopek nalaganja
+#### Začetni nalagalnik v osebnem računalniku – postopek nalaganja
 
 * Naloži se BIOS ukaz na naslovu CS:IP
 * Skok na kodo za samopreizkušanje
 * BIOS gre čez seznam zagonskih enot, da najde pravo
 * Iz posamezne zagonske naprave prebere kodo iz MBR
-* Koda MBR v particijski tabeli poišče aktivno particijo in naloži kodo iz njenega glavnega sektorja - ponavadi to
+* Koda MBR v particijski tabeli poišče aktivno particijo in naloži kodo iz njenega glavnega sektorja – ponavadi to
   že zadeva od OS
-* Ta koda iz glavnega sektorja aktivne particije nalaga OS - **jedro OS gre iz realnega načina v zaščiten način
+* Ta koda iz glavnega sektorja aktivne particije nalaga OS – **jedro OS gre iz realnega načina v zaščiten način
   delovanja**
 
 ### GRUB
 
 Naloga GRUB je nalaganje jedra OS. Tako je pri linuxu, in po nalaganju GRUB preda nadzor OS. Pri Windows-u pa ni
-tako. Pri Windows-u kliče GRUB začetni nalagalnik od Windows-a. Ta se nahaja ne preddoločeni lokaciji na disku,
+tako. Pri Windows-u kliče GRUB začetni nalagalnik od Windows-a. Ta se nahaja ne pred-določeni lokaciji na disku,
 podobno, kot da bi se zadeva zaganjala iz MBR.
 
 ### BIOS alternative
 
-* Slabost BIOSa je, da deluje b 16-bitnem načinu in smo omejeni na 1MB naslovnega prostora. To je kar malo, glede
+* Slabost BIOS-a je, da deluje b 16-bitnem načinu in smo omejeni na 1MB naslovnega prostora. To je malo, glede
   na to, da BIOS rabi tudi svoje gonilnike.
 
-Nadgradnja BIOSa je potlej UEFI. Uporablja jezik EFI Byte Code in GUID partition table. Podpira pa tudi recimo
+Nadgradnja BIOS-a je potlej UEFI. Uporablja jezik EFI Byte Code in GUID partition table. Podpira pa tudi recimo
 Secure Boot.
 
 #### UEFI
@@ -413,10 +413,10 @@ Imamo več sistemskih razredov UEFI:
 * UEFI only.
 
 Ostale načine rabimo večinoma še zaradi kompatibilnosti z določenimi operacijskimi sistemi. Linux zna včasih
-delati problema tu, oz. nasploh nalaganje večih operacijskih sistemov na eno napravo.
+delati problem tu, oz. nasploh nalaganje več operacijskih sistemov na eno napravo.
 
-Omogoča nalaganje iz velikih particij s pomočjo GUID tabele. Je neodvisen od CPE - tudi njegovi gonilniki
-so neodvisni od CPE. Definirajo se samo komunikacijski protokoli v jeziku UEFI Byte Code, ki pa jo interpreetira
+Omogoča nalaganje iz velikih particij s pomočjo GUID tabele. Je neodvisen od CPE – tudi njegovi gonilniki
+so neodvisni od CPE. Definirajo se samo komunikacijski protokoli v jeziku UEFI Byte Code, ki pa jo interpretira
 procesor.
 
 ![UEFI structure](https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Efi_flowchart_extended.svg/1024px-Efi_flowchart_extended.svg.png)
@@ -426,9 +426,9 @@ procesor.
 * Podpira tako 32 kot 64-bitni način delovanja,
 * interakcija nalagalnika strojne opreme (firmware loader) in nalagalnika OS (OS loader),
 * podpira GUID tabelo,
-* nudi storitve (aplikacije UEFI - nalagalniki SO) in tudi med delovanjem OS (čas, datum, NVRAM - trajni pomnilnik),
-* EFI Byte Code / Executable - procesorsko neodvisne aplikacije - interpreter je v sistemskem firmware,
-* varno nalaganje - preverja podpis nalagalnika OS - če ta ni veljaven, ga ne požene (to uporablja Windows),
+* nudi storitve (aplikacije UEFI – nalagalniki SO) in tudi med delovanjem OS (čas, datum, NVRAM - trajni pomnilnik),
+* EFI Byte Code / Executable – procesorsko neodvisne aplikacije – interpreter je v sistemskem firmware,
+* varno nalaganje – preverja podpis nalagalnika OS – če ta ni veljaven, ga ne požene (to uporablja Windows),
 * CMS (emulacija BIOS),
 * GOP (neodvisnost od standarda VGA),
 * uporabniški vmesnika mora razviti proizvajalec.
@@ -439,19 +439,19 @@ Ostale alternative so še Coreboot in pa OpenBIOS.
 
 ### Microsoft gonilniki
 
-Ena izmed prednoti gonilnikov Windowsa je ta, da so vsi podpisani. Npr.:
+Ena izmed prednosti gonilnikov Windows-a je ta, da so vsi podpisani. Npr.:
 
 1. Naredimo gonilnik za Windows,
-2. Gonilnik pošljemo Microsoftu, da ga potrdi in certificira - torej podpiše,
-3. Tako vsakič, ko se ta gonilnik naloži v Windowsu, se najprej preveri, če je podpisan preko MS strežnikov, kjer
+2. Gonilnik pošljemo Microsoftu, da ga potrdi in certificira – torej podpiše,
+3. Tako vsakič, ko se ta gonilnik naloži v Windows-u, se najprej preveri, če je podpisan preko MS strežnikov, kjer
    dobi hash kode od veljavnih gonilnikov.
 
-Podobno funkcionalnost najdemo tudi pri Linuxu, le da je na Windowsu vse vodeno s strani MS.
+Podobno funkcionalnost najdemo tudi pri Linuxu, le da je na Windows-u vse vodeno s strani MS.
 
 ### Secure Boot
 
 Secure Boot deluje zelo podobno tako, da preverja podpis nalagalnika. Za ta namen na današnjih matičnih ploščah
-najdemo TPM modul. NAmen njega he shranjevanje RSA ključev za gonilnike, strojno opremo, gesla in podobno. Ideja
+najdemo TPM modul. Namen njega je shranjevanje RSA ključev za gonilnike, strojno opremo, gesla in podobno. Ideja
 je, da bi se TPM modul uporabljal tudi za ščitenje programske opreme. Nekaj podobnega skuša narediti Apple.
 
 ### GUID tabela
@@ -476,7 +476,7 @@ KEK, ki vsebuje dodatne ključe.
 ### Porazdeljene računalniške aplikacije
 
 To je najvišji nivo dinamičnega izvajanja. Aplikacije in podatki so lahko shranjeni in se izvajajo
-na oddaljenih računalniških sistemih in nato komunicirajo med sabo. Prenos modulov kar med
+na oddaljenih računalniških sistemih in nato komunicirajo med sabo. Prenos modulov med
 izvajanjem in podobno. Je pa res, da to pomeni, da objekti ne smejo vsebovati sistemsko odvisne
 kode. Java npr. bi že lahko delovala na tak način.
 
@@ -488,8 +488,8 @@ ke prilagoditi JVM za posamezno platformo in to je to. Cilj je bil celo izvajanj
 
 ### Java
 
-Java kot omenjeno uporablja razrede - vse je razred. Izvorna koda .java se prevede v datoteko
-.class, ki pa je v bistvu strojno neodvisna koda - vmesna/zložna koda. Ta se nato izvaja na JVM.
+Java kot omenjeno uporablja razrede – vse je razred. Izvorna koda .java se prevede v datoteko
+.class, ki pa je v bistvu strojno neodvisna koda – vmesna/zložna koda. Ta se nato izvaja na JVM.
 Ker ne gre za direktno strojno kodo, simbolna tabela ostaja. Microsoft je naredil svojo
 implementacijo JVM, ki pa je bila zelo počasna. Zato so se odločili, da bodo naredili svoj
 jezik C#, ki pa bo deloval na .NET platformi. Tako je C# v bistvu Microsoftova Java.
@@ -497,7 +497,7 @@ jezik C#, ki pa bo deloval na .NET platformi. Tako je C# v bistvu Microsoftova J
 #### JVM
 
 JVM je torej virtualni stroj, ki izvaja vmesno kodo. Njegove naloge so poleg izvajanja kode še
-garbage collection, varnost, optimizacija kode, ... Zaradi njegovega načina delovanje - torej
+garbage collection, varnost, optimizacija kode, ... Zaradi njegovega načina delovanje – torej,
 da se vsa koda programa, ki se izvaja nahaja na kopici, je izvajanje počasnejše, ampak
 lahko pa kodo spreminjamo on the fly.
 
@@ -516,22 +516,22 @@ Skrbi za varnost, sistemsko neodvisnost in pa omrežno prenosljivost.
 
 Poznamo naslednje načine interpretiranja kode:
 
-* interpretiranje (ukaz za ukazom) - enostavno, a počasno,
-* JIT (just in time) - prevajanje v strojno kodo med izvajanjem,
-* AOT (ahead of time) - prevajanje v strojno kodo pred izvajanjem ob namestitvi,
-* prilagodljivo optimiranje - optimizacija med izvajanjem.
+* interpretiranje (ukaz za ukazom) – enostavno, a počasno,
+* JIT (just in time) – prevajanje v strojno kodo med izvajanjem,
+* AOT (ahead of time) – prevajanje v strojno kodo pred izvajanjem ob namestitvi,
+* prilagodljivo optimiranje – optimizacija med izvajanjem.
 
 ### Delovanje JVM
 
 Javanski stroj zelo spominja na stack. Imamo OS in znotraj OS imamo nato lahko več
-JVM - načeloma enega za vsak thread. Vsak JVM ima svoj pomnilniški prostor. Podobno
+JVM – načeloma enega za vsak thread. Vsak JVM ima svoj pomnilniški prostor. Podobno
 kot pri OS imamo tudi tukaj virtualni pomnilniški prostor, ki je razdeljen na
 več delov: stack, heap, prostor za metode. Na heap dajemo kodo, ki se izvaja, na stack
-pa podatke, ki jih potrebujemo za izvajanje - vključno s spremenljivkami, ki bi
+pa podatke, ki jih potrebujemo za izvajanje – vključno s spremenljivkami, ki bi
 jih ponavadi dajali v registre. JVM je namreč skladovno orientiran stroj.
 
 Vsak javanski program tako teče znotraj svojega JVM. Imamo razredne zbirke, iz katerih
-lahko naložimo objekte - te nato damo v omenjeni heap. Iz heap pa podatke nato jemljemo
+lahko naložimo objekte – te nato damo v omenjeni heap. Iz heap pa podatke nato jemljemo
 za izvajanje. Vsak JVM ima tudi svoj programski števec.
 
 #### Sklad JVM
@@ -547,22 +547,22 @@ Sklad JVM sestoji iz:
 Poleg tega najdemo še sledeče registre:
 
 - programski števec,
-- vars - kazalec na lokalne spremenljivke,
-- frame - kazalec na režijske informacije,
-- optop - kazalec na vrh operandnega sklada.
+- vars – kazalec na lokalne spremenljivke,
+- frame – kazalec na režijske informacije,
+- optop – kazalec na vrh operandnega sklada.
 
 #### Ostale lastnosti
 
 Enako kot pri običajnih nitih, si vse niti javanskega programa delijo isti pomnilniški
 prostor. Tako lahko niti med seboj komunicirajo.
 
-Podatkovni tipi so v Javi malce drugačni - recimo bool je velik 4 byte.
+Podatkovni tipi so v Javi malce drugačni – recimo bool je velik 4 byte.
 
 ### Interpretacija javanske kode
 
 * sprotno prevajanje v strojno kodo,
-* JIT (just in time) prevajanje v strojno kodo - ob klicu nekih delov kode,
-* prilagodljivo optimiranje - na strojni nivo prevedemo samo najbolj pogosto
+* JIT (just in time) prevajanje v strojno kodo – ob klicu nekih delov kode,
+* prilagodljivo optimiranje – na strojni nivo prevedemo samo najbolj pogosto
   izvajan del kode.
 
 ### Zložna koda
@@ -580,12 +580,12 @@ Razredna zbirka je zbirka razredov, ki so na voljo za uporabo. Med njih spadajo:
 
 * razredi,
 * niti,
-* vsi podatkovni tipi - tudi int, float, double je razred,
+* vsi podatkovni tipi – tudi int, float, double je razred,
 * metode,
 * ...
 
 Ta razred izgleda tako, da vsebuje tag, ki pove, za kateri razred gre, in pa podatke
-o razredu - metode, spremenljivke, ... Te tagi (značke) pridejo iz nabora konstant.
+o razredu – metode, spremenljivke, ... Te tag-i (značke) pridejo iz nabora konstant.
 
 ![Zapis metode v naboru konstant](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-2023-05-14-171506.png)
 
@@ -601,34 +601,34 @@ Za več primerov glej prosojnice stran 25-29.
 
 ### Kako je z interpretacijo kode v Javi
 
-Java najprej prevede izvorno kodo .java v zložno kodo .class - v razredne objekte.
+Java najprej prevede izvorno kodo .java v zložno kodo .class – v razredne objekte.
 Ti objekti se nato med seboj povezujejo in se izvajajo v virtualnih strojih JVM.
-Pri tem se sproti interpretirajo, možno pa je da se koda tudi sproti optimira.
-A vprašanje je, če je optimizacija mogoče celo slabša od interpretacije - smo morda
+Pri tem se sproti interpretirajo, možno pa je, da se koda tudi sproti optimira.
+A vprašanje je, če je optimizacija mogoče celo slabša od interpretacije – smo morda
 zapravili še več ciklov za optimizacijo kot bi sicer?
 
-### Kaj so metainformacije v kontekstu Jave in programskih jezikov [ChatGPT]
+### Kaj so meta informacije v kontekstu Jave in programskih jezikov [ChatGPT]
 
-Metainformacije v kontekstu Jave in programskih jezikov so dodatni podatki, ki
+Meta informacije v kontekstu Jave in programskih jezikov so dodatni podatki, ki
 opisujejo druge podatke v programski kodi. To lahko vključuje metapodatke, označbe,
-informacije o tipu, dokumentacijo in konfiguracijske datoteke. Metainformacije
+informacije o tipu, dokumentacijo in konfiguracijske datoteke. Meta informacije
 pomagajo razvijalcem bolje razumeti, interpretirati in uporabljati podatke v
 programih.
 
 Primer Java:
 
-En primer metainformacije v programskem jeziku Java je uporaba označb (annotations).
+En primer meta informacije v programskem jeziku Java je uporaba označb (annotations).
 Označbe omogočajo programerjem, da dodajo dodatne informacije ali navodila kodi. Na
 primer, v Javi obstaja označba @Deprecated, ki označuje, da je neka metoda, razred
 ali spremenljivka zastarela in se ne priporoča več za uporabo. S to označbo
 razvijalci prejmejo opozorilo, da bi morali namesto zastarelega elementa uporabiti
-alternativne pristope ali funkcionalnosti. Ta metainformacija pomaga razvijalcem
+alternativne pristope ali funkcionalnosti. Ta meta informacija pomaga razvijalcem
 razumeti, kako naj pravilno uporabljajo določene dele kode in zagotavlja smernice
 za vzdrževanje in nadgradnjo programske opreme.
 
 Primer C++:
 
-En primer metainformacije v programskem jeziku C++ je uporaba predloženih (template)
+En primer meta informacije v programskem jeziku C++ je uporaba predloženih (template)
 razredov. Predloženi razredi omogočajo programerjem, da parametrizirajo tip podatkov,
 ki jih razred manipulira ali uporablja. Na primer, lahko ustvarimo predložen razred
 `ArrayList`, ki omogoča shranjevanje elementov poljubnega tipa. Pri ustvarjanju
@@ -636,41 +636,41 @@ instance tega razreda lahko programer poda želeni tip podatkov, na primer
 `ArrayList<int>` za shranjevanje celih števil ali `ArrayList<string>` za
 shranjevanje nizov. To omogoča prilagodljivost in ponovno uporabo kode, saj se
 razred prilagodi glede na podani tip podatkov. Predloženi razredi v C++
-predstavljajo metainformacijo, ki opisuje, kako se bo določen razred uporabljal in
+predstavljajo meta informacijo, ki opisuje, kako se bo določen razred uporabljal in
 prilagajal glede na podane parametre.
 
 Pojasnilo:
 
 TL;DR: V kontekstu C++ je uporaba predloženih razredov (template classes)
-metainformacija. Predloženi razredi omogočajo programerjem ustvarjanje razredov,
-ki so parametrizirani glede na tip, kar omogoča prilagodljivost in ponovno uporabo
-kode. Metainformacija opisuje, kako se bo razred uporabljal in prilagajal glede na
+meta informacija. Predloženi razredi omogočajo programerjem ustvarjanje razredov,
+ki so parametrization glede na tip, kar omogoča prilagodljivost in ponovno uporabo
+kode. Meta informacija opisuje, kako se bo razred uporabljal in prilagajal glede na
 podane parametre, kar omogoča prilagodljivo obnašanje razreda.
 
-### Kazalci kot metainformacije
+### Kazalci kot meta informacije
 
-Še en primer metainformacij je uporaba kazalcev na funkcije. Kazalci na funkcije
+Še en primer meta informacij je uporaba kazalcev na funkcije. Kazalci na funkcije
 omogočajo programerjem, da funkcije uporabljajo kot parametre drugih funkcij. Na
 primer, lahko ustvarimo funkcijo `sort`, ki kot parameter sprejme kazalec na funkcijo
 `compare`. Ta funkcija `compare` primerja dva elementa in vrne rezultat, ki določi
 vrstni red elementov. Skratka, ne rabimo pisati nove funkcije `sort` za vsak tip.
 Je pa res, da to do neke mere **preprečuje standardizacijo in otežuje razumevanje**.
 
-Tako da je izziv najti razmerje med količino metainformacij in razumljivostjo kode.
+Tako da je izziv najti razmerje med količino meta informacij in razumljivostjo kode.
 
 ### Skladovno vs registersko usmerjen stroj
 
 Skladovno usmerjen stroj je stroj, ki uporablja sklad za shranjevanje podatkov.
 Primer je Java. Registersko usmerjen stroj pa uporablja registre za shranjevanje
-podatkov. Primer je Dalvik. Dalvik da na voljo 65k registrskih mest, čeprav
-jih v resnici računalnik nima toliko - pač gredo podatki v pomnilnik.
+podatkov. Primer je Dalvik. Dalvik ima na voljo 65k registrskih mest, čeprav
+jih v resnici računalnik nima toliko – pač gredo podatki v pomnilnik.
 
 ### Okvirni na skladu
 
 Posamezen okvir kot omenjeno vsebuje lokalne spremenljivke, režijske informacije
 in sklad operandov. Vsak okvir je posamezno izvajalno okolje, ki vsebuje vse
 potrebne informacije za izvajanje posamezne metode. Imamo pa tudi predel z
-virtualnimi registri - PC, vars (kazalec na lokalne spremenljivke), frame (kazalec
+virtualnimi registri – PC, vars (kazalec na lokalne spremenljivke), frame (kazalec
 na režijske informacije), optop (kazalec na sklad operandov).
 
 Vsi te skladi, ki so sicer ločeni med sabo gredo na koncu na skupni sklad.
@@ -686,7 +686,7 @@ Na vrhu razredne hierarhije je Object, iz katerega izhajajo vsi ostali razredi.
 ### Izjeme
 
 V glavnem tu je pomembna ideja: če se zgodi izjema, se izvajanje programa
-prekine in se začne iskanje bloka, ki bi lahko obravnaval izjemo - tabela
+prekine in se začne iskanje bloka, ki bi lahko obravnaval izjemo – tabela
 vektorjev z ISR (interrupt service routine).
 
 Izjeme delujejo tako, da zajemajo nek del programa. Povemo, od kje do kje
@@ -712,27 +712,27 @@ knjižnice dinamične knjižnice v Windows okolju.
 
 Postopek povezovanja:
 
-+ Preverjanje - verifikacija - ali je binarna koda vmesnika/objekta pravilna,
-+ Priprava - priprava pomnilnika - razporejanje pomnilnika (statična inicializacija
++ Preverjanje – verifikacija – ali je binarna koda vmesnika/objekta pravilna,
++ Priprava – priprava pomnilnika – razporejanje pomnilnika (statična inicializacija
   polj ipd.),
-+ Razreševanje - razreševanje simbolov,
++ Razreševanje – razreševanje simbolov,
 
 #### Razreševanje simbolov**
 
-1. Nalaganje - nalaganje podatkovnih tipov,
-2. Preverjanje tipa - preveri se sintaksa,
-3. Priprava tipa - rezervacija pomnilnika,
-4. Razrešitev tipa - razrešitev referenc (rekurzivno),
-5. Inicializacija tipa - najprej incializirajo vsi nadrejeni tipi,
-6. Preverjanje dostopnih pravic - ali klicoči tip lahko dostopa do klicanega.
+1. Nalaganje – nalaganje podatkovnih tipov,
+2. Preverjanje tipa – preveri se sintaksa,
+3. Priprava tipa – rezervacija pomnilnika,
+4. Razrešitev tipa – razrešitev referenc (rekurzivno),
+5. Inicializacija tipa – najprej incializirajo vsi nadrejeni tipi,
+6. Preverjanje dostopnih pravic – ali kličoči tip lahko dostopa do klicanega.
 
 ### Razredni nalagalniki
 
-Začetni razredni nalagalnik - nalaga lokalne razredne zbirke - isti jezik kot JVM.
+Začetni razredni nalagalnik – nalaga lokalne razredne zbirke – isti jezik kot JVM.
 
-Uporabniški razredni nalagalnik - nalaga uporabniške razredne zbirke - napisan v Javi.
+Uporabniški razredni nalagalnik – nalaga uporabniške razredne zbirke – napisan v Javi.
 
-Java ti tudi omogoča imeti svoj nalagalnik, ki pa deduje iz starševskega nalagalnika -
+Java ti tudi omogoča imeti svoj nalagalnik, ki pa deduje iz starševskega nalagalnika –
 torej iz razreda `ClassLoader`.*
 
 ### Dalvik
@@ -741,7 +741,7 @@ Dalvik je **registersko usmerjen stroj**, ki je bil razvit za Android. Več .cla
 združi v eno .dex datoteko. Uporablja tudi drugačen nabor ukazov. Poleg tega pa
 uporablja tudi sprotno prilagodljivo optimiranje.
 
-ART format - Android Runtime: uporablja ahead-of-time kompilacijo in ob času namestitve
+ART format – Android Runtime: uporablja ahead-of-time compilation in ob času namestitve
 se koda prevede v .dex datoteko, ki je hranjena v ELF formatu.
 
 APK - ZIP + jar, CERT.RSA, AndroidManifest.xml, direktorij lib z domorodno kodo, MANIFEST.MF,
@@ -762,13 +762,13 @@ Gre za nivo skupka objektov, ki so neodvisni od jezika (.NET assembly).
 
 Podpira obdelavo izjem, garbage collection, varnost, itd.
 
-Microsoft: CLR (Common Language Runtime) - to je izvajalno okolje na Windows, ki vključuje:
+Microsoft: CLR (Common Language Runtime) – to je izvajalno okolje na Windows, ki vključuje:
 
-- CTS (Common Type System) - skupni tipovni sistem,
+- CTS (Common Type System) – skupni tipovni sistem,
 - Metadata - opis podatkov,
-- CLS (Common Language Specification) - skupni jezikovni standard,
-- VES (Virtual Execution System) - virtualni izvajalni sistem,
-- BCL (Base Class Library) - knjižnice.
+- CLS (Common Language Specification) – skupni jezikovni standard,
+- VES (Virtual Execution System) – virtualni izvajalni sistem,
+- BCL (Base Class Library) – knjižnice.
 
 Pazi na drugačne tipe kot v Javi ali C++.
 
@@ -802,7 +802,7 @@ Aplikacija in OS imata oba svoj podatkovni vmesnik.
 #### Pot sistemskega klica
 
 1. Uporabnik pokliče sistemski klic,
-2. Aplikacija kliče OS in podatki o klicu se shranijo kot glava zahteve - glava zahteve
+2. Aplikacija kliče OS in podatki o klicu se shranijo kot glava zahteve – glava zahteve
    je kot nakupovalni listek,
 3. Podatki se prenesejo v jedro,
 4. Jedro preveri pravice in preveri, če je klic veljaven,*
@@ -820,7 +820,7 @@ V glavnem pomembno si je zapomniti, da gre vse preko jedra, tudi podatki, ki gre
 v buffer. Ta buffer ni tako velik in moramo ga sproti sprazniti, sicer se nam povozijo
 podatki. Ukaza: **copy from/to user space**.
 
-Gonilnikov si NE želimo v jedru, da nam ne povzročijo blue screena. Zato jih imamo v
+Gonilnikov si NE želimo v jedru, da nam ne povzročijo blue screen. Zato jih imamo v
 uporabniškem načinu, če je le mogoče.
 
 Bolj, ko gremo navzdol, bolj specifični smo, kaj od naprave želimo.
@@ -851,11 +851,11 @@ pa načeloma tudi novi Windows-i.
 
 Kontekstni preklop stane čas. Tu pride do vprašanja, ali pri preklopu želimo shraniti vse
 registre ali ne. Strojni (HW) preklop si shrani vse, ampak razvijalci OS pa lahko shranimo
-samo tisto, kar vemo, da rabimo - to tudi zakomplicira prevajalnike. Večina OS tako sama
+samo tisto, kar vemo, da rabimo – to tudi zakomplicira prevajalnike. Večina OS tako sama
 izvaja kontekstne preklope.
 
 Jedro ima svoj sklad in se ter tako poskrbi za te kontekstne preklope. Pri tem uporablja
-tudi tabelo GDT - Global Descriptor Table.
+tudi tabelo GDT – Global Descriptor Table.
 
 Za več podrobnosti glej stran 7 do 11.
 
@@ -891,9 +891,9 @@ hitrejši. So pa ti registri modelno specifični.
 
 Podatke lahko v sistemske klice prenašamo preko:
 
-- registrov - hitro, manjša količina podatkov, omejeno št. parametrov,
-- v bloku pomnilnika - naslov je v registru, veliko podatkov, večji overhead,
-- v skladu - isti princip kot pri bloku pomnilnika.
+- registrov – hitro, manjša količina podatkov, omejeno št. parametrov,
+- v bloku pomnilnika – naslov je v registru, veliko podatkov, večji overhead,
+- v skladu – isti princip kot pri bloku pomnilnika.
 
 Jedro vedno kopira vse parametre sistemskih klicev iz uporabniškega naslovnega prostora
 v naslovni prostor jedra.
@@ -902,7 +902,7 @@ v naslovni prostor jedra.
 
 ### Postopek klica gonilnika
 
-1. Opravilo OS kliče gonilnik - zahteva lahko pride iz jedra ali iz neke aplikacije,
+1. Opravilo OS kliče gonilnik – zahteva lahko pride iz jedra ali iz neke aplikacije,
 2. Glava zahteve [nakupovalni listič] se shrani v vhodno vrsto gonilnika,
     1. Glava zahteve se postavi v vrsto,
     2. Strategijska rutina izbira zahteve po nekem vrstnem redu,
@@ -913,8 +913,8 @@ v naslovni prostor jedra.
     2. Gonilnik določa, kaj se zgodi, ko se zgodi prekinitev,
     3. Glede na pomembnost prekinitve imamo dve možni rutini. Ideja je, da če se rutina
        ne izvede v zgornji polovici, se izvede v spodnji polovici:
-        1. Zgornja polovica - hitra rutina,
-        2. Spodnja polovica - počasna rutina,
+        1. Zgornja polovica – hitra rutina,
+        2. Spodnja polovica – počasna rutina,
 5. Ta čas se podatki iz V/I naprave preko gonilnika, preko DMA prenesejo v sistemski vmesnik.
 
 ### Model prekinitev
@@ -926,21 +926,21 @@ da zlahka registriramo nove rutine.
 
 ## Sekcija vs. segment
 
-Sekcije predstavljajo različne dele programa in jih najdemo v objektnih modulih - .o
+Sekcije predstavljajo različne dele programa in jih najdemo v objektnih modulih – .o
 datotekah. Segmente pa najdemo v izvršljivih datotečnih formatih - npr. .exe. Sekcije se
-tako združujejo v segmente. Namen segmentov je bolj ali manj organizacija pomnilnika -
+tako združujejo v segmente. Namen segmentov je bolj ali manj organizacija pomnilnika –
 kako se program naloži v pomnilnik.
 
 Primeri sekcij so:
 
-- **.text** - koda programa,
-- **.data** - inicializirani podatki,
-- **.rodata**/.rdata - read only podatki,
-- **.bss** - neinicializirani podatki,
-- .interp - dinamični linker,
-- .shstrtab - imena sekcij,
-- .symtab - tabela simbolov,
-- .strtab - tabela nizov znakov.
+- **.text** – koda programa,
+- **.data** – inicializirani podatki,
+- **.rodata**/.rdata – read only podatki,
+- **.bss** – neinicializirani podatki,
+- .interp – dinamični linker,
+- .shstrtab – imena sekcij,
+- .symtab – tabela simbolov,
+- .strtab – tabela nizov znakov.
 
 Kar se tiče zastavic, pa samo logičen pomislek: ali se ta koda izvaja, rabimo pravice
 za pisanje? Branje je vedno ena izmed zastavic.
@@ -959,7 +959,7 @@ zato še ni izvedljiv, vsebuje samo sekcije in nima vstopne točke.
 ## VDSO
 
 VDSO je pohitritev na Linuxu, ki deluje tako, da del pomnilnika jedra preslika v pomnilniški
-prostor uporabnika. Tako lahko se lahko določeni sistemski klici opravijo brez preklopa v
+prostor uporabnika. Tako se lahko določeni sistemski klici opravijo brez preklopa v
 kernel način.
 
 ## Statično povezovanje
@@ -979,7 +979,7 @@ modul ali pa izhodni objektni modul.
 
 Glavna stvar tu pa je, da sekcije, ki pašejo skupaj damo skupaj v dotične segmente.
 
-### V zvezi s sekcijami...*
+### V zvezi s sekcijami...
 
 Ko se povezujejo objektni moduli, se sekcije združujejo v segmente. Segmenti so pa tisti,
 ki se naložijo v pomnilnik.
@@ -991,7 +991,7 @@ Nekaj več o sekcijah glede na način naslavljanja: [Sekcije](#sekcije-glede-na-
 Imamo več vrst sekcij:
 
 - absolutna sekcija,
-- nepoimenovana sekcija,
+- ne poimenovana sekcija,
 - poimenovana sekcija.
 
 Kdaj se absolutne sekcije zlivajo? Kadar se sekciji prekrivata – njun pomnilniški prostor sovpada.
@@ -1013,19 +1013,19 @@ Knjižnice lahko povežemo na sledeče načine:
 
 1. Statistično povezovanje,
 2. Dinamično povezovanje:
-    1. Dinamično povezovanje ob zagonu - zgodnje povezovanje,
-    2. Dinamično povezovanje ob prvem klicu knjižnice - pozno povezovanje.
+    1. Dinamično povezovanje ob zagonu – zgodnje povezovanje,
+    2. Dinamično povezovanje ob prvem klicu knjižnice – pozno povezovanje.
 
 Težavice, ki nastanejo, so sledeče:
 
-- **Kako zagotoviti, da se bo program izvajal tudi v prihodnosti?** - verzioniranje - major in minor version,
+- **Kako zagotoviti, da se bo program izvajal tudi v prihodnosti?** – verzioniranje – major in minor version,
   kjer major version spremeni tudi vmesnik, minor version pa ponavadi samo notranje delovanje knjižnice.
-- **Problem varnosti** - ker gre za dinamične knjižnice, so te lažje nadomeščene z zlonamernimi
+- **Problem varnosti** – ker gre za dinamične knjižnice, so te lažje nadomeščene z zlonamernimi
   programi oz. knjižnicami. Pa tudi posodabljanje je problem, ker se lahko zgodi, da se knjižnica
   posodobi, program pa ne. Tako lahko pride do težav.
-- **Klic po imenu vs. klic po številki** - Slednje je sicer hitrejše, ampak problem je, kaj če
-  se številka funkcije spremeni? Tako je bolje klicati po imenu, ker se to ne spremeni - imamo tabelo
-  funkcij z imeni in naslovi. Takšna zgodba je tudi pri DLL-ih, kjer se funkcije zato kličejo po imenu.
+- **Klic po imenu vs. klic po številki** – Slednje je sicer hitrejše, ampak problem je, kaj, če
+  se številka funkcije spremeni? Tako je bolje klicati po imenu, ker se to ne spremeni – imamo tabelo
+  funkcij z imeni in naslovi. Takšna zgodba je tudi pri DLL-ih, kjer se funkcije kličejo po imenu.
 
 Več o tem najdeš v [Programske knjižnice](#programske-knjižnice).
 
@@ -1042,8 +1042,8 @@ Kaj je MBR? MBR je Master Boot Record, ki je prvi sektor na disku. Vsebuje pa:
 V MBR najdemo particijsko tabelo, ki vsebuje podatke o particijah.
 
 _Kaj je BIOS? BIOS je Basic Input Output System, ki je firmware, ki se nahaja na matični plošči.
-Njegov namen je samopreverjanje in zagon računalnika - torej inicializacija V/I naprav, pregled
-predpripravljenega seznama zagonskih enot, dokler ne najde ustrezne. BIOS nato prebere
+Njegov namen je samopreverjanje in zagon računalnika – torej inicializacija V/I naprav, pregled
+pred-pripravljenega seznama zagonskih enot, dokler ne najde ustrezne. BIOS nato prebere
 kodo iz sektorja MBR in jo preda v izvajanje. MBR poišče aktivno particijo in prebere
 kodo iz njenega glavnega sektorja. Sledi nalaganje jedra OS._
 
@@ -1064,7 +1064,7 @@ Postopek nalaganja GRUB je sledeč:
 
 #### Varnost
 
-[//]: # (TODO: Finish this)
+Glej: [Secure Boot](#secure-boot).
 
 Ker je nalagalnik prvi program, ki se izvede, je pomembno, da je ta program zaupanja vreden...
 
@@ -1081,17 +1081,17 @@ Kaj je virtualizacija: [JVM](#jvm) in [Delovanje JVM](#delovanje-jvm) in
 
 Glavne prednosti so:
 
-- platformna neodvisnost - ker se programi izvajajo na JVM, so ti programi neodvisni od platforme,
-- varnost - ker se programi izvajajo na JVM, so ti programi varni v smislu:
-    - memory management - imamo garbage collector, ki skrbi za čiščenje pomnilnika,
-    - uporaba sandboxa - recimo Java web appleti rečejo v sandbox, ki je varno okolje,
+- platformna neodvisnost – ker se programi izvajajo na JVM, so ti programi neodvisni od platforme,
+- varnost – ker se programi izvajajo na JVM, so ti programi varni v smislu:
+    - memory management – imamo garbage collector, ki skrbi za čiščenje pomnilnika,
+    - uporaba sandboxa – recimo Java web applet-i rečejo v sandbox, ki je varno okolje,
 - možnost spreminjanja kode on the fly in nasploh večji nadzor nad izvajanjem programa.
 
 ### Slabosti
 
 Glavne slabosti so:
 
-- počasnost - ker se programi izvajajo na JVM, so ti programi počasnejši od programov, ki se izvajajo na strojni opremi,
+- počasnost – ker se programi izvajajo na JVM, so ti programi počasnejši od programov, ki se izvajajo na strojni opremi,
 - kodo težje optimiziramo za ciljno platformo, saj smo odvisni od izvajanega okolja,
 - težje je delati z nizkimi nivoji, saj je vse skrito za JVM-om.
 
@@ -1113,10 +1113,10 @@ ostane nerazrešena.
 
 Celotno ime metode v Javi sestoji iz:
 
-- imena razreda - recimo `java.lang.String`,
-- imena metode - recimo `substring`,
-- tipov argumentov - recimo `(int, int)`,
-- tipa vrnjenega podatka - recimo `String`.
+- imena razreda – recimo `java.lang.String`,
+- imena metode – recimo `substring`,
+- tipov argumentov – recimo `(int, int)`,
+- tipa vrnjenega podatka – recimo `String`.
 
 Oz drugače povedano: `java.lang.String.substring(int, int): String`.
 
@@ -1130,8 +1130,8 @@ To vodi v nerealno časovno delovanje programa, upočasni program, sploh, če so
 
 ## Dalvik
 
-Dalvik bi lahko rekli je nek naslednjik Jave, ker združi več .class datotek v eno Java datoteko.
-Razlog je v tem, da se sicer med temi .class datotekami ponavlja constant pool - večji programi.
+Dalvik bi lahko rekli je nek naslednik Jave, ker združi več .class datotek v eno Java datoteko.
+Razlog je v tem, da se sicer med temi .class datotekami ponavlja constant pool – večji programi.
 Po združitvi teh datotek dobimo eno datoteko, ki vsebuje skupen constant pool in vse metode.
 
 Več o Dalvik-u: [Dalvik](#dalvik).
@@ -1149,7 +1149,7 @@ virtual memory space divided into several parts: stack, heap, and method area.
   pushed and popped as functions are invoked and completed. The stack also includes space for variables that would
   typically be stored in registers.
 * Heap: The JVM's heap is where objects are dynamically allocated. It is the memory area where Java objects reside.
-  The heap is used for dynamic memory allocation and deallocation. Objects are created and stored on the heap, and
+  The heap is used for dynamic memory allocation and de-allocation. Objects are created and stored on the heap, and
   the JVM's garbage collector is responsible for managing the heap and reclaiming memory occupied by objects that
   are no longer in use.
 * Method Area: The Method Area, also known as the Permanent Generation (prior to Java 8) or the Metaspace (from
