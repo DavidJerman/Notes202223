@@ -297,7 +297,7 @@ int main(int argc, char *argv[]) {
 
 Gre za izvedljiv program v pomnilniku, katerega namen je nalaganje programov, da so ti
 pripravljeni za izvajanje. **Inicializira** izvajanje programa tako da dodeli pomnilniški
-prostor programu in prenaslovi izvedljiv modul (torej pripredi naslove iz virtualnih na
+prostor programu in prenaslovi izvedljiv modul (torej priredi naslove iz virtualnih na
 fizične po potrebi, ter priredi naslove, če ti kažejo na druge sekcije). Tak program je nato
 naložen v glavni pomnilnik in je pripravljen za izvajanje.
 
@@ -453,6 +453,12 @@ Podobno funkcionalnost najdemo tudi pri Linuxu, le da je na Windows-u vse vodeno
 Secure Boot deluje zelo podobno tako, da preverja podpis nalagalnika. Za ta namen na današnjih matičnih ploščah
 najdemo TPM modul. Namen njega je shranjevanje RSA ključev za gonilnike, strojno opremo, gesla in podobno. Ideja
 je, da bi se TPM modul uporabljal tudi za ščitenje programske opreme. Nekaj podobnega skuša narediti Apple.
+
+Secure boot najdemo pri modernih UEFI sistemih na matični plošči. Secure boot bazira na verigi
+zaupanja, ki izhaja iz PK (Platform Key). Ta je shranjena v TPM modulu. PK se nato uporablja za
+podpisovanje ostalih ključev, ki so shranjeni v TPM modulu. Ti ključi se nato uporabijo za 
+podpisovanje nalagalnikov, kernelov OS in ostalih kritičnih komponent OS. S tem si zagotovimo
+večjo varnost, saj nam nekdo ne more podtakniti svojega nalagalnika, ki bi lahko naredil škodo.
 
 ### GUID tabela
 
@@ -1042,7 +1048,7 @@ Kaj je MBR? MBR je Master Boot Record, ki je prvi sektor na disku. Vsebuje pa:
 
 V MBR najdemo particijsko tabelo, ki vsebuje podatke o particijah.
 
-_Kaj je BIOS? BIOS je Basic Input Output System, ki je firmware, ki se nahaja na matični plošči.
+_Kaj je BIOS? BIOS je Basic Input Output System je firmware, ki se nahaja na matični plošči.
 Njegov namen je samopreverjanje in zagon računalnika – torej inicializacija V/I naprav, pregled
 pred-pripravljenega seznama zagonskih enot, dokler ne najde ustrezne. BIOS nato prebere
 kodo iz sektorja MBR in jo preda v izvajanje. MBR poišče aktivno particijo in prebere
