@@ -891,8 +891,10 @@ hitrejši. So pa ti registri modelno specifični.
 Podatke lahko v sistemske klice prenašamo preko:
 
 - registrov – hitro, manjša količina podatkov, omejeno št. parametrov,
-- v bloku pomnilnika – naslov je v registru, veliko podatkov, večji overhead,
+- v bloku pomnilnika – naslov je v registru, veliko podatkov, večji overhead, Linux, Solaris, Windows,
 - v skladu – isti princip kot pri bloku pomnilnika.
+
+Pri zadnjih dveh seveda nimamo problemov z omejenim številom registrov.
 
 Jedro vedno kopira vse parametre sistemskih klicev iz uporabniškega naslovnega prostora
 v naslovni prostor jedra.
@@ -906,7 +908,7 @@ v naslovni prostor jedra.
     1. Glava zahteve se postavi v vrsto,
     2. Strategijska rutina izbira zahteve po nekem vrstnem redu,
     3. Ponavadi je določena neka prioriteta,
-3. Ko gonilnik obdela zahtevo, sproži prekinitev,
+3. Ko gonilnik obdela zahtevo, sproži prekinitev in prenese podatke v sistemski podatkovni vmesnik,
 4. Sproži se prekinitvena rutina:
     1. To rutino kliče CPU, ko dobi prekinitev od gonilnika,
     2. Gonilnik določa, kaj se zgodi, ko se zgodi prekinitev,
@@ -1243,7 +1245,121 @@ nivo varnosti oz. pravic.
 
 ## Sistemski klici
 
+Zakaj sistemski klici? Glavna razloga sta preprostost in varnost. Preprostost, ker aplikacije
+tako lažje dostopajo do virov, ki so sicer nedostopni. Varnost, ker se tako prepreči, da bi
+aplikacije dostopale do virov, ki jim niso namenjeni.
 
+Sistemski klici lahko potekajo na več načinov:
+
+- preko prekinitev, ki se sprožijo v programu: 0x80 (Linux), 0x2E (Windows),
+- preko posebnih ukazov procesorja: SYSENTER (Intel), SYSCALL (AMD), SYSEXIT (Intel),
+  SYSRET (AMD),
+
+Več o tem: [Prehodi med obročem 3 in 0](#prehodi-med-obročem-3-in-0).
+
+### Prenašanje parametrov v sistemske klice
+
+Glej [Prenos parametrov v sistemske klice](#prenos-parametrov-v-sistemske-klice).
+
+## Gonilniki
+
+### Kako izgleda klic gonilnika?
+
+Glej [Postopek klica gonilnika](#postopek-klica-gonilnika).
+
+Še z drugačnimi besedami:
+
+1. Najprej se pošlje glava zahteve v vhodno vrsto gonilnika. Poleg tega se pošlje še
+   glava gonilnika, ki vsebuje informacije o tem, kateri gonilnik je potrebno klicati,
+2. Gonilnik preko strategijske rutine izbere naslednjo zahtevo, prioriteto zahteve dobi
+   iz glave gonilnika,
+3. Gonilnik kliče V/I napravo in ji pošlje glavo zahteve in glavo gonilnika,
+4. V/I naprava opravi svoje delo in zgodi se naslednje:
+   1. V/I naprava pošlje prekinitev, ki jo prejme CPU --> preko glave gonilnika vemo,
+      katero prekinitveno rutino sprožiti --> prekinitvena rutina prebere glavo zahteve
+   2. Podatki iz V/I naprave se shranijo v sistemski podatkovni vmesnik.
+5. Opravilo iz OS prebere podatke iz sistemskega vmesnika in jih posreduje aplikaciji
+   oz. uporabniškem podatkovnem vmesniku. Poleg tega se glava zahteve odstrani iz
+   vhodne vrste gonilnika.
+
+### Posamezne komponente klica gonilnika
+
+Glej [Postopek klica gonilnika](#postopek-klica-gonilnika).
+
+Poleg tega, če opredelim vsako posamezno komponento:
+
+- Opravilo iz OS je v bistvu klic gonilnika, ki v gonilnik pošlje glavo zahteve in nazaj dobi 
+  odgovor o tem, ali je gonilnik opravil svojo nalogo ali ne. Tu imamo dva modela obveščanja
+  o stanju gonilnika:
+  - uporaba prekinitev - prekinitveni vektor, ki ga pošlje gonilnik in prekine CPU,
+  - uporaba pooling mehanizma - procesor gonilnik stalno sprašuje "Ali si že?",
+  - kombinacijo obeh dveh, kar ponavadi najdemo v sodobnih operacijskih sistemih,
+- glava zahteve, ki vsebuje informacije o tem, katero **napravo** kličemo, podrobnosti operacije,
+  podatkovne parametre, error handling,
+- glava gonilnika, ki vsebuje informacije o tem, kateri **gonilnik** kličemo, request management,
+  driver-specific-data,
+- gonilnikova strategijska rutina - po neki prioriteti izbira zahteve v gonilniku,
+- gonilnikova zgornja in spodnja prekinitvena rutina - slednja je za tiste prekinitve, ki so
+  počasne, torej se ne izvedejo dovolj hitro
+- periferni krmilnik - I/O naprava - gre za programsko opremo na napravi,
+- DMA - Direct Memory Access - strojna oprema na napravi, ki omogoča, da se podatki prenašajo
+  med napravo in pomnilnikom brez posredovanja procesorja,
+- sistemski vmesnik - vmesnik med gonilnikom in OS, ki omogoča, da gonilnik bere in piše v
+  pomnilnik, ki je namenjen gonilniku - za dostop do njega iz uporabniškega programa je potrebno
+  uporabiti ukaze copy from/to user space,
+- vektor perifernih prekinitev - vsebuje informacije o tem, katera prekinitev je sprožena,
+  katera prekinitvena rutina se mora sprožiti.
+
+### Rezidentni vs. nerezidentni gonilniki
+
+Rezidentni gonilniki so standardni gonilniki vgrajeni v jedro OS in so vedno na razpolago.
+Primer so tudi linux moduli.
+
+Nerezidetni gonilniki nestandardnih naprav pa se naknadno priključijo OS. 
+
+### Vrste naprav
+
+Vrste naprav, ki jih poznamo so:
+
+- bločne naprave - zunanje pomnilniške naprave - disk, CD-ROM, DVD, USB ključki, ...
+- znakovne naprave - komunikacijske naprave - tipkovnica, miška, ...
+- mrežne naprave - mrežne naprave - mrežna kartica.
+
+Pač spomni se malce na vaje, kjer smo spisali znakovni gonilnik, ki je prejemal in vračal
+znake, torej neko besedilo. Bločne naprave po drugi strani vračajo neke skupke bytov - blokov.
+
+### Memory mapping
+
+Gre za komunikacijo, kjer CPU dostopa do gonilnika naprave. To lahko stori na dva načina:
+
+- s preslikavo pomnilnika:
+  - uporaba ukazov read, write, control, status - vsebina pomnilnika V/I naprave se preslika
+    v naš pomnilniški prostor,
+  - z branjem preslikanih registrov V/I naprave - inb, outb
+
+### Dostop do podatkov na V/I napravah
+
+- blokirajoči - proces čaka na podatke iz V/I naprave
+  - read() - čaka podatke (proces spi)
+  - write() - čaka status zapisa (proces spi)
+- neblokirajoči - obveščeni smo samo o prenešen številu podatkov, ne vemo pa če se je V/I 
+  operacija zaključila
+  - read() - ne čakaj na podatke (proces ne spi)
+- asinhroni - ne čakamo, smo pa obveščni o tem, kdaj se operacija zaključi
+  - read() - OS pretaka podatke v podatkovni vmesnik in program obvesti o koncu,
+  - write() - podobno kot read()
+
+### DMA
+
+Podatke lahko beremo nadzorovano - software controlled - enostavno, a trati procesor.
+Neposreden dostop do pomnilnika z DMA - pretakamo več podatkov naenkrat med V/I in
+glavnim pomnilnikom, CPU pa ni obremenjen.
+
+### Tipanje vs. prekinitve
+
+Gre za to, kako naprave obveščajo OS.
+
+[//]: # (TODO: Dokončaj tole)
 
 # Dodatki
 
