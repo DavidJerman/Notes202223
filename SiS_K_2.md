@@ -21,6 +21,8 @@ Kratice:
 ### Uporaba FFT
 
 FFT se v osnovi uporablja za prikaz (povprečne) frekvenčne vsebine signalov in slik.
+Pokaže, kako "močno" je neka frekvenca prisotna v signalu. To lahko pomeni ali
+kako dolgo je prisotna ali s kakšno amplitudo je prisotna.
 
 Opozorilo: FFT pokaže frekvence z vidika, kako se najbolje prilagajajo signalu.
 Poleg tega je potrebno paziti na to, da pri tem zaradi diskretne razdelitve frekvenčnega
@@ -96,9 +98,9 @@ alternativno:
 y[n] = y[n - 1] + x[n] - x[n - L]  -->  AR(MA)  -->  nestabilnost
 ```
 
-Pridobimo na hitrosti a obstaja nevarnost nestabilnosti. Lepo se vidi regresija.
+Pridobimo na hitrosti a obstaja nevarnost nestabilnosti. Lepo se vidi regresija.**
 
-Splošna oblika MA zapiska (diferenčna enačba filtra):
+Splošna oblika MA zapisa (diferenčna enačba filtra):
 
 ```textmate
 y[n] = b[0] * x[n] + b[1] * x[n - 1] + ... + b[L] * x[n - L + 1]  -->  MA(L)
@@ -114,6 +116,26 @@ Pri tem so **a** koeficienti AR, **b** pa koeficienti MA. Število a in b koefic
 določa red sistema oz. red filtra. Red filtra = max(a, b).
 
 Več o filtrih: [Digitalni filtri](https://en.wikibooks.org/wiki/Signal_Processing/Digital_Filters)
+
+### Zakaj pa tako je [ChatGPT]
+
+The use of both autoregressive (AR) and moving average (MA) components in an ARMA filter is based on the idea
+that many real-world processes can be modeled as a combination of these two types of behavior.
+
+Autoregressive behavior suggests that the current value of a variable is dependent on its own past values.
+For example, in a time series, the current value may be influenced by its recent history. By including the
+AR component in an ARMA filter, it takes into account this autoregressive behavior and models the relationship 
+between the current output and its own past values.
+
+Moving average behavior, on the other hand, suggests that the current value of a variable is influenced by past
+values of another variable (often the input variable). It assumes that there is a short-term memory effect in 
+the system, where the current output depends on the recent past inputs. Including the MA component in an ARMA 
+filter captures this moving average behavior and models the relationship between the current output and past 
+input values.
+
+By combining both AR and MA components in an ARMA filter, it becomes more flexible and capable of capturing 
+different types of dependencies in a system. This allows the model to better represent and predict the behavior
+of various processes, making it a widely used tool in time series analysis and forecasting.
 
 ### Delitev filtrov
 
@@ -163,7 +185,7 @@ Več o filtrih: [Digitalni filtri](https://en.wikibooks.org/wiki/Signal_Processi
 Z transformacija je transformacija, ki jo uporabljamo za prehod iz časovne domene v frekvenčno
 domeno. Z transformacija je podobna Laplaceovi transformaciji, le da je Z transformacija
 diskretna. Razlika med FFT ali DFT v primerjavi z Z transformacijo pa je v glavnem ta, da Z
-transformacija ponuja še dodatne informacije. DFTF dela z realnimi števili, Z transformacija
+transformacija ponuja še dodatne informacije. DFT dela z realnimi števili, Z transformacija
 pa s kompleksnimi števili. Z transformacija je definirana kot:
 
 ![Z transformacija](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-2023-05-21-084615.png)
@@ -208,7 +230,7 @@ Primeri filtrov:
 - **Elliptic**
 - **Gaussian**
 
-Filter name ponavadi vrne A in B koeficiente, ki jih lahko uporabimo za implementacijo filtra.
+Filter nam ponavadi vrne A in B koeficiente, ki jih lahko uporabimo za implementacijo filtra.
 Pri ustvarjanju filtra določimo red filtra, lomne frekvence in tip filtra. Poleg tega pa še
 metodo ustvarjanja filtra (npr. Butterworth, Chebyshev, ...).
 
@@ -383,10 +405,169 @@ Z uporabo linearizacije lahko na sliki izboljšamo kontrast, če recimo so vse v
 pod neko vrednostjo - razporedimo vrednosti čez celotno x-os in s tem dobimo boljši kontrast ter
 posledično lažjo ekstrakcijo značilnic oz. segmentacijo še pred tem. Še ena podobna izboljšava je
 ekvalizacija histograma, kjer razporedimo vrednosti histograma tako, da je porazdelitev čim bolj
-enakomerna. Na sliki se to vidi kot izenačitev svetlosti, nam pa pomaga pri segmentaciji.
+enakomerna. Na sliki se to vidi kot izenačitev svetlosti, nam pa pomaga pri segmentaciji. Značilna
+območja histograma predstavljajo podobne lastnosti v signalu.
 
 Pri segmentaciji nato kot že omenjeno izberemo dva praga, ki določata, katere vrednosti bomo 
 sprejeli in katere ne.
 
 #### Pragovna segmentacija
 
+Pragovna segmentacija temelji na histogramu. Različne segmente ločimo s pragovi. Lahko si določimo
+globalne pragove ali pa lokalne pragove. En prag ali več pragov. Ideja je, da če je vrednost
+nad pragom, da rečemo, da gre za ospredje, da pa če je manjša, da gre za ozadje. Kot prag
+bi lahko preprosto vzelo kar povprečje ospredja in ozadja kot:
+
+```math
+T = (Tb + Tf) / 2
+```
+
+Globalni prag ponavadi določimo z uporabo naslednjih dveh formul:
+
+```math
+Aj = sum[n=0, j] Hist(n)
+Bj = sum[n=0, j] n Hist(n)
+
+j = 0, ..., R-1 (ponavadi 255)
+```
+
+S pomočjo A in B nato določimo izbrani prag. Problem pa je, da ker gre tu za globalni prag, da
+rezultati morda ne bodo najboljši. Zato lahko uporabimo lokalne prage, kjer za vsak piksel
+določimo svoj prag. Tako dobimo boljše rezultate, vendar pa je to tudi bolj računsko zahtevno.
+
+##### Vrste pragov
+
+Prag določen z mediano:
+
+```math
+T = At / Ar
+```
+
+Dela precej slabo, če imamo veliko šuma.
+
+Povprečni prag:
+
+```math
+T = Br / Ar
+```
+
+Se dobro obnaša pri šumih SNR >= 20.
+
+Optimalni prag - ga iterativno spreminjamo, dokler spremembe niso več opazne:
+
+```math
+Tk+1 = (uTk + vTk) / 2
+
+uTk = BTK / ATk
+vTk = (Br - BTK) / (Ar - ATk)
+```
+
+Dela dobro pri šumih s SNR >= 10.
+
+Iskanje optimalnega pragu je načeloma poskušanje, dokler ne dobimo dobrih rezultatov.
+
+##### Čemu segmentacija
+
+Namen segmentacije je izločitev objekta iz ozadja. To nam omogoča, da lahko izločimo značilnice
+objekta, ki jih nato uporabimo za klasifikacijo. Značilnice so lahko oblike, barve, teksture,
+robovi, itd. Potlej lahko bolj uspešno izvedemo klasifikacijo. Po tem principu tudi delujejo
+konvolucijske nevronske mreže.
+
+Pri tem je vredno še dodati, da načeloma težko rečemo, ali je nek prag slab ali dober in da
+je to dosti lažje reči šele ko dobimo rezultate klasifikacije. Bolj uspešen kot naš model
+je pri dajanju napovedi, boljša je naša segmentacija.
+
+##### Lokalni prag
+
+Lokalni optimalni prag lahko izračunamo na sledeč način:
+
+```math
+T = Topt(1 - x)
+```
+
+kjer je x korekcijska vrednost piksla izračunana kot:
+    
+```math
+x = 1/3R(|a - b - c + d| + |a - b + c - d| + |a + b - c - d|)
+```
+
+kjer so a, b, c in d sosednji piksli.
+
+Iz formule zgoraj je mogoče tudi opaziti, da gre v bistvu za detektorje robov! Prvi je
+sicer malce čuden, ampak zaznava diagonalne robove. Drugi je za zaznavanje navpičnih robov,
+tretji pa za zaznavanje vodoravnih robov.
+
+Uporaba te metode najbrž ne bo prikazala ogromnih vizulanih rezultatov, a se bo zelo dobro
+poznalo na klasifikaciji.
+
+#### Klasifikacija
+
+Pri linearni klasifikaciji je najlažji način klasifkacije uporaba linearnega klasifikatorja.
+Točke lahko razdelimo na množice točk z uporabo klasifikatorjev. Klasifikacijo izvajamo
+v prostoru značilnic. Recimo primer:
+
+![Klasifikacija](https://davidblog.si/wp-content/uploads/2023/05/Screenshot-2023-05-25-201540.png)
+
+[//]: # (Vir: Predavanja)
+
+Pri klasifikaciji se je potrebno seznaniti še z nekaj pojmi:
+
+- **TP** - true positive - pravilno pozitivni
+- **TN** - true negative - pravilno negativni
+- **FP** - false positive - napačno pozitivni
+- **FN** - false negative - napačno negativni
+
+Primer:
+
+Imamo 30 jabolk in 30 hrušk. Zaznali smo 35 jabolk in 25 hrušk. Kaj je TP, TN, FP in FN?
+
+Z vidika jabolk:
+
+- TP: 30
+- TN: 25
+- FP: 5
+- FN: 0
+
+Rezultat: 30/35 = 0.86
+
+Nato imamo še pojma:
+
+- **TPF** - true positive fraction - senzitivnost
+  - TPF = TP / (TP + FN)
+- **TNR** - true negative fraction - specifičnost
+  - TNR = TN / (TN + FP)
+- **FNF** - false negative fraction
+  - FNF = 1 - TPF
+- **FPF** - false positive fraction
+  - FPF = 1 - TNF
+
+Za primer zgoraj so rezultati:
+
+- TPF: 1
+- TNR: 0.83
+- FNF: 0
+- FPF: 0.17
+
+##### Natančnost modela
+
+V praksi tako iščemo kompromis med TPF in TNR. To lahko naredimo z uporabo ROC krivulje.
+ROC krivulja je krivulja, ki prikazuje odvisnost TPF od FPF. Najboljša je ponavadi tista,
+ki se čim bolj približa enemu izmed robov na osi y = x. Najslabša krivulja pa je tista,
+ki gre skozi os y = -x.** Čim bližje smo tej diagonali, tem slabši je naš model za 
+predikcije.
+
+Optimalni prag tako iščemo na ta način, da opazujemo spreminjan ROC krivulje in iščemo
+AUC (area under curve), ki je čim večji. AUC je v bistvu ploščina pod krivuljo. Če je
+AUC = 1, potem je naš model popolnoma natančen.
+
+ROC - receiver operating characteristic. ROC krivulja ponavadi izgleda nekako takole:
+
+![ROC](https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/ROC_space-2.png/800px-ROC_space-2.png)
+
+[//]: # (Vir: Wikipedia)
+
+Več o tem:
+
+- [ROC krivulja](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
+- [AUC](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve)
+- [Neka spletna stran](http://www.anaesthetist.com/mnm/stats/roc/Findex.htm)
