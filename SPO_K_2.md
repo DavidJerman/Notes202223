@@ -801,18 +801,17 @@ Aplikacija in OS imata oba svoj podatkovni vmesnik.
 
 #### Pot sistemskega klica
 
-1. Uporabnik pokliče sistemski klic,
+1. Uporabnik/aplikacija pokliče sistemski klic,
 2. Aplikacija kliče OS in podatki o klicu se shranijo kot glava zahteve – glava zahteve
-   je kot nakupovalni listek,
-3. Podatki se prenesejo v jedro,
+   je kot nakupovalni listek – torej podatki se prenesejo v jedro,
+3. Podatki iz podatkovnega vmesnika se prekopirajo v sistemski podatkovni vmesnik,
 4. Jedro preveri pravice in preveri, če je klic veljaven,*
-5. Jedro aktivira gonilnik,
+5. Jedro aktivira gonilnik in gonilnik prebere glavo zahteve,
 6. Gonilnik kliče napravo,
-7. Aktivira se prekinitvena rutina,
-8. Prekinitvena rutina prebere podatke,
-9. Prekinitvena rutina prenese podatke v jedro,
-10. Jedro prenese podatke v aplikacijo.
-11. Aplikacija nadaljuje z delom.
+7. V/I naprava odgovori s prekinitvijo,
+8. Sproži se prekinitvena rutina in shrani podatke v sistemski podatkovni vmesnik,
+9. Jedro prenese podatke v aplikacijo.
+10. Aplikacija nadaljuje z delom.
 
 Za prenos podatkov skrbi DMA (Direct Memory Access).
 
@@ -1135,6 +1134,116 @@ Razlog je v tem, da se sicer med temi .class datotekami ponavlja constant pool �
 Po združitvi teh datotek dobimo eno datoteko, ki vsebuje skupen constant pool in vse metode.
 
 Več o Dalvik-u: [Dalvik](#dalvik).
+
+## Zaprti tipi
+
+Zaprti tipi so tipi, ki jih ne moremo razširiti. Primeri so: `int`, `float`, `double`, `char`, `boolean`.
+Drugače povedano, gre za primitivne tipe. Vredno si je zapomniti, da je velikost teh tipov na
+vsaki platformi drugačna. V Javi je npr. velikost bool vrednosti je sicer 1 bit, ampak ta tip
+vsebuje še kazalec velikost 4 bajtov, kar pomeni, da je velikost bool vrednosti 4 bajtov. Skratka tipi
+niso tako majhni kot npr. v C-ju.
+
+## .NET
+
+.NET je platforma, ki je podobna Javi. Temelji pa na jezikovno neodvisni platformi Common Language Runtime(CLR).
+Ideja je, da imamo več jezikov, ki se nato prevedejo v CIL(Common Intermediate Language), ki služi kot
+vmesna koda med izvorno in strojno.
+
+Pri CIL najdemo:
+
+- JIT in AOT prevajalnik,
+- garbage collector,
+- varnostni mehanizmi,
+- upravljanje pomnilnika,
+- upravljanje izjem...
+
+.NET uporablja tudi Manifest, ki vsebuje razne informacije o programu, kot so:
+
+- ime,
+- verzija,
+- metapodatki,
+- pravice dostopa,
+- ...
+
+Koda se potlej prevede v PE format, ki pa je podoben ELF formatu, le da doda pe 2 sekciji:
+
+- zaglavje CLR,
+- [...]
+
+Več o .NET-u: [.NET](#net).
+
+Vir: [Wikipedia](https://en.wikipedia.org/wiki/DLL_Hell)
+
+### .NET asm
+
+.NET assembly je enota prevedene programske kode, ki vsebuje izvršljive datoteke, metapodatke in druge
+vire, ter se uporablja v .NET okolju za izvajanje aplikacij in komponent. Te delčke programske kode
+lahko nato povežemo skupaj, da dobimo izvedljivo PE datoteko.
+
+#### Vidik varnosti
+
+##### DLL Hell [Strnil ChatGPT]
+
+DLL Hell je izraz za zapletanja, ki se pojavijo pri delu z dinamično povezanimi knjižnicami (DLL) v
+operacijskih sistemih Microsoft Windows, še posebej pri starejših 16-bitnih različicah, ki delujejo v enem
+pomnilniškem prostoru. Manifestacija DLL Hell se lahko kaže na različne načine, ko aplikacije ne zaženejo
+ali ne delujejo pravilno. Gre za specifično obliko težave z odvisnostmi v okolju Windows, imenovano
+"dependency hell". Težave, povezane z DLL-ji, vključujejo konflikte med različicami, težave pri pridobivanju
+potrebnih DLL-jev in nepotrebno podvajanje DLL-jev. Za reševanje teh težav so bile razvite rešitve, vključno
+z .NET zamenjavo imenovano "Assemblies".
+
+##### Global assembly cache [Strnil ChatGPT]
+
+Globalna shramba za skupne zbirke (GAC) je sistemska shramba za shranjevanje kodnih sklopov (assembly), ki
+se delijo med več aplikacijami. Zahteve za shranjevanje v GAC so, da morajo kodni sklopi imeti močno ime ter
+opraviti preverjanje integritete, da se prepreči manipulacijo z njimi. To močno ime je v bistvu kombinacija
+imena sklopa, verzije, kulture in edinstvenega ključa. S tem je zagotovljena edinstvenost in integriteta.
+
+Vir: [Microsoft Doc](https://learn.microsoft.com/en-us/dotnet/framework/app-domains/gac)
+
+#### Vidik varnosti [ChatGPT]
+
+Različni vidiki varnosti, povezani z .NET assembly, vključujejo težave, kot je DLL Hell, ki se pojavljajo
+pri delu z dinamično povezanimi knjižnicami (DLL) in povzročajo konflikte, težave pri odvisnostih ter
+nepotrebno podvajanje DLL-jev. Poleg tega pa je pomemben vidik varnosti tudi Globalna shramba za skupne
+zbirke (GAC), ki zagotavlja shranjevanje kodnih sklopov, ki se delijo med aplikacijami, s preverjanjem
+integritete in zahtevami za močno ime.
+
+## Sosledje operacij pri sistemskih klicih
+
+Glej [Pot sistemskega klica](#pot-sistemskega-klica).**
+
+## Mikro vs. makro jedro
+
+Glej [Vrste jeder](#vrste-jeder).
+
+## Kontekstni preklop
+
+Glej [Kontekstni preklop](#kontekstni-preklop).
+
+## GDT
+
+Gre za tabelo, ki vsebuje deskriptorje segmentov z opisi opravil/procesov, ki jim ta segment pripada.
+Vstopi v GDT gredo preko segmentnega registra.
+
+Deskriptor segmenta vsebuje:
+
+- začetni naslov segmenta,
+- dolžino segmenta,
+- zlog z dostopnimi pravicami,
+- kontrolne bite.
+
+GDT na novejših 64-bit računalnikih nadomesti TSS.
+
+## Neskladje med 2 obročema in 4mi obroči
+
+V glavnem gre za to, da se razen za virtualizacijo bolj ali manj uporabljata samo dva obroča,
+čeprav je Intel procesorje zasnoval s 4mi obroči. Ti dodatni obroči naj bi bili kot še eden
+nivo varnosti oz. pravic.
+
+## Sistemski klici
+
+
 
 # Dodatki
 
