@@ -1579,6 +1579,8 @@ Gre za komunikacijo, kjer CPU dostopa do gonilnika naprave. To lahko stori na dv
 
 - [ ] Done
 
+Komunikacija OS z gonilnikovimi funkcijami.
+
 - blokirajoči - proces čaka na podatke iz V/I naprave
     - read() - čaka podatke (proces spi)
     - write() - čaka status zapisa (proces spi)
@@ -1601,9 +1603,207 @@ glavnim pomnilnikom, CPU pa ni obremenjen.
 
 - [ ] Done
 
-Gre za to, kako naprave obveščajo OS.
+Gre za to, kako naprave obveščajo OS. Tipanje je počasno, prekinitve pa hitrejše.
 
-[//]: # (TODO: Dokončaj tole)
+Imamo dva načina obveščanja:
+
+- tipanje - polling - OS v določenih intervalih preverja status V/I naprave, ni primeren za nepredvidljive
+  dogodke, saj je CPU obremenjen s preverjanjem statusa naprave,
+- prekinitve - interrupt - V/I naprava obvesti OS, da je pripravljena za prenos podatkov, CPU se lahko
+  ukvarja z drugimi opravili, ko pa dobi prekinitve pa se je loti, lahko tudi kasneje.
+
+Tretja možnost je še kombinacija obeh mehanizmov.
+
+### Zgornja in spodnja polovica
+
+- [ ] Done
+
+Gre za dva nivoja prekinitev glede na njihovo pomembnost. 
+
+Zgornja polovica zahteva takojšnjo reakcijo in hitro obdelavo prekinitve. Ponavadi skrbi za nujne odzive.
+Ne moremo je prekiniti. Dostop do podatkov je sinhronizira s spodnjo polovico.
+
+Spodnja polovica pa se kliče za zgornjo polovico. Je manj pomembna, počasnejša in ima nižjo prioriteto.
+Lahko je prekinjena in tudi spi. Dostop do podatkov je sinhroniziran s zgornjo polovico.
+
+### Gonilniki v Linux-u in Unix-u
+
+- [ ] Done
+
+Vse gonilnike oz. naprave v Linuxu najdemo kot datoteke v **/dev**. Oznake vseh naprav se tako hranijo v dveh
+preklopnih tabelah: **cdevsw** in **bdevsw**. Prva tabela vsebuje oznake znakovnih naprav, druga pa oznake bločnih
+naprav. Tabela vsebuje **glavno številko** - naprava, in **podštevilko** - enota. Za vsako napravo v tabeli
+se hrani tudi **ime naprave** in **klicni vektor** oz. **vstopna točka** - ta kliče funkcijo za gonilnik naprave.
+Napravo lahko tako kličemo po imenu in s pomočjo te tabele se kliče pravi gonilnik.
+
+#### Sistemski vmesnik
+
+- [ ] Done
+
+Kot omenjeno pri prejšnjih vprašanjih, se podatki iz naprav prenašajo v sistemski podatkovni vmesnik - buffer.
+Ta vmesnik je med procesi deljen. Teh vmesnikov je lahko tudi več. LRU algoritem se uporablja za izbiro
+najstarejšega vmesnika, ki se bo izbrisal, če je treba ustvariti nov vmesnik. LRU algoritem temelji na načelu, da
+se najmanj uporabljeni vmesniki odstranijo prvi, medtem ko se bolj aktivni vmesniki ohranijo.
+
+#### Jedrni in uporabniški pomnilniški prostor
+
+- [ ] Done
+
+Tu bi rad še enkrat poudaril, da do pomnilniškega prostora jedra ne moremo dostopati iz uporabniškega
+prostora. Jedro ima svoj pomnilniški prostor, ki je ločen od uporabniškega. Do podatkov vmesnika tako
+dostopamo preko ukazov:
+
+- **copy_from_user()** - kopira podatke iz uporabniškega v jedrni pomnilnik,
+- **copy_to_user()** - kopira podatke iz jedrnega v uporabniški pomnilnik.
+
+### Razlike med vrstami gonilnikov
+
+- [ ] Done
+
+- **Gonilniki vodila** - skrbijo za komunikacijo med napravami in procesorjem. Npr. PCI, USB, SCSI,
+  IDE, SATA, ... Omogočajo komunikacijo naprav z OS.
+- **Gonilniki razreda naprav** - skrbijo za nadzor nad napravami z enakim naborom funkcionalnosti. Npr.
+  zvočne naprave, mrežne naprave, diski, vhodne naprave... Skratka generični gonilniki po večini.
+- **Gonilniki naprav** - skrbijo za nadzor nad posamezno napravo. Npr. gonilnik za zvočno kartico
+  Creative Sound Blaster X-Fi.
+
+Več na prosojnici stran 32.
+
+### Gonilniki na Windows-u
+
+- [ ] Done
+
+Splošna delitev gonilnikov na Windows-u je v UMDF in KMDF gonilnike. UMDF gonilniki so gonilniki, ki so
+namenjeni za uporabniški način delovanja. KMDF gonilniki pa so gonilniki, ki so namenjeni za jedrni način
+delovanja.
+
+#### UMDF gonilniki
+
+- [ ] Done
+
+To so gonilniki na višjem nivoju, ki večino operacij izvajajo preko WIN32 API-ja. Takšni gonilniki so
+varni in stabilni. Sledijo modelu **WDM**, a so zaradi vsega tega overhead-a nekaj počasnejši.
+
+Primeri teh so:
+
+- gonilniki za tiskalnike,
+- gonilniki za miške,
+- gonilniki za tipkovnice...
+
+#### KMDF gonilniki
+
+- [ ] Done
+
+Primeri teh so: 
+
+- gonilniki naprav - skrbijo za I/O naprave, PnP, sledijo modelu **WDM**, 
+- gonilniki datotečnega sistema - skrbijo za datotečni sistem, dostop do datotek, iskanje virusov,
+- video gonilniki - neposreden dostop do grafične kartice,
+
+Delujejo na nižjem nivoju v jedrnem prostoru. Sledijo modelu **WDM**, da ne sesujejo jedra.
+
+### Hierarhija gonilnikov v Windows-u
+
+- [ ] Done
+
+V modelu **WDM** morajo računalniške enote imeti vsaj dva gonilnika. **Funkcijski gonilnik** in
+**gonilnik vodila**. Funkcijski gonilnik pozna podrobnosti naprave in opravlja I/O operacije ter
+nadzoruje prekinitve. Slednji pa skrbi za komunikacijo preko vodila.
+
+Še ena vrsta gonilnikov, ki jih poznamo so **presejalni gonilniki**. Namen le-teh je, da gre ves
+"promet" skozi njih. Tako lahko preverjajo, če je katera izmed naprav okužena z virusom. V glavnem
+pa pretvarjajo in preusmerjajo podatkovne tokove.
+
+Gonilniki so v Windows-u organizirani v hierarhijo. Klic gonilnika izgleda takole:
+
+- Aplikacije kliče Win32 API,
+- gonilnik na uporabniškem nivoju obdeluje zahteve aplikacije, vse zahteve jedra gredo preko WIN32 API-ja,
+- gonilnik na nivoju jedra zahtevi dodeli privilegije in jo preusmeri na gonilnike nižje,
+- sledita class driver in miniport driver, ta dva poskrbita za strojno neodvisna in strojno odvisna opravila,
+- gonilnik vrat poskrbi za I/O operacije preko odprtih vrat za ostale fizične povezave,
+- gonilnik fizičnega vodila poskrbi za komunikacijo preko vodila na fizičnem nivoju.
+
+Pri tem za vse gonilnike na nivoju jedra poskrbi Microsoft, razen za gonilnik jedra, če ga pišemo sami,
+lahko pa spreminjamo tudi miniport gonilnike.
+
+### Nekateri pojmi
+
+- [ ] Done
+
+- **PnP** - Plug and Play, naprave se same zaznajo in namestijo gonilnike,
+- **Power Management** - upravljanje z napajanjem,
+- **WDM** - Windows Driver Model,
+- **UMDF** - User Mode Driver Framework,
+- **KMDF** - Kernel Mode Driver Framework,
+- **IRP** - I/O Request Packet, struktura, ki se uporablja za komunikacijo med gonilniki - glava zahteve,
+- **IRT** - I/O Request Table, tabela, ki vsebuje IRP-je,
+
+Storitve kot so I/O manager, PnP manager in Power manager komunicirajo z gonilniki v jedru preko
+IRP-jev. I/O manager skrbi za slednje:
+
+- sprejem zahtev s strani uporabnika,
+- kreiranje IRP-jev,
+- preusmerjanje zahtev na ustrezen gonilnik (njegovo čakalno vrsto),
+- nadzor IRP-jev do konca izvajanja,
+- vračanje status I/O operacij uporabnikovi aplikaciji.
+
+I/O manager je v bistvu Windows storitev, ki teče v kernel načinu.
+
+### Zakaj so gonilniki rak-rana današjnih sistemov?
+
+- [ ] Done
+
+Gonilniki so po eni strani super zadeva, saj nam omogočajo nek nivo abstrakcije, da lahko uporabljamo
+naprave, ki so med seboj zelo različne. Po drugi strani pa so gonilniki tudi velik problem, saj jih
+je treba redno posodabljati, pogosto so vir napak, varnostnih ranljivosti, nestabilnosti sistema in 
+slabe performanse. Zato jih je treba stalno posodabljati, kar pa je lahko zelo zamudno in zahtevno.
+
+### Prekinitve pri gonilnikih
+
+- [ ] Done
+
+IRT (prekinitevna tabela) je podatkovna struktura, ki jo uporabljajo gonilniki naprav v operacijskih
+sistemih Windows za registracijo ene ali več prekinitvenih rutin (Interrupt Service Routines - ISR) za
+obdelavo prekinitev. OS kliče to rutino vsakič, ko prejme prekinitev. Prekinitveni vektor pa je v tem
+kontekstu vnos v IRT tabeli, ki kaže na prekinitveno rutino IRS.
+
+#### Prekinitveni nivoji
+
+- [ ] Done
+
+Imamo 4 prekinitvene nivoje glede na pomembnost prekinitve:
+
+- PASSIVE_LEVEL - uporabniški način, dostopni vsi APIji,
+- APC_LEVEL - maskirane prekinitve asinhronih klicev rutin, večina APIjev,
+- DISPATCH_LEVEL - maskirane DPC in APC prekinitve, nekateri APIji,
+- DEVICE_IRQL - maskirane vse prekinitve, za nizkonivojske gonilnike, določitev prioritet posameznih naprav.
+
+##### Kdo lahko koga prekine?
+
+- [ ] Done
+
+- PASSIVE_LEVEL - lahko ga prekinejo vsi nivoji,
+- APC_LEVEL - lahko ga prekinejo DISPATCH_LEVEL in DEVICE_IRQL,
+- DISPATCH_LEVEL - lahko ga prekine DEVICE_IRQL,
+- DEVICE_IRQL - ne more ga prekiniti noben nivo.
+
+#### Vrste prekinitvenih rutin
+
+- [ ] Done
+
+- ISR - prekinitvene rutine - za obravnavo strojnih prekinitev,
+- IMSR - sporočilne prekinitvene rutine - prekinitvene rutine za obravnavo podatkovnih prekinitev.
+
+### VID in PID
+
+- [ ] Done
+
+- VID - Vendor ID - identifikator proizvajalca,
+- PID - Product ID - identifikator izdelka.
+
+Te informacije se dobijo ob prvem priklopu naprave na računalnik.
+Nato se shranijo v register (registry) in se uporabljajo za identifikacijo naprave.
+Ta komunikacija poteka preko južnega mosta.
 
 # Dodatki
 
