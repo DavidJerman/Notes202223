@@ -11,7 +11,7 @@
 
 ## Sekcije glede na način naslavljanja
 
-- [ ] Done
+- [x] Done
 
 Glede na način naslavljanja imamo:
 
@@ -36,11 +36,11 @@ ni mačji kašelj!
 
 - [x] Done
 
-Kadar med sabo povezujemo več knjižnic in podobno pridejo na vrsto import in export tabele.
+Kadar med sabo povezujemo več knjižnic in podobno, pridejo na vrsto import in export tabele.
 Import tabela je tabela simbolov, ki vsebuje simbole, katere smo dobili od drugih. Export
 pa simbole, katere ponujamo drugim. Te tabele se kot že omenjeno uporabljajo za
-nadomestitev simbolov z dejanskimi naslovi ali vrednostmi. Skratka te table vsebujejo
-in pa kazalce na mesta, kjer so bili ti simboli uporabljeni.
+nadomestitev simbolov z dejanskimi naslovi ali vrednostmi. Skratka, te tabele vsebujejo
+kazalce na mesta, kjer so bili ti simboli uporabljeni.
 S pomočjo teh tabel lahko iščemo varnostne lunje, poleg tega pa otežujejo varovanje
 avtorskih pravic.
 
@@ -56,8 +56,8 @@ Objektni modul sestoji iz sledečih delov:
 
 * dolžina tabele globalnih simbolov,
 * dolžina vstopne tabele,
-* vstopna tabela,
-* zunanja tabela,
+* vstopna tabela (import),
+* zunanja tabela (export),
 * dolžina prenaslovitvene tabele,
 * prenaslovitvena tabela,
 * programska koda.
@@ -210,7 +210,7 @@ tudi dinamično naknadno.
 - [x] Done
 
 VDSO je pohitritev na Linuxu, ki deluje tako, da del pomnilnika jedra preslika v pomnilniški
-prostor uporabnika. Tako lahko se lahko določeni sistemski klici opravijo brez preklopa v
+prostor uporabnika. Tako se lahko določeni sistemski klici opravijo brez preklopa v
 kernel način.
 
 ## PE format - Windows
@@ -220,7 +220,7 @@ kernel način.
 V bistvu gre za zelo podobno zadevo. Samo malce so spremenili stvari od ELF. Primeri takšnih
 datotek so .cpl, .exe, .dll, ... Izhaja pa iz formata COFF. PE se nato še razširi za .NET z
 dodano sekcijo za metapodatke in kodo CRL. .NET koda se zažene v virtualnem stroju. Compila
-se delno z JIT compilerjem.
+se delno z JIT prevajalnikom.
 Zgradba tega formata pa je sledeča:
 
 * glava zbirke (MS-DOS)
@@ -355,7 +355,7 @@ naložen v glavni pomnilnik in je pripravljen za izvajanje.
 
 ### Absolutni nalagalnik
 
-- [ ] Done
+- [x] Done
 
 Takšen nalagalnik najdemo v BIOS-u. Izvedljiv modul se naloži z zunanje pomnilniške enote v
 delovni pomnilnik. Namen tega programa v BIOS-u je samopreizkušanje komponent. Danes se nalagalnik
@@ -393,7 +393,7 @@ Vredno je še dodati, da BIOS potrebuje naložiti svoje gonilnike, preden se upo
 
 #### Zgradba začetnega nalagalnika – MBR
 
-- [ ] Done
+- [x] Done
 
 To kodo najdemo na začetku diska v MBR.
 
@@ -409,7 +409,7 @@ MBR-ju sledijo ponavadi sektorji diska. Velikost sektorjev in MBR je 512 B.
 
 #### Particijski nalagalni sektor
 
-- [ ] Done
+- [x] Done
 
 Kot omenjeno lahko posamezne primarne particije nadomestimo z razširjenimi particijami. Te v bistvu
 kažejo na novo tabelo particij – gre kot omenjeno za večstopenjsko tabelo.
@@ -423,8 +423,8 @@ potrebni za zagon OS na tej particiji. Deluje kot mini-bootloader za posamezno p
 
 Postopek:
 
-Preberi particijski nalagalni sektor: BIOS prebere prvi sektor na aktivni particiji, ki vsebuje particijski nalagalni
-sektor.
+Preberi particijski nalagalni sektor: BIOS prebere prvi sektor na aktivni particiji, ki vsebuje **particijski nalagalni
+sektor**.
 
 Izvedi nalaganje: Programska koda v particijskem nalagalnem sektorju se izvede in nadaljuje z nalaganjem nadaljnjih
 komponent operacijskega sistema.
@@ -457,7 +457,7 @@ podobno, kot da bi se zadeva zaganjala iz MBR.
 
 - [x] Done
 
-* Slabost BIOS-a je, da deluje b 16-bitnem načinu in smo omejeni na 1MB naslovnega prostora. To je malo, glede
+* Slabost BIOS-a je, da deluje v 16-bitnem načinu in smo omejeni na 1MB naslovnega prostora. To je malo, glede
   na to, da BIOS rabi tudi svoje gonilnike.
 
 Nadgradnja BIOS-a je potlej UEFI. Uporablja jezik EFI Byte Code in GUID partition table. Podpira pa tudi recimo
@@ -570,7 +570,7 @@ kode. Java npr. bi že lahko delovala na tak način.
 
 Največji približek tega je Java, kjer je vsaka koda, knjižnica in tako naprej svoj razred.
 Programski jezik je platformno neodvisen, saj se izvaja na virtualnem stroju (JVM). Tako moramo
-ke prilagoditi JVM za posamezno platformo in to je to. Cilj je bil celo izvajanje v oblaku.
+le prilagoditi JVM za posamezno platformo in to je to. Cilj je bil celo izvajanje v oblaku.
 
 ### Java
 
@@ -616,7 +616,7 @@ Skrbi za varnost, sistemsko neodvisnost in pa omrežno prenosljivost.
 
 ### Interpretiranje kode
 
-- [ ] Done
+- [x] Done
 
 Poznamo naslednje načine interpretiranja kode:
 
@@ -632,9 +632,10 @@ Poznamo naslednje načine interpretiranja kode:
 Javanski stroj zelo spominja na stack. Imamo OS in znotraj OS imamo nato lahko več
 JVM – načeloma enega za vsak thread. Vsak JVM ima svoj pomnilniški prostor. Podobno
 kot pri OS imamo tudi tukaj virtualni pomnilniški prostor, ki je razdeljen na
-več delov: stack, heap, prostor za metode. Na heap dajemo kodo, ki se izvaja, na stack
+več delov: stack, heap, prostor za metode. ~~_Na heap dajemo kodo, ki se izvaja, na stack
 pa podatke, ki jih potrebujemo za izvajanje – vključno s spremenljivkami, ki bi
-jih ponavadi dajali v registre. JVM je namreč skladovno orientiran stroj.
+jih ponavadi dajali v registre. JVM je namreč skladovno orientiran stroj._~~
+Za natačno razlago pomnilnika glej poglavje [JVM](#jvm).
 
 Vsak javanski program tako teče znotraj svojega JVM. Imamo razredne zbirke, iz katerih
 lahko naložimo objekte – te nato damo v omenjeni heap. Iz heap pa podatke nato jemljemo
@@ -670,7 +671,7 @@ Podatkovni tipi so v Javi malce drugačni – recimo bool je velik 4 byte.
 
 ### Interpretacija javanske kode
 
-- [ ] Done
+- [x] Done
 
 * sprotno prevajanje v strojno kodo,
 * JIT (just in time) prevajanje v strojno kodo – ob klicu nekih delov kode,
@@ -769,7 +770,7 @@ podane parametre, kar omogoča prilagodljivo obnašanje razreda.
 
 ### Kazalci kot meta informacije
 
-- [ ] Done
+- [x] Done
 
 Še en primer meta informacij je uporaba kazalcev na funkcije. Kazalci na funkcije
 omogočajo programerjem, da funkcije uporabljajo kot parametre drugih funkcij. Na
@@ -898,7 +899,7 @@ AOT (generator strojne kode). To zelo spominja na JVM.
 
 ### CIL
 
-- [ ] Done
+- [x] Done
 
 Gre za nivo skupka objektov, ki so neodvisni od jezika (.NET assembly).
 
@@ -1073,7 +1074,7 @@ v naslovni prostor jedra.
 2. Glava zahteve [nakupovalni listič] se shrani v vhodno vrsto gonilnika,
     1. Glava zahteve se postavi v vrsto,
     2. Strategijska rutina izbira zahteve po nekem vrstnem redu,
-    3. Ponavadi je določena neka prioriteta,
+    3. Ponavadi je določena neka prioriteta - prioriteta določena v glavi gonilnika,
 3. Ko gonilnik obdela zahtevo, sproži prekinitev in prenese podatke v sistemski podatkovni vmesnik,
 4. Sproži se prekinitvena rutina:
     1. To rutino kliče CPU, ko dobi prekinitev od gonilnika,
@@ -1269,7 +1270,7 @@ Kaj je Java: [Java](#java).
 
 ### Virtualizacija
 
-- [ ] Done
+- [x] Done
 
 Kaj je virtualizacija: [JVM!!](#jvm) in [Delovanje JVM](#delovanje-jvm) in
 [Na dolgo o JVM pomnilniku](#na-dolgo-o-jvm-pomnilniku-chatgpt).
@@ -1361,7 +1362,7 @@ niso tako majhni kot npr. v C-ju.
 
 ## .NET
 
-- [ ] Done
+- [x] Done
 
 .NET je platforma, ki je podobna Javi. Temelji pa na jezikovno neodvisni platformi Common Language Runtime(CLR).
 Ideja je, da imamo več jezikov, ki se nato prevedejo v CIL(Common Intermediate Language), ki služi kot
@@ -1563,7 +1564,7 @@ Nerezidetni gonilniki nestandardnih naprav pa se naknadno priključijo OS.
 
 ### Vrste naprav
 
-- [ ] Done
+- [x] Done
 
 Vrste naprav, ki jih poznamo so:
 
@@ -1594,10 +1595,10 @@ Komunikacija OS z gonilnikovimi funkcijami.
 - blokirajoči - proces čaka na podatke iz V/I naprave
     - read() - čaka podatke (proces spi)
     - write() - čaka status zapisa (proces spi)
-- neblokirajoči - obveščeni smo samo o prenešen številu podatkov, ne vemo pa če se je V/I
+- neblokirajoči - obveščeni smo samo o prenešenem številu podatkov, ne vemo pa če se je V/I
   operacija zaključila
     - read() - ne čakaj na podatke (proces ne spi)
-- asinhroni - ne čakamo, smo pa obveščni o tem, kdaj se operacija zaključi
+- asinhroni - ne čakamo, smo pa obveščeni o tem, kdaj se operacija zaključi
     - read() - OS pretaka podatke v podatkovni vmesnik in program obvesti o koncu,
     - write() - podobno kot read()
 
@@ -1638,7 +1639,7 @@ Lahko je prekinjena in tudi spi. Dostop do podatkov je sinhroniziran s zgornjo p
 
 ### Gonilniki v Linux-u in Unix-u
 
-- [ ] Done
+- [x] Done
 
 Vse gonilnike oz. naprave v Linuxu najdemo kot datoteke v **/dev**. Oznake vseh naprav se tako hranijo v dveh
 preklopnih tabelah: **cdevsw** in **bdevsw**. Prva tabela vsebuje oznake znakovnih naprav, druga pa oznake bločnih
@@ -1761,7 +1762,7 @@ I/O manager je v bistvu Windows storitev, ki teče v kernel načinu.
 
 ### Zakaj so gonilniki rak-rana današjnih sistemov?
 
-- [ ] Done
+- [x] Done
 
 Gonilniki so po eni strani super zadeva, saj nam omogočajo nek nivo abstrakcije, da lahko uporabljamo
 naprave, ki so med seboj zelo različne. Po drugi strani pa so gonilniki tudi velik problem, saj jih
@@ -1770,7 +1771,7 @@ slabe performanse. Zato jih je treba stalno posodabljati, kar pa je lahko zelo z
 
 ### Prekinitve pri gonilnikih
 
-- [ ] Done
+- [x] Done
 
 IRT (prekinitevna tabela) je podatkovna struktura, ki jo uporabljajo gonilniki naprav v operacijskih
 sistemih Windows za registracijo ene ali več prekinitvenih rutin (Interrupt Service Routines - ISR) za
@@ -1779,7 +1780,7 @@ kontekstu vnos v IRT tabeli, ki kaže na prekinitveno rutino IRS.
 
 #### Prekinitveni nivoji
 
-- [ ] Done
+- [x] Done
 
 Imamo 4 prekinitvene nivoje glede na pomembnost prekinitve:
 
@@ -1790,7 +1791,7 @@ Imamo 4 prekinitvene nivoje glede na pomembnost prekinitve:
 
 ##### Kdo lahko koga prekine?
 
-- [ ] Done
+- [x] Done
 
 - PASSIVE_LEVEL - lahko ga prekinejo vsi nivoji,
 - APC_LEVEL - lahko ga prekinejo DISPATCH_LEVEL in DEVICE_IRQL,
@@ -1799,7 +1800,7 @@ Imamo 4 prekinitvene nivoje glede na pomembnost prekinitve:
 
 #### Vrste prekinitvenih rutin
 
-- [ ] Done
+- [x] Done
 
 - ISR - prekinitvene rutine - za obravnavo strojnih prekinitev,
 - IMSR - sporočilne prekinitvene rutine - prekinitvene rutine za obravnavo podatkovnih prekinitev.
@@ -1813,7 +1814,7 @@ Imamo 4 prekinitvene nivoje glede na pomembnost prekinitve:
 
 Te informacije se dobijo ob prvem priklopu naprave na računalnik.
 Nato se shranijo v register (registry) in se uporabljajo za identifikacijo naprave.
-Ta komunikacija poteka preko južnega mosta.
+Ta komunikacija poteka preko južnega mostu.
 
 # Dodatki
 
