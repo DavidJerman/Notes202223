@@ -46,7 +46,7 @@ avtorskih pravic.
 
 ## Lokacijski števec
 
-...
+Imamo enega za vsako datoteko.
 
 ## Zasnova objektnega modula
 
@@ -103,14 +103,16 @@ ELF Header:
 
 - [x] Done
 
-.text – koda programa
-.data – inicializirane globalne spremenljivke
-.rodata – read only data
-.bss – ne-inicializicane globalne spremenljivke
-.interp – ACSII niz z imenom dinamičnega povezovalnika
-.shstrtab – sekcija z imeni sekcij
-.symtab – simbolna tabela za statično povezovanje
-.strtab – tabela nizov znakov
+Sekcije v ELF:
+
+- .text – koda programa
+- .data – inicializirane globalne spremenljivke
+- .rodata – read only data
+- .bss – ne-inicializicane globalne spremenljivke
+- .interp – ACSII niz z imenom dinamičnega povezovalnika
+- .shstrtab – sekcija z imeni sekcij
+- .symtab – simbolna tabela za statično povezovanje
+- .strtab – tabela nizov znakov
 
 ## Čemu služi magično število
 
@@ -120,7 +122,7 @@ Namen magičnega števila je, da identificira tip datoteke – torej, da gre za 
 ne nekaj drugega. Namreč, če vrednosti magičnega števila preko ASCII tabele pretvorimo, dobimo
 izpis ELF!
 
-## Primer izvedljivega module (s segmenti)
+## Primer izvedljivega modula (s segmenti)
 
 - [x] Done
 
@@ -191,7 +193,7 @@ RW – namreč gre za neicinilarizirane podatke, ki so berljivi in zapisljivi.
 - [x] Done
 
 Glavna razlika, ki izda, ali je program pripravljen za povezovanje ali že za nalaganje, je, da
-pri nalaganju najdemo segmente, pri povezovanju pa seckije.
+pri nalaganju najdemo segmente, pri povezovanju pa sekcije.
 
 ## Še nekaj o objektnih modulih
 
@@ -230,6 +232,7 @@ Zgradba tega formata pa je sledeča:
 * navodila za prenaslavljanje
 * simbolna tabela, export in import tabela
 * tabela nizov
+  
   Tudi ta format ravno ne ščiti avtorskih pravic. Ali si pred konkurenco, ali pa produkt
   patentiraj. Edino, kar ti je skrito, je simbolna tabela. Format uporablja **relativne virtualne
   naslove**. Vnaprej se tudi določi izvajalni naslov. Če je ta naslov zaseden, mora nalagalnik
@@ -292,11 +295,11 @@ kartica. Namesto backenda za CPU lahko nato naknadno naloži backend za GPU.
 
 Kar pa se tiče verzioniranja na Linuxu:
 deljene knjižnice (shared library)
-• naložijo se ob prvem klicu, nato dostopni za vse programe
-• fizično in logično ime (knjižnica “primer”, različica 3.1):
-• /usr/lib/libprimer.so.3.1 – fizično ime
-• /usr/lib/libprimer.so.3 – logično ime (“so”-ime; “shared object”)
-• /usr/lib/libprimer.so – ime za povezovanje
+- naložijo se ob prvem klicu, nato dostopni za vse programe
+- fizično in logično ime (knjižnica “primer”, različica 3.1):
+- /usr/lib/libprimer.so.3.1 – fizično ime
+- /usr/lib/libprimer.so.3 – logično ime (“so”-ime; “shared object”)
+- /usr/lib/libprimer.so – ime za povezovanje
 
 Za primere glej PP stran 6, 7...
 
@@ -1130,6 +1133,9 @@ segmente in vstopno točko. Sekcije so tu že združene v segmente, da se lahko 
 direktno naloži v pomnilnik. Objektni modul je predhodnik te datoteke pri prevajanju in
 zato še ni izvedljiv, vsebuje samo sekcije in nima vstopne točke.
 
+Poleg tega bi še dodal, da zaradi ostranjevanja pogosto pride do diskrepance. Program
+se "razbije" na več ločenih delov zaradi ostranjevanja.
+
 ## VDSO
 
 - [x] Done
@@ -1213,7 +1219,7 @@ Težavice, ki nastanejo, so sledeče:
   posodobi, program pa ne. Tako lahko pride do težav.
 - **Klic po imenu vs. klic po številki** – Slednje je sicer hitrejše, ampak problem je, kaj, če
   se številka funkcije spremeni? Tako je bolje klicati po imenu, ker se to ne spremeni – imamo tabelo
-  funkcij z imeni in naslovi. Takšna zgodba je tudi pri DLL-ih, kjer se funkcije kličejo po imenu.
+  funkcij z imeni in naslovi. Takšna zgodba je tudi pri DLL-jih, kjer se funkcije kličejo po imenu.
 
 Več o tem najdeš v [Programske knjižnice](#programske-knjižnice).
 
@@ -1284,7 +1290,7 @@ Glavne prednosti so:
 - platformna neodvisnost – ker se programi izvajajo na JVM, so ti programi neodvisni od platforme,
 - varnost – ker se programi izvajajo na JVM, so ti programi varni v smislu:
     - memory management – imamo garbage collector, ki skrbi za čiščenje pomnilnika,
-    - uporaba sandboxa – recimo Java web applet-i rečejo v sandbox, ki je varno okolje,
+    - uporaba sandboxa – recimo Java web applet-i tečejo v sandbox, ki je varno okolje,
 - možnost spreminjanja kode on the fly in nasploh večji nadzor nad izvajanjem programa.
 
 ### Slabosti
@@ -1293,7 +1299,7 @@ Glavne prednosti so:
 
 Glavne slabosti so:
 
-- počasnost – ker se programi izvajajo na JVM, so ti programi počasnejši od programov, ki se izvajajo na strojni opremi,
+- počasnost – ker se programi izvajajo na JVM, so ti programi počasnejši od programov, ki so prevedeni v strojno kodo (AOT),
 - kodo težje optimiziramo za ciljno platformo, saj smo odvisni od izvajanega okolja,
 - težje je delati z nizkimi nivoji, saj je vse skrito za JVM-om.
 
@@ -1357,7 +1363,7 @@ Več o Dalvik-u: [Dalvik](#dalvik).
 Zaprti tipi so tipi, ki jih ne moremo razširiti. Primeri so: `int`, `float`, `double`, `char`, `boolean`.
 Drugače povedano, gre za primitivne tipe. Vredno si je zapomniti, da je velikost teh tipov na
 vsaki platformi drugačna. V Javi je npr. velikost bool vrednosti je sicer 1 bit, ampak ta tip
-vsebuje še kazalec velikost 4 bajtov, kar pomeni, da je velikost bool vrednosti 4 bajtov. Skratka tipi
+vsebuje še kazalec velikost 4 bajtov, kar pomeni, da je velikost bool spremenljivke 4 bajte. Skratka tipi
 niso tako majhni kot npr. v C-ju.
 
 ## .NET
@@ -1510,8 +1516,7 @@ Glej [Postopek klica gonilnika](#postopek-klica-gonilnika).
 
 Še z drugačnimi besedami:
 
-1. Najprej se pošlje glava zahteve v vhodno vrsto gonilnika. Poleg tega se pošlje še
-   glava gonilnika, ki vsebuje informacije o tem, kateri gonilnik je potrebno klicati,
+1. Najprej se pošlje glava zahteve v vhodno vrsto gonilnika,
 2. Gonilnik preko strategijske rutine izbere naslednjo zahtevo, prioriteto zahteve dobi
    iz glave gonilnika,
 3. Gonilnik kliče V/I napravo in ji pošlje glavo zahteve in glavo gonilnika,
@@ -1537,9 +1542,9 @@ Poleg tega, če opredelim vsako posamezno komponento:
     - uporaba prekinitev - prekinitveni vektor, ki ga pošlje gonilnik in prekine CPU,
     - uporaba pooling mehanizma - procesor gonilnik stalno sprašuje "Ali si že?",
     - kombinacijo obeh dveh, kar ponavadi najdemo v sodobnih operacijskih sistemih,
-- glava zahteve, ki vsebuje informacije o tem, katero **napravo** kličemo, podrobnosti operacije,
+- glava zahteve, ki vsebuje informacije o tem, katero ~~**napravo**~~ kličemo, podrobnosti operacije,
   podatkovne parametre, error handling,
-- glava gonilnika, ki vsebuje informacije o tem, kateri **gonilnik** kličemo, request management,
+- glava gonilnika, ki vsebuje informacije o tem, kateri ~~**gonilnik**~~ kličemo, request management,
   driver-specific-data,
 - gonilnikova strategijska rutina - po neki prioriteti izbira zahteve v gonilniku,
 - gonilnikova zgornja in spodnja prekinitvena rutina - slednja je za tiste prekinitve, ki so
@@ -1629,7 +1634,7 @@ Tretja možnost je še kombinacija obeh mehanizmov.
 
 - [x] Done
 
-Gre za dva nivoja prekinitev glede na njihovo pomembnost. 
+Gre za dva nivoja prekinitev glede na njihovo pomembnost.
 
 Zgornja polovica zahteva takojšnjo reakcijo in hitro obdelavo prekinitve. Ponavadi skrbi za nujne odzive.
 Ne moremo je prekiniti. Dostop do podatkov je sinhronizira s spodnjo polovico.
@@ -1705,9 +1710,9 @@ Primeri teh so:
 
 - [x] Done
 
-Primeri teh so: 
+Primeri teh so:
 
-- gonilniki naprav - skrbijo za I/O naprave, PnP, sledijo modelu **WDM**, 
+- gonilniki naprav - skrbijo za I/O naprave, PnP, sledijo modelu **WDM**,
 - gonilniki datotečnega sistema - skrbijo za datotečni sistem, dostop do datotek, iskanje virusov,
 - video gonilniki - neposreden dostop do grafične kartice,
 
@@ -1715,14 +1720,14 @@ Delujejo na nižjem nivoju v jedrnem prostoru. Sledijo modelu **WDM**, da ne ses
 
 ### Hierarhija gonilnikov v Windows-u
 
-- [ ] Done
+- [x] Done
 
 V modelu **WDM** morajo računalniške enote imeti vsaj dva gonilnika. **Funkcijski gonilnik** in
 **gonilnik vodila**. Funkcijski gonilnik pozna podrobnosti naprave in opravlja I/O operacije ter
 nadzoruje prekinitve. Slednji pa skrbi za komunikacijo preko vodila.
 
 Še ena vrsta gonilnikov, ki jih poznamo so **presejalni gonilniki**. Namen le-teh je, da gre ves
-"promet" skozi njih. Tako lahko preverjajo, če je katera izmed naprav okužena z virusom. V glavnem
+"promet" skozi njih. Tako lahko preverjajo, če je katera izmed datotek okužena z virusom. V glavnem
 pa pretvarjajo in preusmerjajo podatkovne tokove.
 
 Gonilniki so v Windows-u organizirani v hierarhijo. Klic gonilnika izgleda takole:
@@ -1739,7 +1744,7 @@ lahko pa spreminjamo tudi miniport gonilnike.
 
 ### Nekateri pojmi
 
-- [ ] Done
+- [x] Done
 
 - **PnP** - Plug and Play, naprave se same zaznajo in namestijo gonilnike,
 - **Power Management** - upravljanje z napajanjem,
@@ -1766,7 +1771,7 @@ I/O manager je v bistvu Windows storitev, ki teče v kernel načinu.
 
 Gonilniki so po eni strani super zadeva, saj nam omogočajo nek nivo abstrakcije, da lahko uporabljamo
 naprave, ki so med seboj zelo različne. Po drugi strani pa so gonilniki tudi velik problem, saj jih
-je treba redno posodabljati, pogosto so vir napak, varnostnih ranljivosti, nestabilnosti sistema in 
+je treba redno posodabljati, pogosto so vir napak, varnostnih ranljivosti, nestabilnosti sistema in
 slabe performanse. Zato jih je treba stalno posodabljati, kar pa je lahko zelo zamudno in zahtevno.
 
 ### Prekinitve pri gonilnikih
