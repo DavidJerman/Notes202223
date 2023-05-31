@@ -986,14 +986,14 @@ Bolj, ko gremo navzdol, bolj specifični smo, kaj od naprave želimo.
 
 Vse je v jedru. To je najhitrejša rešitev, vendar je tudi najbolj nestabilna. Še vedno pa
 imamo module, ki jih lahko nalagamo ali odložimo. Primer je Linux. Vse funkcionalnosti so
-v kernel načinu, zato je veliko preklopov. Moduli so objektno orientiran pristop.
+v kernel načinu, zato je malo preklopov. Moduli so objektno orientiran pristop.
 
 #### Mikrojedro
 
 - [x] Done
 
 V jedru imamo le najnujnejše funkcionalnosti. Vse ostalo je v uporabniškem načinu.
-Vse storitve/servise imamo v uporabniškem načinu. Primer je NT jedro. Tako je malo
+Vse storitve/servise imamo v uporabniškem načinu. Primer je NT jedro. Tako je veliko
 preklopov, vendar je tudi počasnejše in jedro se težje sesuje. Jedro je tudi
 majhno in lažje za vzdrževanje. Večja varnost.
 
