@@ -16,6 +16,11 @@ Kratice:
 * DFT – diskretna Fourierjeva transformacija
 * FFT – hitra Fourierjeva transformacija
 
+Pomembno:
+
+- impulzni odziv == časovna domena
+- frekvenčni odziv == frekvenčna domena
+
 ## Snov
 
 ### Uporaba FFT
@@ -124,16 +129,16 @@ that many real-world processes can be modeled as a combination of these two type
 
 Autoregressive behavior suggests that the current value of a variable is dependent on its own past values.
 For example, in a time series, the current value may be influenced by its recent history. By including the
-AR component in an ARMA filter, it takes into account this autoregressive behavior and models the relationship 
+AR component in an ARMA filter, it takes into account this autoregressive behavior and models the relationship
 between the current output and its own past values.
 
 Moving average behavior, on the other hand, suggests that the current value of a variable is influenced by past
-values of another variable (often the input variable). It assumes that there is a short-term memory effect in 
-the system, where the current output depends on the recent past inputs. Including the MA component in an ARMA 
-filter captures this moving average behavior and models the relationship between the current output and past 
+values of another variable (often the input variable). It assumes that there is a short-term memory effect in
+the system, where the current output depends on the recent past inputs. Including the MA component in an ARMA
+filter captures this moving average behavior and models the relationship between the current output and past
 input values.
 
-By combining both AR and MA components in an ARMA filter, it becomes more flexible and capable of capturing 
+By combining both AR and MA components in an ARMA filter, it becomes more flexible and capable of capturing
 different types of dependencies in a system. This allows the model to better represent and predict the behavior
 of various processes, making it a widely used tool in time series analysis and forecasting.
 
@@ -408,7 +413,7 @@ ekvalizacija histograma, kjer razporedimo vrednosti histograma tako, da je poraz
 enakomerna. Na sliki se to vidi kot izenačitev svetlosti, nam pa pomaga pri segmentaciji. Značilna
 območja histograma predstavljajo podobne lastnosti v signalu.
 
-Pri segmentaciji nato kot že omenjeno izberemo dva praga, ki določata, katere vrednosti bomo 
+Pri segmentaciji nato kot že omenjeno izberemo dva praga, ki določata, katere vrednosti bomo
 sprejeli in katere ne.
 
 #### Pragovna segmentacija
@@ -486,7 +491,7 @@ T = Topt(1 - x)
 ```
 
 kjer je x korekcijska vrednost piksla izračunana kot:
-    
+
 ```math
 x = 1/3R(|a - b - c + d| + |a - b + c - d| + |a + b - c - d|)
 ```
@@ -533,13 +538,13 @@ Rezultat: 30/35 = 0.86
 Nato imamo še pojma:
 
 - **TPF** - true positive fraction - senzitivnost
-  - TPF = TP / (TP + FN)
+    - TPF = TP / (TP + FN)
 - **TNR** - true negative fraction - specifičnost
-  - TNR = TN / (TN + FP)
+    - TNR = TN / (TN + FP)
 - **FNF** - false negative fraction
-  - FNF = 1 - TPF
+    - FNF = 1 - TPF
 - **FPF** - false positive fraction
-  - FPF = 1 - TNF
+    - FPF = 1 - TNF
 
 Za primer zgoraj so rezultati:
 
@@ -553,7 +558,7 @@ Za primer zgoraj so rezultati:
 V praksi tako iščemo kompromis med TPF in TNR. To lahko naredimo z uporabo ROC krivulje.
 ROC krivulja je krivulja, ki prikazuje odvisnost TPF od FPF. Najboljša je ponavadi tista,
 ki se čim bolj približa enemu izmed robov na osi y = x. Najslabša krivulja pa je tista,
-ki gre skozi os y = -x.** Čim bližje smo tej diagonali, tem slabši je naš model za 
+ki gre skozi os y = -x.** Čim bližje smo tej diagonali, tem slabši je naš model za
 predikcije.
 
 Optimalni prag tako iščemo na ta način, da opazujemo spreminjan ROC krivulje in iščemo
@@ -571,3 +576,383 @@ Več o tem:
 - [ROC krivulja](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
 - [AUC](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve)
 - [Neka spletna stran](http://www.anaesthetist.com/mnm/stats/roc/Findex.htm)
+
+## Vprašanja
+
+### 1. Kratkočasovna Fourierova transformacija - STFT
+
+Ideja tu je, da namesto, da obdelamo celoten signal, signal razdelimo v okna in v vsakem
+oknu izvedemo Fourierovo transformacijo. Tako dobimo še dodatne informacije o času, v katerem
+se je pojavila določena frekvenca. Seveda pa se tu pojavi "trade-off". Ker je okno omejeno,
+pride do manjše natančnosti pri določanju frekvenc - do manjše resolucije. Večjo frekvenčno
+resolucijo/ločljivost kot želimo, manjšo časovno resolucijo bomo imeli.
+
+Kako pa to veš iz slike? Tista slika, kjer je so barve bolj "razpacane" je najverjetneje
+uporabljala manjše okno.
+
+### 2. Težave s STFT
+
+Kot že omenjeno je eden izmed problemov frekvenčna ločljivost vs. časovna ločljivost.
+
+Drugi problem pa je frekvenčno razlivanje, pa tudi to, da določen signal ni prisoten
+skozi celotno okno.
+
+### 3. Primer SFTF
+
+```
+Fvz = 44.1k
+Dolzina okna: 0.1s
+
+Ugotovitev:
+število vzorcev: 44.1k
+frekvenčna ločljivost: 1/0.1 = 10Hz
+```
+
+STFT lahko prikažemo z uporabo 3D grafa ali pa 2D grafa, kjer je z os barvna lestvica.
+
+### 4. Filtriranje
+
+Ideja filtriranja je v osnovi to, da se določenih frekvenc v signalu želimo znebiti. Predvsem
+gre tu za to, da se znebimo šuma in izboljšamo razmerje SNR (signal to noise ratio).
+
+Prvi način filtriranja je v frekvenčni domeni, kjer samo ustvarimo okno z ničlami in enicami
+in to pomnožimo s signalom. Ničle izničijo frekvence, ki jih ne želimo.
+
+### 5. Zakaj NE filtriranje v frekvenčni domeni?
+
+Razloga sta dva:
+
+- zaradi frekvenčnega razlivanja se lahko zgodi, da izničimo tudi frekvence, ki jih ne bi
+  smeli - zgubimo nekaj natančnosti
+- takšno filtriranje deluje offline, kar pomeni, da rabimo celoten posnetek preden lahko
+  filtriramo, kar pa pomeni, da ne moremo filtrirati real-time
+
+### 6. Filtriranje v časovni domeni
+
+Prejšnjo idejo lahko prenesemo v časovno domeno. Poznamo frekvenčno karakteristiko filtra,
+ki jo lahko prenesemo v časovno domeno, da dobimo impulzni odziv filtra. To storimo s
+pomočjo inverzne Fourierove transformacije.
+
+### 7. Frekvenčna transponiranka impulznega odziva
+
+Izraz "frekvenčna transponiranka impulznega odziva" se nanaša na postopek pretvorbe impulznega
+odziva filtra iz časovne domene v frekvenčno domeno. Ta postopek se izvaja s pomočjo diskretne
+Fourierove transformacije (DFT) ali hitre Fourierove transformacije (FFT).
+
+Postopek frekvenčne transponiranke impulznega odziva je naslednji:
+
+1. Najprej morate imeti **impulzni odziv** filtra v časovni domeni. Impulzni odziv je odziv filtra
+   na enotski impulz.
+
+2. Uporabite diskretno Fourierovo transformacijo (DFT) ali hitro Fourierovo transformacijo (FFT)
+   na impulzni odziv filtra v časovni domeni. To pretvori impulzni odziv v frekvenčno domeno.
+
+3. Rezultat je frekvenčna transponiranka impulznega odziva, ki predstavlja spekter filtra v
+   frekvenčni domeni. Temu rečemo tudi **frekvenčna karakteristika filtra**.
+
+Frekvenčna transponiranka impulznega odziva se uporablja za analizo frekvenčnih lastnosti filtra.
+Na podlagi tega spektra je mogoče določiti, kako filter vpliva na različne frekvence v vhodnem
+signalu. Poleg tega se frekvenčna transponiranka impulznega odziva lahko uporabi tudi za oblikovanje
+in optimizacijo filtrov.
+
+### 8. MA, AR in ARMA modeli
+
+Sledeči modeli so filtri tipa **IIR** - infinite impulse response. To pomeni, da imajo lahko neskončen
+impulzni odziv.
+
+Pri obeh modelih delamo s preteklimi vzorci. Na ta način dobimo občutek za to, kako se je signal
+spreminjal v preteklosti. Namen teh modelov je, da opravijo filtriranje signala.
+
+MA sistem je sistem oblike:
+
+```
+y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + ... + bL * x[n-L+1]
+```
+
+Sprejema prejšnje **VHODNE** vrednosti. Išče tekoče povprečje prejšnjih vhodnih vrednosti. Zato
+se tudi imenuje _Moving Average_. To povprečje pa se nato pomnoži z nekimi koeficienti, ki
+dosežejo efekt filtriranja. Problem **MA** je visoka računska zahtevnost. Pri njem najdemo
+**koeficiente b**.
+
+AR sistem je sistem oblike:
+
+```
+y[n] = a1 * y[n-1] + a2 * y[n-2] + ... + aL * y[n-L+1]
+```
+
+Sprejema prejšnje **IZHODNE** vrednosti. Na dolgo mu rečemo _avtorekurzivni_ ali _autoregressive_
+sistem. AR sistem je avtorekurzivni, kar pomeni, da izhodni vzorec filtra vpliva na naslednje izhodne
+vzorce. Pri njem najdemo **koeficiente a**.
+
+ARMA model pa kombinira oba modela. ARMA model je sistem oblike:
+
+```
+y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + ... + bL * x[n-L+1] 
+       + a1 * y[n-1] + a2 * y[n-2] + ... + aL * y[n-L+1]
+```
+
+**Red filtra** je max(L, M), kjer je L red MA sistema in M red AR sistema oz. število koeficientov
+b in a.
+
+Pa še ne pozabi, vse opisano je v bistvu **KONVOLUCIJA**.
+
+[Vloga MA in AR modelov by ChatGPT]
+
+V kontekstu filtriranja signalov ima AR (avtoregresivni) model vlogo modeliranja odvisnosti izhodnega vzorca od
+preteklih izhodnih vzorcev. AR model pomaga zaznati vzorce ali trende v signalu ter jih uporabiti za filtriranje ali
+napovedovanje prihodnjih vzorcev. Z drugimi besedami, AR model se osredotoča na preteklost izhodnega signala, da bi
+razumel njegovo strukturo.
+
+MA (gibanjsko povprečje) model pa ima vlogo zglajevanja signala in odstranjevanja šuma. MA model se osredotoča na
+preteklost vhodnega signala in izračuna tekoče povprečje prejšnjih vhodnih vzorcev. To zmanjšuje vpliv naključnih nihanj
+in šuma v signalu, kar omogoča bolj gladko in stabilno filtriranje.
+
+ARMA model, ki združuje tako AR kot tudi MA komponento, se uporablja za bolj prilagodljivo filtriranje signalov. AR del
+pomaga zajeti odvisnost izhodnega signala od preteklih izhodnih vzorcev, medtem ko MA del prispeva k zglajevanju signala
+in odstranjevanju šuma. Združevanje obeh modelov omogoča bolj natančno in učinkovito filtriranje signalov ter
+napovedovanje prihodnjih vzorcev.
+
+Torej, AR model pomaga razumeti strukturo in vzorce v izhodnem signalu, medtem ko MA model zgladi signal in odstrani
+šum. Skupaj se uporabljata za ustvarjanje učinkovitih in prilagodljivih filtrov za obdelavo signalov.
+
+### 9. Prednosti in slabosti ARMA modela
+
+Ena izmed slabosti je, da so takšni filtri lahko nestabilni. Do te nestabilnosti lahko pride,
+kadar so koeficienti A zelo blizu 0. Poleg tega se je treba zavedati, da ARMA model signal
+rekurzivno pošilja samega vase, kar lahko povzroči, da amplituda eksplodira.
+
+Prednosti pa so to, da imamo lahko recimo neskončen impulzni odziv in vseeno zelo dobro
+filtriramo želene frekvence.
+
+### 10. Impulzni odziv
+
+Kadar je vrednost vseh koeficientov A enaka 0, razen prvega 1, je impulzni odziv kar enak B.
+
+Impulzni odziv ARMA modela je v Z ravnini definiran kot:
+
+```
+H(z) = B(z) / A(z)
+```
+
+MA sistem:
+
+```
+H(z) = B(z)
+```
+
+AR sistem:
+
+```
+H(z) = 1 / A(z)
+```
+
+ARMA sistem:
+
+```
+H(z) = B(z) / A(z)
+```
+
+### 11. Kaj je Z transformacija?
+
+V bistvu gre za manjšo priredbo Laplaceove transformacije. Z transformacija je namenjena
+analizi diskretnih sistemov in signalov, ravno tako kot DFT. Olajša nam določene operacije,
+ki bi sicer bile zelo zahtevne v časovni domeni.
+
+Z transformacija je definirana kot:
+
+```
+Y(z) = sum(n=0, N-1) y[n] * z^-n
+
+z = e^(jw)
+
+ali
+
+z = e^(-i * 2 * pi / N * k)
+```
+
+Kot v Z ravnini določa frekvenco. Poleg tega je vredno omeniti, da je Z **kompleksen**,
+zato je potreben tudi prikaz v kompleksni ravnini.
+
+Za Z transformacijo pa je značilna tudi konvolucija in deluje na enak način kot DFT.
+Torej, da samo zmnožimo frekvenčni odziv z vhodnim signalom.
+
+### 12. Z transformacije zgledi
+
+```
+y[n] = [1, 2, 3, 4, 5]
+
+Y(z) = 1 * z^0 + 2 * z^-1 + 3 * z^-2 + 4 * z^-3 + 5 * z^-4
+```
+
+Kar opazimo je, da gre za polinom.
+
+### 13. Stabilnost ARMA modela
+
+Stabilnost ARMA sistema lahko zlahka ugotavljamo v Z ravnini. Namreč vemo, da je impulzni
+odziv ARMA modela enak:
+
+```
+H(z) = B(z) / A(z)
+```
+
+In ta odziv je v bistvu polinom. Koeficienti b nam dajo ničle, koeficienti A pa pole.
+Pravimo tudi, da gre za **sistemovo prenosno karakteristiko**.
+
+S pomočjo ugotavljanja ničel in polov lahko nato govorimo o stabilnosti sistema. Najprej
+je vredno pomniti, da se frekvence na enotski krožnici za nek filter odražajo takole:
+
+![Frekvence na enotski krožnici](https://davidblog.si/wp-content/uploads/2023/06/Screenshot-2023-06-03-195627.png)
+
+Filter je stabilen, če so vsi poli **ZNOTRAJ** enotske krožnice. To pomeni, da impulzni odziv
+sistema skozi čas pada in ne narašča, kar si tudi želimo. Namreč, če so poli zunaj enotske
+krožnice pomeni, da imajo višjo magnitudo, kar pa vodi v nestabilnost filtra.
+
+Pa dodal bi še, da je red filtra max(ničle, poli).
+
+### 14. Razumevanje filtrov s pomočjo enotske krožnice
+
+Samo logičen pomislek. Ničle pomeni, da se funkcija v tisti okolici približa ničli.
+Poli pa pomenijo, da se funkcija v tisti okolici približa neskončno. Od tod sledi,
+da tam kje najdemo ničle, da se frekvence filtrirajo, tam pa, kjer najdemo pole, se 
+frekvence ojačajo.
+
+Tako bi nizkoprepustni filter imel ničlo na levi, pol pa na desni. Torej, vse frekvence
+blizu Fvz/2 bi bile filtrirane, vse frekvence blizu 0 pa bi bile ojačane. Seveda, poli
+pri tem NE smejo biti izven enotske krožnice, saj bi to pomenilo nestabilnost filtra.
+Poleg tega pa, filtri ne morejo biti popolni, nekaj frekvenc vedno preide skozi filter.
+
+### 15. Lomna frekvenca
+
+Lomna frekvenca je frekvenca, kjer se začnejo frekvence filtrirati. Bolj konkretno, je
+meja pri **0.7** amplitude oz. **-3dB**.
+
+### 16. Ostale lastnosti filtrov
+
+**Območja filtra**
+
+- prepustno območje - območje, kjer se frekvence prepuščajo
+- prehodno območje - območje, kjer prehajamo iz območja prepuščanja v območje filtriranja
+- zaporno območje - območje, kjer se frekvence filtrirajo
+
+**Tipi filtrov**
+
+- nizkoprepustni - prepušča frekvence do lomne frekvence
+- visokoprepustni - prepušča frekvence nad lomno frekvenco
+- pasovni - prepušča frekvence med dvema lomnima frekvencama
+- pasovno zaporno - prepušča frekvence izven dveh lomnih frekvenc
+
+### 17. Primer opisa filtra
+
+Opiši sledeči filter:
+
+![Primer filtra](https://davidblog.si/wp-content/uploads/2023/06/Screenshot-2023-06-03-201757.png)
+
+Če predpostavimo, da frekvence gredo od manjše proti večji, potem gre za nizkoprepustni
+filter. Lomna frekvenca je nekje na tretjini. Prehodno območje je precej dolgo. Poleg tega
+pa ne filtrira v celoti vseh frekvenc nad lomno frekvenco.
+
+### 18. Primeri filtrov
+
+- Butterworth,
+- Chebyshev,
+- Bessel,
+- Elliptic
+- ...
+
+### 19. Šum v signalih
+
+Šum je v bistvu vsak signal, ki ga ne želimo. Lahko je posledica okolja, napak v merjenju,
+ali pa je posledica samega sistema. Šuma se lahko znebimo s pomočjo filtrov.
+
+Količino šuma v signalu lahko opišemo s pomočjo **SNR** (signal to noise ratio). Ta
+nam pove, koliko je signal močnejši od šuma. 
+
+```
+SNR = 10 * log10(Es / En)
+```
+
+Kjer je Es energija signala, En pa energija šuma.
+
+Primer: če imamo SNR 10dB, to pomeni, da je signal 10x močnejši od šuma, torej, da je šum
+10% signala.
+
+SNR zapis s pomočjo apmlitude:
+
+```
+SNR = 20 * log10(As / An)
+```
+
+### 20. Zakaj si želimo boljši SNR?
+
+Razlog tiči v tem, da prvo kot prvo nam šum NE koristi. Poleg tega je stiskanje ob odstranitvi
+šuma veliko bolj učinkovito. Signal je tudi lažje obdelovati. 
+
+### 21. Kako deluje 2D konvolucija?
+
+Ideja je popolnoma ista - imamo impulzni odziv 2D filtra (kernel, jedro) in vhodno sliko (signal).
+Ta dva nato med sabo množimo kot pri konvoluciji. Tudi tu lahko delamo ali v frekvenčnem ali
+časovnem prostoru. Večinoma pa delamo v časovnem.
+
+Primer takega filtra je npr. nizkoprepustni filter, ki ga uporabimo za zmanjšanje šuma. Deluje
+taok, da v filter damo samo enice in ta sliko "zamegli" ter tako efektivno odstrani višje
+frekvence. Gre za računanje povprečja.
+
+Filtre moramo normalizirati, če želimo, da ne uničimo slike.
+
+### 22. Detekcija robov
+
+Detekcijo robov lahko izvajamo z izbiro pravih filtrov. V splošnem jih prepoznamo po tem, da je
+v njih prisotno odštevanje. V ozadju je ideja, da tam kjer je gradient velik, se bo to tudi
+odražalo na filtru in dobili bomo večjo vrednosti. Torej iščemo območja velike spremembe kontrasta.
+
+**Robertsova operatorja**
+
+Omogočata detekcijo diagonalnih robov. Nista najbolj optimalna.
+
+```
+C0 = [-1 0]                  C1 = [0 -1]
+     [ 0 1]                       [1  0]
+
+Desno diagonalni robovi      Levo diagonalni robovi
+```
+
+**Laplaceov operator**
+
+Omogoča detekcijo vseh robov. Načeloma je še vseeno boljše kombinirati prejšnja operatorja.
+
+```
+C = [ 0  1  0]
+    [ 1 -4  1]
+    [ 0  1  0]
+    
+ta omogoča detekcijo robov v vseh smereh
+
+C = [ 1  1  1]
+    [ 1 -8  1]
+    [ 1  1  1]
+    
+    
+ta pa tudi
+```
+
+**Sobelov operator**
+
+Omogoča detekcijo navpičnih in vodoravnih robov.
+
+```
+Cy = [-1 0 1]              Cx = [-1 -2 -1]
+     [-2 0 2]                   [ 0  0  0]
+     [-1 0 1]                   [ 1  2  1]
+     
+Navpični robovi            Vodoravni robovi
+```
+
+Kombinacija Sobelovih operatorjev je najboljša izbira za detekcijo robov.
+
+Poleg tega kombinacija teh dveh omogoča ugotovitev amplitude in smeri robov.
+
+```
+A = sqrt(Cx^2 + Cy^2)
+kot = atan(Cy / Cx)
+```
+
