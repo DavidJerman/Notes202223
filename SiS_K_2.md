@@ -812,7 +812,9 @@ Pa dodal bi še, da je red filtra max(ničle, poli).
 ### 14. Razumevanje filtrov s pomočjo enotske krožnice
 
 Samo logičen pomislek. Ničle pomeni, da se funkcija v tisti okolici približa ničli.
-Poli pa pomenijo, da se funkcija v tisti okolici približa neskončno. Od tod sledi,
+Frekvence v tistem območju sili k ničli.
+Poli pa pomenijo, da se funkcija v tisti okolici približa neskončno. Torej tiste
+frekvence ohranja. Od tod sledi,
 da tam kje najdemo ničle, da se frekvence filtrirajo, tam pa, kjer najdemo pole, se 
 frekvence ojačajo.
 
@@ -956,3 +958,186 @@ A = sqrt(Cx^2 + Cy^2)
 kot = atan(Cy / Cx)
 ```
 
+### 23. Cannijev detektor robov
+
+Cannijev detektor robov je najboljši detektor robov. Kombinira razne tehnike zaznave kot so 
+Gaussovo sito, Robertsov operator in določanje praga, da zazna robove, tudi če so pretrgani.
+
+### 24. Pojmi v prostoru značilk
+
+Vsak signal nosi neke informacije in le-te lahko izluščimo. To lahko med drugim storimo
+s pomočjo filtrov in segmentacije. Na ta način zberemo kup informacij o signalu, ki jim
+rečemo **značilke**. Te značilke tvorijo t.i. **prostor značilk**.
+
+Primer:
+
+_Imamo sliko psa. Iz nje nato lahko izluščimo sledeče značilnice: barva, oblika uljev,
+število nog, dolžina repa, ipd._
+
+Postopku izluščevanja značilk rečemo **ekstrakcija značilk**.
+
+Značilke nam lahko služijo za razpoznavo nekih objektov ali pa za **klasifikacijo**.
+
+**Klasifikacija** pomeni razvrščanje objektov v razrede. To lahko naredimo na podlagi
+značilk, ki smo jih izluščili.
+
+### 25. Razpoznavalni sistem
+
+To je sistem, s katerim opravimo **razpoznavanje oblik**. Postopek je sledeč:
+
+1. Pretvorba iz fizikalnega sveta (neskončno dimenzij) v prostor oblik (2D, 3D, ...)
+2. Ekstrakcija značilk, da preidemo v prostor značilk (N dimenzionalni prostor)
+3. Pravila odločanja za klasifikacijo v razrede (K)
+
+### 26. Določanje praga
+
+Ko iščemo območje oblike v signalu, moramo poiskati segment slike, kjer je ta objekt prisoten.
+Temu postopku pravimo **segmentiranje**. Najpreprostejši pristop je z uporabo pragov. Potlej 
+samo gledamo za vsak pixel na sliki, če je njegova vrednost večja od praga. Če je, ga označimo
+kot del objekta, če ne, pa ne. Tako dobimo true/false masko, ki nam pove, kje se objekt nahaja.
+
+![Prag](https://davidblog.si/wp-content/uploads/2023/06/Screenshot-2023-06-03-210859.png)
+
+Določanje pragu je lahko kar zahtevna stvar. Najpreprostejši način je, da določimo globalni
+prag - torej neko vrednost, ki je enaka za vse piksle na sliki.
+
+Pri določanju pragov si lahko pomagamo s **histogrami**.
+
+### 27. Sivinski histogram
+
+Sivinski histogram je najlažje določiti tako, da poiščemo minimalno in maksimalno vrednost
+na sliki. Nato naredimo histogram, ki ima toliko stolpcev, kot je razlika med minimalno in
+maksimalno vrednostjo. Velikost stolpca predstavlja število pikslov, ki imajo to vrednost.
+Območja, kjer je koncentracija velika, kažejo na potencialne segmente.
+
+### 28. Izboljšava histograma
+
+Pri segmentaciji si želimo, da bi bile sivine čim bolj enakomerno porazdeljene, saj lahko tako
+bolje določimo prag. To storimo s pomočjo **linearizacije**. S to metodo sivine, ki so bolj na
+kupu, razvlečemo, tiste, ki so bolj razpršene, pa stisnemo skupaj. S tem dosežemo, da so sivine
+bolj enakomerno porazdeljene.
+
+### 29. Kje je optimalni prag?
+
+Formule za določitev optimalnega pragu ni. Lahko pa si tu pomagamo z neko hevristiko, kot je
+npr. uspešnost klasifikacije. Če sliko bolje klasificiramo pri določenem pragu, potem je ta
+prag boljši. To spominja na učenje z vzorci pri nevronskih mrežah.
+
+### 30. Povprečje vs. mediana
+
+Glavna razlika je v tem, da je mediana dosti bolj odporna na velika odstopanja. Npr. če
+imamo vrednosti 1, 2, 3, 1000 v seznamu, potlej bo povprečje 251, mediana pa 2.5. Mediana 
+je namreč srednja vrednost, ki jo dobimo, če seznam uredimo po velikosti. V primeru zgoraj je
+sredina enaka 2, 3, zatorej je mediana (2 + 3) / 2 = 2.5.
+
+Zato je najbolje, da izračunamo tako mediano kot povprečje, da dobimo občutek o lasstnosti
+opazovanih podatkov oz. signalov.
+
+### 31. Vrste pragov
+
+Imamo globalni in lokalni prag. Globalni je enak za celotno sliko, lokalni pa je različen
+za vsak piksel slike. Če uporabljamo lokalne pragove, lahko tudi kombiniramo več pragov.
+
+Kar se tiče globalnih pragov, lahko le-te izračunamo s pomočjo mediane (problem je šum),
+s pomočjo povprečja (odporen na šum, 20 dB+) ali pa z izračunom optimalnega pragu (odporen na
+šum, 10 dB+).
+
+### 32. Lokalni prag
+
+Prednost lokalnega pragu je, da lahko mejo praga spreminjamo glede na določeno karakteristiko,
+kot je npr. prisotnost roba. Če rob v nekem pikslu zaznamo, potlej prag spustimo. To je lahko
+dober način za zaznavanje ospredja in ozadja.
+
+Formula:
+
+```
+T = Topt(1 - x)
+
+x = 1/3R * (|a - b - c + d| + |a - b + c - d| + |a + b - c - d|)
+```
+
+Kjer so a, b, c, d koti v 3x3 operatorju, R pa je število sivinskih nivojev na sliki.
+
+Razlika med lokalnim in globalnim pragom z očesom morda ni vidna, vendar pa kot omenjeno
+prek lahko uspešnost segmentacije ocenimo z rezultati klasifikacije.
+
+### 33. Klasifikacija
+
+Tu bi samo še enkrat poudaril najpomembnejše pojme:
+
+- vektor značilnic - vektor, ki opisuje neko obliko - dimenzija **R**
+- linearna klasifikacija določi meje med razredi
+- poznamo tudi nelinearna odločitvena pravila (polinomi ipd.)
+- število razredov označimo s K
+- Število vadbenih vzorcev ali **pralikov** pa označimo z **M**
+
+### 34. Ocenjevanje uspešnosti razpoznavalnih algoritmov
+
+Pri tem uporabljamo naslednje metrike:
+
+- **TP** - true positive - pravilno pozitivni
+- **TN** - true negative - pravilno negativni
+- **FP** - false positive - napačno pozitivni
+- **FN** - false negative - napačno negativni
+
+Primer:
+
+Imamo 30 jabolk in 30 hrušk. Zaznali smo 35 jabolk in 25 hrušk. Kaj je TP, TN, FP in FN?
+
+Z vidika jabolk:
+
+- TP: 30
+- TN: 25
+- FP: 5
+- FN: 0
+
+Rezultat: 30/35 = 0.86
+
+Nato imamo še pojma:
+
+- **TPF** - true positive fraction - senzitivnost
+    - TPF = TP / (TP + FN)
+- **TNR** - true negative fraction - specifičnost
+    - TNR = TN / (TN + FP)
+- **FNF** - false negative fraction
+    - FNF = 1 - TPF
+- **FPF** - false positive fraction
+    - FPF = 1 - TNF
+
+Za primer zgoraj so rezultati:
+
+- TPF: 1
+- TNR: 0.83
+- FNF: 0
+- FPF: 0.17
+
+##### Natančnost modela
+
+V praksi tako iščemo kompromis med TPF in TNR. To lahko naredimo z uporabo ROC krivulje.
+ROC krivulja je krivulja, ki prikazuje odvisnost TPF od FPF (senzitivnosti od
+specifičnosti). Najboljša je ponavadi tista,
+ki se čim bolj približa enemu izmed robov na osi y = x. Najslabša krivulja pa je tista,
+ki gre skozi os y = -x.** Čim bližje smo tej diagonali, tem slabši je naš model za
+predikcije.
+
+Optimalni prag tako iščemo na ta način, da opazujemo spreminjan ROC krivulje in iščemo
+AUC (area under curve), ki je čim večji. AUC je v bistvu ploščina pod krivuljo. Če je
+AUC = 1, potem je naš model popolnoma natančen. Obratno, če je AUC 0, je model tudi
+popolnoma natančen, ampak rabimo pa obrniti rezultate.
+
+ROC - receiver operating characteristic. ROC krivulja ponavadi izgleda nekako takole:
+
+![ROC](https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/ROC_space-2.png/800px-ROC_space-2.png)
+
+[//]: # (Vir: Wikipedia)
+
+Več o tem:
+
+- [ROC krivulja](https://en.wikipedia.org/wiki/Receiver_operating_characteristic)
+- [AUC](https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve)
+- [Neka spletna stran](http://www.anaesthetist.com/mnm/stats/roc/Findex.htm)
+
+ROC krivuljo lahko vidimo tudi na slednji sliki, kjer enako iščemo kompromis med
+senzitivnostjo in specifičnostjo:
+
+![ROC](https://davidblog.si/wp-content/uploads/2023/06/Screenshot-2023-06-04-084800.png)
