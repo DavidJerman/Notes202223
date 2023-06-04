@@ -296,5 +296,100 @@ DT -> VD: razpolovimo povezave in povežemo razpolovišča
 3. Deli in vladaj
 4. Prebirna premica
 
-#### 7.2.1 Deli in vladaj
+#### 7.2.1 Deli in vladaj - O(n log n)
 
+Deluje s časovno kompleksnostjo O(n log n). Ideja je, da množico S tako dolgo delimo,
+dokler ne dobimo trivialnega problema (1 do 3 točke). Največ težav pride pri funkciji 
+zlitja. 
+
+Psevdokod:
+
+```
+Voronoi(S, V)
+begin
+   Razdeli S na dve podmnožici S1 in S2
+   if not množica S1 dovolj majhna then
+      Voronoi(S1, V1)
+   if not množica S2 dovolj majhna then
+      Voronoi(S2, V2)
+   Zlij V1 in V2 v V
+end
+```
+
+Postopek zlitja:
+
+1. Najdemo ekstremni točki v S1 in S2 in ju povežemo
+2. Nato naredimo novo točko na ustvarjenem poltraku ki polzi po poltraku proti povezanima točkama
+3. Točka nadaljuje navzdol, dokler ne naleti na enega izmed robov S1 ali S2
+4. Takrat se smer točke spremeni tako, da je točka vedno enako oddaljena od obeh točk iz množic S1 in S2
+
+Za sliko glej učbenik stran 116.
+
+#### 7.2.2 Prebirna premica - O(n log n)
+
+- Erfurtov algoritem
+
+Tu pa je ideja, da ustvarimo 3D stožce za vsako točko. Presečišča (**bisekcije**) teh stožcev so
+Voronoijevi robovi. Nato uporabimo prebirno premico za premikanje preko ravnine, da ugotovimo,
+kje ta presečišča so.
+
+Preiskovalna premica, oz. v 3D prostoru ravnina, je nagnjena pod kotom 45 stopinj glede na preiskovalno os.
+Njen presek s stožci tvori parabole, ki pa nam povejo, kje bodo Voronoijevi robovi in točke. 
+Voronojev rob se tako gradi z zakasnitvijo glede na prebirno premico.
+
+Imamo dva dogodka preiskovalne premice:
+
+- dogodek točke - ustvari se nov stožec
+- dogodek na krožnici - sprememba obstoječega stanja v podatkovnih strukturah
+
+Povezava: ![Raymond Hill](https://web.archive.org/web/20230328053239/http://www.raymondhill.net/voronoi/rhill-voronoi.html)
+
+TL;DR: Ko najdemo točko, se začne tvorit stožec, drugi dogodek pa je, ko se neki stožec konča - torej
+se parabola skrči v točko in izgine. Z drugim dogodkom se ustvari Voronojeva točka in začne se nov
+Voronojev rob.
+
+## 8. Mnogokotniki
+
+Mnogokotnike lahko delimo v več skupine glede na njihove lastnosti.
+
+Lahko so konveksni in konkavni oz. vbočeni in izbočeni. Pri konveksnih je triangluacija
+lahko v času O(n), pri konkavnih pa v času O(n^3).
+
+Naslednja delitev je na enostavne in ne-enostavne. Enostavni so tisti, ki nimajo presečišč
+sami s seboj. Ne-enostavni pa so samosekajoči - spremeni se jim orientabilnost.
+
+Naslednja delitev je še na mnogokotnike z luknjami in brez lukenj. Kadar imamo gnezdene luknje,
+se z vsako luknjo usmerjenost zamenja.
+
+Potlej pa imamo še **obočene** mnogokotnike, kjer se izmenjuje izbočenost in vbočenost.
+
+Za točne definicije glej stran 127.
+
+## 9. Vsebnostni algoritmi
+
+Algoritmi se tu delijo v dve grupi:
+
+- brez priprave podatkov - O(n),
+  - algoritem enakih predznakov (**izbočeni mnogokotniki**),
+  - algoritem s poltrakom,
+  - algoritem z vsoto kotov,
+  - algoritem s KKS,
+- z pripravo podatkov - potencialno še hitrejši.
+  - algoritem s trakovi,
+  - algoritem s klini,
+  - algoritem CBCA,
+
+### 9.1 Algoritem enakih predznakov
+
+Deluje samo za izbočene mnogokotnike. Mnogokotnik mora biti **pravilno orientiran**.
+Če je testirana točka na isti strani vseh robov, potem je točka znotraj mnogokotnika.
+To, na kateri strani leži, določimo z vektorskim produktom. Če se spremeni **predznak**
+vektorskega produkta za katerikoli rob, potlej je točka **zunaj** mnogokotnika.
+
+### 9.2 Algoritem s poltrakom
+
+Ta algoritem deluje tudi z luknjami. Ideja je, da iz točke v poljubno smer potegnemo
+poltrak. Nato poiščemo vsa presečišča z mnogokotnikom. Če je število presečišč liho,
+potem je točka znotraj mnogokotnika.
+
+Če slučajno poltrak pade na točko, imamo robni primer.
