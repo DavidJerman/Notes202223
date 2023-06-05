@@ -581,6 +581,8 @@ Več o tem:
 
 ### 1. Kratkočasovna Fourierova transformacija - STFT
 
+- [x] Done
+
 Ideja tu je, da namesto, da obdelamo celoten signal, signal razdelimo v okna in v vsakem
 oknu izvedemo Fourierovo transformacijo. Tako dobimo še dodatne informacije o času, v katerem
 se je pojavila določena frekvenca. Seveda pa se tu pojavi "trade-off". Ker je okno omejeno,
@@ -592,12 +594,16 @@ uporabljala manjše okno.
 
 ### 2. Težave s STFT
 
+- [x] Done
+
 Kot že omenjeno je eden izmed problemov frekvenčna ločljivost vs. časovna ločljivost.
 
 Drugi problem pa je frekvenčno razlivanje, pa tudi to, da določen signal ni prisoten
 skozi celotno okno.
 
 ### 3. Primer SFTF
+
+- [x] Done
 
 ```
 Fvz = 44.1k
@@ -612,6 +618,8 @@ STFT lahko prikažemo z uporabo 3D grafa ali pa 2D grafa, kjer je z os barvna le
 
 ### 4. Filtriranje
 
+- [x] Done
+
 Ideja filtriranja je v osnovi to, da se določenih frekvenc v signalu želimo znebiti. Predvsem
 gre tu za to, da se znebimo šuma in izboljšamo razmerje SNR (signal to noise ratio).
 
@@ -619,6 +627,8 @@ Prvi način filtriranja je v frekvenčni domeni, kjer samo ustvarimo okno z nič
 in to pomnožimo s signalom. Ničle izničijo frekvence, ki jih ne želimo.
 
 ### 5. Zakaj NE filtriranje v frekvenčni domeni?
+
+- [x] Done
 
 Razloga sta dva:
 
@@ -629,11 +639,15 @@ Razloga sta dva:
 
 ### 6. Filtriranje v časovni domeni
 
+- [x] Done
+
 Prejšnjo idejo lahko prenesemo v časovno domeno. Poznamo frekvenčno karakteristiko filtra,
 ki jo lahko prenesemo v časovno domeno, da dobimo impulzni odziv filtra. To storimo s
 pomočjo inverzne Fourierove transformacije.
 
 ### 7. Frekvenčna transponiranka impulznega odziva
+
+- [x] Done
 
 Izraz "frekvenčna transponiranka impulznega odziva" se nanaša na postopek pretvorbe impulznega
 odziva filtra iz časovne domene v frekvenčno domeno. Ta postopek se izvaja s pomočjo diskretne
@@ -656,6 +670,8 @@ signalu. Poleg tega se frekvenčna transponiranka impulznega odziva lahko uporab
 in optimizacijo filtrov.
 
 ### 8. MA, AR in ARMA modeli
+
+- [x] Done
 
 Sledeči modeli so filtri tipa **IIR** - infinite impulse response. To pomeni, da imajo lahko neskončen
 impulzni odziv.
@@ -717,6 +733,8 @@ Torej, AR model pomaga razumeti strukturo in vzorce v izhodnem signalu, medtem k
 
 ### 9. Prednosti in slabosti ARMA modela
 
+- [x] Done
+
 Ena izmed slabosti je, da so takšni filtri lahko nestabilni. Do te nestabilnosti lahko pride,
 kadar so koeficienti A zelo blizu 0. Poleg tega se je treba zavedati, da ARMA model signal
 rekurzivno pošilja samega vase, kar lahko povzroči, da amplituda eksplodira.
@@ -725,6 +743,8 @@ Prednosti pa so to, da imamo lahko recimo neskončen impulzni odziv in vseeno ze
 filtriramo želene frekvence.
 
 ### 10. Impulzni odziv
+
+- [x] Done
 
 Kadar je vrednost vseh koeficientov A enaka 0, razen prvega 1, je impulzni odziv kar enak B.
 
@@ -754,6 +774,8 @@ H(z) = B(z) / A(z)
 
 ### 11. Kaj je Z transformacija?
 
+- [x] Done
+
 V bistvu gre za manjšo priredbo Laplaceove transformacije. Z transformacija je namenjena
 analizi diskretnih sistemov in signalov, ravno tako kot DFT. Olajša nam določene operacije,
 ki bi sicer bile zelo zahtevne v časovni domeni.
@@ -778,6 +800,8 @@ Torej, da samo zmnožimo frekvenčni odziv z vhodnim signalom.
 
 ### 12. Z transformacije zgledi
 
+- [x] Done
+
 ```
 y[n] = [1, 2, 3, 4, 5]
 
@@ -787,6 +811,8 @@ Y(z) = 1 * z^0 + 2 * z^-1 + 3 * z^-2 + 4 * z^-3 + 5 * z^-4
 Kar opazimo je, da gre za polinom.
 
 ### 13. Stabilnost ARMA modela
+
+- [x] Done
 
 Stabilnost ARMA sistema lahko zlahka ugotavljamo v Z ravnini. Namreč vemo, da je impulzni
 odziv ARMA modela enak:
@@ -811,6 +837,8 @@ Pa dodal bi še, da je red filtra max(ničle, poli).
 
 ### 14. Razumevanje filtrov s pomočjo enotske krožnice
 
+- [x] Done
+
 Samo logičen pomislek. Ničle pomeni, da se funkcija v tisti okolici približa ničli.
 Frekvence v tistem območju sili k ničli.
 Poli pa pomenijo, da se funkcija v tisti okolici približa neskončno. Torej tiste
@@ -825,10 +853,14 @@ Poleg tega pa, filtri ne morejo biti popolni, nekaj frekvenc vedno preide skozi 
 
 ### 15. Lomna frekvenca
 
+- [x] Done
+
 Lomna frekvenca je frekvenca, kjer se začnejo frekvence filtrirati. Bolj konkretno, je
 meja pri **0.7** amplitude oz. **-3dB**.
 
 ### 16. Ostale lastnosti filtrov
+
+- [x] Done
 
 **Območja filtra**
 
@@ -845,6 +877,8 @@ meja pri **0.7** amplitude oz. **-3dB**.
 
 ### 17. Primer opisa filtra
 
+- [x] Done
+
 Opiši sledeči filter:
 
 ![Primer filtra](https://davidblog.si/wp-content/uploads/2023/06/Screenshot-2023-06-03-201757.png)
@@ -855,6 +889,8 @@ pa ne filtrira v celoti vseh frekvenc nad lomno frekvenco.
 
 ### 18. Primeri filtrov
 
+- [ ] Done
+
 - Butterworth,
 - Chebyshev,
 - Bessel,
@@ -862,6 +898,8 @@ pa ne filtrira v celoti vseh frekvenc nad lomno frekvenco.
 - ...
 
 ### 19. Šum v signalih
+
+- [x] Done
 
 Šum je v bistvu vsak signal, ki ga ne želimo. Lahko je posledica okolja, napak v merjenju,
 ali pa je posledica samega sistema. Šuma se lahko znebimo s pomočjo filtrov.
@@ -886,22 +924,28 @@ SNR = 20 * log10(As / An)
 
 ### 20. Zakaj si želimo boljši SNR?
 
+- [x] Done
+
 Razlog tiči v tem, da prvo kot prvo nam šum NE koristi. Poleg tega je stiskanje ob odstranitvi
 šuma veliko bolj učinkovito. Signal je tudi lažje obdelovati. 
 
 ### 21. Kako deluje 2D konvolucija?
+
+- [x] Done
 
 Ideja je popolnoma ista - imamo impulzni odziv 2D filtra (kernel, jedro) in vhodno sliko (signal).
 Ta dva nato med sabo množimo kot pri konvoluciji. Tudi tu lahko delamo ali v frekvenčnem ali
 časovnem prostoru. Večinoma pa delamo v časovnem.
 
 Primer takega filtra je npr. nizkoprepustni filter, ki ga uporabimo za zmanjšanje šuma. Deluje
-taok, da v filter damo samo enice in ta sliko "zamegli" ter tako efektivno odstrani višje
+tako, da v filter damo samo enice in ta sliko "zamegli" ter tako efektivno odstrani višje
 frekvence. Gre za računanje povprečja.
 
 Filtre moramo normalizirati, če želimo, da ne uničimo slike.
 
 ### 22. Detekcija robov
+
+- [x] Done
 
 Detekcijo robov lahko izvajamo z izbiro pravih filtrov. V splošnem jih prepoznamo po tem, da je
 v njih prisotno odštevanje. V ozadju je ideja, da tam kjer je gradient velik, se bo to tudi
@@ -960,10 +1004,14 @@ kot = atan(Cy / Cx)
 
 ### 23. Cannijev detektor robov
 
+- [x] Done
+
 Cannijev detektor robov je najboljši detektor robov. Kombinira razne tehnike zaznave kot so 
 Gaussovo sito, Robertsov operator in določanje praga, da zazna robove, tudi če so pretrgani.
 
 ### 24. Pojmi v prostoru značilk
+
+- [x] Done
 
 Vsak signal nosi neke informacije in le-te lahko izluščimo. To lahko med drugim storimo
 s pomočjo filtrov in segmentacije. Na ta način zberemo kup informacij o signalu, ki jim
@@ -983,6 +1031,8 @@ značilk, ki smo jih izluščili.
 
 ### 25. Razpoznavalni sistem
 
+- [x] Done
+
 To je sistem, s katerim opravimo **razpoznavanje oblik**. Postopek je sledeč:
 
 1. Pretvorba iz fizikalnega sveta (neskončno dimenzij) v prostor oblik (2D, 3D, ...)
@@ -990,6 +1040,8 @@ To je sistem, s katerim opravimo **razpoznavanje oblik**. Postopek je sledeč:
 3. Pravila odločanja za klasifikacijo v razrede (K)
 
 ### 26. Določanje praga
+
+- [x] Done
 
 Ko iščemo območje oblike v signalu, moramo poiskati segment slike, kjer je ta objekt prisoten.
 Temu postopku pravimo **segmentiranje**. Najpreprostejši pristop je z uporabo pragov. Potlej 
@@ -1005,12 +1057,16 @@ Pri določanju pragov si lahko pomagamo s **histogrami**.
 
 ### 27. Sivinski histogram
 
+- [x] Done
+
 Sivinski histogram je najlažje določiti tako, da poiščemo minimalno in maksimalno vrednost
 na sliki. Nato naredimo histogram, ki ima toliko stolpcev, kot je razlika med minimalno in
 maksimalno vrednostjo. Velikost stolpca predstavlja število pikslov, ki imajo to vrednost.
 Območja, kjer je koncentracija velika, kažejo na potencialne segmente.
 
 ### 28. Izboljšava histograma
+
+- [x] Done
 
 Pri segmentaciji si želimo, da bi bile sivine čim bolj enakomerno porazdeljene, saj lahko tako
 bolje določimo prag. To storimo s pomočjo **linearizacije**. S to metodo sivine, ki so bolj na
@@ -1019,11 +1075,15 @@ bolj enakomerno porazdeljene.
 
 ### 29. Kje je optimalni prag?
 
+- [x] Done
+
 Formule za določitev optimalnega pragu ni. Lahko pa si tu pomagamo z neko hevristiko, kot je
 npr. uspešnost klasifikacije. Če sliko bolje klasificiramo pri določenem pragu, potem je ta
 prag boljši. To spominja na učenje z vzorci pri nevronskih mrežah.
 
 ### 30. Povprečje vs. mediana
+
+- [x] Done
 
 Glavna razlika je v tem, da je mediana dosti bolj odporna na velika odstopanja. Npr. če
 imamo vrednosti 1, 2, 3, 1000 v seznamu, potlej bo povprečje 251, mediana pa 2.5. Mediana 
@@ -1035,6 +1095,8 @@ opazovanih podatkov oz. signalov.
 
 ### 31. Vrste pragov
 
+- [x] Done
+
 Imamo globalni in lokalni prag. Globalni je enak za celotno sliko, lokalni pa je različen
 za vsak piksel slike. Če uporabljamo lokalne pragove, lahko tudi kombiniramo več pragov.
 
@@ -1043,6 +1105,8 @@ s pomočjo povprečja (odporen na šum, 20 dB+) ali pa z izračunom optimalnega 
 šum, 10 dB+).
 
 ### 32. Lokalni prag
+
+- [ ] Done
 
 Prednost lokalnega pragu je, da lahko mejo praga spreminjamo glede na določeno karakteristiko,
 kot je npr. prisotnost roba. Če rob v nekem pikslu zaznamo, potlej prag spustimo. To je lahko
@@ -1063,6 +1127,8 @@ prek lahko uspešnost segmentacije ocenimo z rezultati klasifikacije.
 
 ### 33. Klasifikacija
 
+- [x] Done
+
 Tu bi samo še enkrat poudaril najpomembnejše pojme:
 
 - vektor značilnic - vektor, ki opisuje neko obliko - dimenzija **R**
@@ -1072,6 +1138,8 @@ Tu bi samo še enkrat poudaril najpomembnejše pojme:
 - Število vadbenih vzorcev ali **pralikov** pa označimo z **M**
 
 ### 34. Ocenjevanje uspešnosti razpoznavalnih algoritmov
+
+- [x] Done
 
 Pri tem uporabljamo naslednje metrike:
 
@@ -1097,8 +1165,8 @@ Nato imamo še pojma:
 
 - **TPF** - true positive fraction - senzitivnost
     - TPF = TP / (TP + FN)
-- **TNR** - true negative fraction - specifičnost
-    - TNR = TN / (TN + FP)
+- **TNF** - true negative fraction - specifičnost
+    - TNF = TN / (TN + FP)
 - **FNF** - false negative fraction
     - FNF = 1 - TPF
 - **FPF** - false positive fraction
@@ -1113,7 +1181,7 @@ Za primer zgoraj so rezultati:
 
 ##### Natančnost modela
 
-V praksi tako iščemo kompromis med TPF in TNR. To lahko naredimo z uporabo ROC krivulje.
+V praksi tako iščemo kompromis med TPF in TNF. To lahko naredimo z uporabo ROC krivulje.
 ROC krivulja je krivulja, ki prikazuje odvisnost TPF od FPF (senzitivnosti od
 specifičnosti). Najboljša je ponavadi tista,
 ki se čim bolj približa enemu izmed robov na osi y = x. Najslabša krivulja pa je tista,
