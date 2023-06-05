@@ -393,3 +393,103 @@ poltrak. Nato poiščemo vsa presečišča z mnogokotnikom. Če je število pres
 potem je točka znotraj mnogokotnika.
 
 Če slučajno poltrak pade na točko, imamo robni primer.
+V tem primeru lahko:
+
+1. Spreminjamo kot, dokler poltrak ne pade na nobeno točko - to ni časovno učinkovito.
+2. Druga metoda je opisana na strani 133, ampak je nismo opisali.
+
+Drugi mejni primer je, če testirana točka leži na meji mnogokotnika.
+
+### 9.3 Algoritem z vsoto kotov
+
+Tu je ideja, da dodamo točko in to novo točko povežemo z vsemi ostalimi točkami.
+Nato opazujemo kote med poltraki. Če je vsota poltrakov enaka 2 pi, potlej je točka
+znotraj mnogokotnika, če pa je vsota 0 pa zunaj mnogokotnika.
+
+Zelo potratna metoda, je pa ta algoritem **manj občutljiv na zaokrožitveno napako**.
+Deluje pa tudi nad luknjami do neke mere - če vemo, na katerem nivoju te luknje so.
+
+### 9.4 KKS - Algoritem kodiranega koordinatnega sistema
+
+Gre za izboljšavo s poltrakom, tako da je algoritem zelo dober.
+
+1. Dodamo novo točko in te točke ustvarimo koordinatni sistem
+2. Nato si izberemo poljubno os - recimo -x
+3. ...
+4. Profit
+
+TODO: Zakaj se gre tule
+
+### 9.5 Algoritem s trakovi O(n log n)
+
+Najprej za vsako točko potegnemo premice. Za vsak trak ugotovimo, katere robove 
+vsebuje, kar storimo v logaritemskem času. It te točke nato potegnemo poltrak in
+ugotovimo, katere robove iz tega pasu le-ta seka. Podobno ko pri metodi poltraka,
+tudi tu sodo število pomeni, da točka leži zunaj mnogokotnika, liha pa, da znotraj.
+
+Rešitev robnih primerov je lahko rotacija mnogokotnika.
+
+### 9.6 Algoritem s klinom
+
+Deluje samo za **izbočene mnogokotnike**. Iz poljubne točke znotraj mnogokotnika
+potegnemo žarke skozi oglišča mnogokotnika - teh je **n**. To nam da kline - torej 
+razdelitev mnogokotnika. Nato v času O(log n) ugotovimo, v katerem klinu je točka
+s pomočjo dejstva, da gre za polarni koordinatni sistem. Nato za novo točko le
+še preverimo, na kateri strani daljice je - to nam pove, ali je zunaj ali znotraj
+mnogokotnika.
+
+### 9.7 Algoritem CBCA
+
+Osnovna ideja je, da sliko vstavimo v mrežo neke velikosti. Velikost določimo s pomočjo
+sledeče hevristike:
+
+```
+Nx = 2 * [ratio * sqrt(n)]
+
+Ny = 2 * [sqrt(n) / ratio]
+
+ration = (Xmax - Xmin) / (Ymax - Ymin)
+```
+
+1. Priprava podatkov - ustvarimo mrežo velikosti Nx * Ny
+2. Celice nato barvamo glede na to, ali so znotraj, zunaj, ali na robu mnogokotnika
+   1. W - celica je zunaj
+   2. B - celica je znotraj
+   3. G - celica je na robu
+
+Barvanje celic dosežemo s pomočjo rasterizacije. Zadeva deluje v konstantnem času.
+
+Psevdokod:
+
+```
+1   Inicializacija
+2   Polje celic
+3   Vanj vstavimo mnogokotnike
+4   Celice dobijo zastavice
+5   Ugotavljanje vsebnosti
+```
+
+Vsebnost oz. to, na kateri strani roba leži točka, preverjamo s pomočjo vektorskega
+produkta. Naredimo vektorski produkt z najbližjim robom.
+
+Ta algoritem je zelo učinkovit.
+
+Za zapolnjevanje zunanjih celic z barvo B lahko uporabimo algoritem poplavljanja.
+
+## 11. Triangulacija mnogokotnika
+
+Delitev glede na kriterij gradnje triangulacije:
+
+- brez kriterija
+- DT
+- s Steinerjevimi točkami
+
+Steinerjeve točke dosežejo to, da so trikotniki čim bolj enakostranični.
+
+Pri tem je Steinerjev algoritem najpočasnejši izmed teh treh, brez kriterija pa
+najhitrejši.
+
+TODO - Tisto nekaj z DT
+
+### 11. 1 Trapezna delitev mnogokotnika - algoritem s preiskovalno premico
+
