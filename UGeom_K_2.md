@@ -5,11 +5,11 @@ lahko najdete v zapiskih ali pa v knjigi.
 
 ## 6 Ravninska triangulacija
 
-- [ ] Done
+- [x] Done
 
 Triangulacijo izvajamo nad množico točk S.
 
-Želimo si, da bi bile triangulacije dobrem zato uvedemo neke kriterije.
+Želimo si, da bi bile triangulacije dobrem, zato uvedemo neke kriterije.
 Npr. dolžino robov, velikost kotov ipd. Pri tem število robov ostaja
 **enako** ne glede na izbiro kriterija.
 
@@ -21,7 +21,10 @@ Pojmi:
 
 ### 6.1 MWT - Minimalna utežena triangulacija O(n^4)
 
-- [o] Done
+- [x] Done
+
+Naivna metoda: O(n^4)
+Aproksimativna metoda: O(n^2 log(n))
 
 Iščemo vsoto dolžin robov, ki je najmanjša.
 
@@ -36,7 +39,7 @@ Lastnosti:
 
 ### 6.2 Hamiltonova triangulacija O(n^2)
 
-- [o] Done
+- [x] Done
 
 Tu na vrsto pridejo **trikotniški traki**. Zakaj? Najenostavnejše stiskanje
 podatkov triangulacije, poleg tega pa z njimi delajo tudi grafični procesorji.
@@ -62,7 +65,7 @@ Lastnosti:
 
 ### 6.3 Delaunayeva triangulacija
 
-- [o] Done
+- [x] Done
 
 Optimiziramo minimalni notranji kot. Skratka, če imamo dva trikotnika
 z različnima triangulacijama, najprej njune kote damo v neko vrsto in
@@ -71,7 +74,7 @@ predstavlja boljšo triangulacijo.
 
 #### 6.3.1 Kriterij praznega kroga
 
-- [o] Done
+- [x] Done
 
 Tu je v glavnem ideja, da če naredimo krožnico skozi tri točke, da ne
 sme ta krog vsebovati še druge točke. Če točke ne vsebuje, je triangulacija
@@ -89,11 +92,11 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
 - deli in vladaj
 - inkrementalni algoritmi
 - prebirna premica
-- metoda z izbočeno lupino
+- metoda z 3D izbočeno lupino
 
 #### 6.4.1 Fang in Piegl*
 
-- [o] Done
+- [x] Done
 
 1. Razdelimo v polrobove. Prvi polrob je najkrajši. Uvrstimo polrob v seznam, ki se obnaša kot sklad
 2. Iščemo naslednji točko, ki bi tvorila veljavno DT
@@ -103,14 +106,14 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
 
 #### 6.4.2 Deli in vladaj
 
-- [o] Done
+- [x] Done
 
 1. Razdelimo točke v več kosov tolikokrat, dokler ne dobimo dovolj majhen problem - recimo dokler ni
    število točk tri ali manj
 
 #### 6.4.3 Metoda s 3D izbočeno lupino
 
-- [o] Done
+- [x] Done
 
 1. Množico S projeciramo na paraboloid. z = x^2 + y^2
 2. Točke povežemo v trikotnike
@@ -119,7 +122,7 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
 
 #### 6.4.4 Inkrementalni algoritem
 
-- [o] Done
+- [x] Done
 
 Ideja tu je, da točke dobivamo postopoma in ne vse naenkrat.
 
@@ -142,16 +145,14 @@ Drugi algoritmi so še **GICS**, iskanje najbližje točke.
 
 ##### 6.4.4.1 Korakanje
 
-- [o] Done
+- [ ] Done
 
-Ideja pri korakanju je, da se premikamo po trikotnikih, dokler ne najdemo
-tistega, ki vsebuje točko. Lahko pride do robnih pogojev, kjer je točka
-v oglišču ali na robu. Če je v oglišču, jo spustimo, če pa je na robu, pa
-se trikotniki tvorijo malce drugače.
+Zapomnimo si zadnjo točko, ki je prispela. Naredimo vektor med staro in novo
+točko. Glede na kot med vektorjema se premaknemo v trikotnik z najmanjšim kotom.
 
 #### 6.4.5 Algoritem Guibasa, Knutha in Sharirja (GKS) - O(n*logn)
 
-- [o] Done
+- [x] Done
 
 Ta algoritem ravno tako uporablja inkrementalno vstavljanje.
 
@@ -202,7 +203,7 @@ vse povezave - ko ustvarjamo trikotnike in ko jih legaliziramo.
 
 #### 6.4.6 Algoritem z iskanjem najbližje točke
 
-- [o] Done
+- [ ] Done
 
 Ponovno, gre za _inkrementalni algoritem_, zato imamo generator točk.
 
@@ -236,7 +237,7 @@ Potlej razdelimo trikotnik na 3 dele in legaliziramo.
 
 #### 6.4.7 Algoritem s preiskovalno premico in napredujočo fronto - Fortune
 
-- [o] Done
+- [x] Done
 
 Tu se ravno tako premikamo točko po točko.
 
@@ -285,25 +286,28 @@ spet dodati. Glej učbenik 92.
 
 Glej urg.pdf stran 9.
 
-Lahko dodamo pogoj, da nov trikotnik tvorimo samo pod pogojem, da je kot večji od
+Lahko dodamo pogoj, da nov trikotnik tvorimo samo pod pogojem, da je kot manjši od
 90 stopinj. Če ni, potem pač ne naredimo trikotnika. To seveda zahteva, da v algoritem
 dodamo še kos kode, ki rešuje kotanje, ki zaradi tega lahko nastanejo. - zmanjšamo
 poseg v pomnilnik.
+
+**SKIP LIST**:
 
 Za napredujočo fronto si je najbolje hraniti večnivojski seznam točk. Določimo mu
 minimalni in maksimalni preskok (skip list). Točke so urejene po npr. x koordinati.
 Prednost je hitrost in to, da ne iščemo med vsemi točkami.
 
-Pri kotanjah pa algoritem v glavnem skače iz ene strani na drugo in nazaj. Pri tem
-trikotnike tvori samo, če je kot manjši od 105 stopinj. Pač določimo neko mejo.
-
-TODO
+Zaznavanje kotanj naredimo tako, da ko dobimo novo točko na robu kotanje, da preverimo
+naklon kotanje - če je naklon premice manjši od 105 stopinj, potem je kotanja. Pr+ postane
+rob kotanje, poiščemo pa še Pb - dno kotanje. Potlej poiščemo še desni rob kotanje tako,
+da gledamo, kdaj se pri naslednjem oglišču zmanjša vrednost y. Dobimo dve verigi, ki ju
+trianguliramo.
 
 ## 7 Voronoijevi diagrami
 
 ### 7.1 Definicija - preprost diagram
 
-- [o] Done
+- [x] Done
 
 Gre za graf, ki je dualen Delaunayevemu triagulacijskemu grafu. To v bistvu pomeni,
 da so povezave na tem grafu pravokotne na povezave na Delaunayevem grafu. Tvori pa
@@ -349,7 +353,7 @@ DT -> VD: razpolovimo povezave in povežemo razpolovišča
 
 #### 7.2.1 Deli in vladaj - O(n log n)
 
-- [o] Done
+- [x] Done
 
 Deluje s časovno kompleksnostjo O(n log n). Ideja je, da množico S tako dolgo delimo,
 dokler ne dobimo trivialnega problema (1 do 3 točke). Največ težav pride pri funkciji
@@ -380,7 +384,7 @@ Za sliko glej učbenik stran 116.
 
 #### 7.2.2 Prebirna premica (s stožci) - O(n log n)
 
-- [o] Done
+- [ ] Done
 
 - Erfurtov algoritem
 
@@ -405,7 +409,7 @@ Voronojev rob.
 
 ## 8 Mnogokotniki
 
-- [o] Done
+- [x] Done
 
 Mnogokotnike lahko delimo v več skupine glede na njihove lastnosti.
 
@@ -423,6 +427,8 @@ Potlej pa imamo še **obočene** mnogokotnike, kjer se izmenjuje izbočenost in 
 Za točne definicije glej stran 127.
 
 ## 9 Vsebnostni algoritmi
+
+- [ ] Done
 
 Algoritmi se tu delijo v dve grupi:
 
@@ -463,7 +469,7 @@ Drugi mejni primer je, če testirana točka leži na meji mnogokotnika.
 
 ### 9.3 Algoritem z vsoto kotov
 
-- [o] Done
+- [x] Done
 
 Tu je ideja, da dodamo točko in to novo točko povežemo z vsemi ostalimi točkami.
 Nato opazujemo kote med poltraki. Če je vsota poltrakov enaka 2 pi, potlej je točka
@@ -474,7 +480,7 @@ Deluje pa tudi nad luknjami do neke mere - če vemo, na katerem nivoju te luknje
 
 ### 9.4 KKS - Algoritem kodiranega koordinatnega sistema
 
-- [o] Done
+- [ ] Done
 
 Gre za izboljšavo s poltrakom, tako da je algoritem zelo dober.
 
@@ -493,7 +499,7 @@ imamo manj preverjanj sekanja.
 
 ### 9.5 Algoritem s trakovi O(n log n)
 
-- [o] Done
+- [x] Done
 
 Najprej za vsako točko potegnemo premice. Za vsak trak ugotovimo, katere robove
 vsebuje, kar storimo v logaritemskem času. It te točke nato potegnemo poltrak in
@@ -502,9 +508,9 @@ tudi tu sodo število pomeni, da točka leži zunaj mnogokotnika, liha pa, da zn
 
 Rešitev robnih primerov je lahko rotacija mnogokotnika.
 
-### 9.6 Algoritem s klinom
+### 9.6 Algoritem s klinom O(n) priprava, O(log n) testiranje
 
-- [o] Done
+- [x] Done
 
 Deluje samo za **izbočene mnogokotnike**. Iz poljubne točke znotraj mnogokotnika
 potegnemo žarke skozi oglišča mnogokotnika - teh je **n**. To nam da kline - torej
@@ -513,9 +519,9 @@ s pomočjo dejstva, da gre za polarni koordinatni sistem. Nato za novo točko le
 še preverimo, na kateri strani daljice je - to nam pove, ali je zunaj ali znotraj
 mnogokotnika.
 
-### 9.7 Algoritem CBCA
+### 9.7 Algoritem CBCA O(n) priprava, O(1) testiranje
 
-- [o] Done
+- [x] Done
 
 Osnovna ideja je, da sliko vstavimo v mrežo neke velikosti. Velikost določimo s pomočjo
 sledeče hevristike:
@@ -559,7 +565,7 @@ Problem: oddaljenost točke od roba.
 
 ## 11 Triangulacija mnogokotnika
 
-- [o] Done
+- [ ] Done
 
 Delitev glede na kriterij gradnje triangulacije:
 
@@ -572,11 +578,13 @@ Steinerjeve točke dosežejo to, da so trikotniki čim bolj enakostranični.
 Pri tem je Steinerjev algoritem najpočasnejši izmed teh treh, brez kriterija pa
 najhitrejši.
 
-TODO - Tisto nekaj z DT
+1. Trianguliramo ogljišča.
+2. CDT - omejena DT - daljica mora biti prisotna v končni triangulaciji
+3. Odstranimo trikotnike, ki niso člani mnogokotnika
 
 ### 11.1 Algoritem monotonega mnogokotnika
 
-- [o] Done
+- [x] Done - reši še en primer
 
 Algoritem seveda dela samo z monotonimi mnogokotniki v eni smeri. Oglišča najprej
 uredimo glede na os y. Tako dobimo levo in desno verigo. Nato gremo od navzgor
@@ -586,7 +594,7 @@ Za postopek glej učbenik stran 169.
 
 ### 11.2 Odstranjevanje uhljev
 
-- [o] Done
+- [x] Done
 
 Iščemo uhlje - to so trikotniki na robu, ki ne sekajo mnogokotnika. Gremo
 po vrsti okoli mnogokotnika in preverjamo.
@@ -598,14 +606,14 @@ zagotovo vsebujeta vsaj en uhelj.
 
 ## 12 Trapezna delitev mnogokotnika
 
-- [o] Done
+- [x] Done
 
 Ideja je, da mnogokotnik razdelimo na trapeze - ga na ta način labeliramo. S tem
 sem nam odpre pot do mnogih algoritmov.
 
 ### 12.1 Trapezodiacija mnogokotnika s prebirno premico
 
-- [o] Done
+- [x] Done
 
 1. Oglišča uredimo glede na koordinato Y.
 2. Klasificiramo oglišča v sledeče grupe:
@@ -624,9 +632,48 @@ zgoraj navzdol, od leve proti desni.
 
 Algoritem dela nad mnogokotniki brez lukenj.
 
+### 12.2 Trapezacija mnogokotnika z množico odprtih trapezov
+
+- [x] Done
+
+Zelo podoben algoritem prejšnjemu, ravno tako uporablja preiskovalno premico.
+
+#### 12.2.1 Inicializacija
+
+- [ ] Done
+
+1. Oglišča uredimo glede na koordinato Y
+2. Orientacija zanke in prstanov mnogokotnika v isti smeri
+3. Ocenitev oglišč mnogokotnika:
+   1. Vbočenost in izbočenost oglišča
+   2. Lokalni ekstrem oglišča
+
+Primer zastavice:
+
+```
+LMAXCNX - lokalni maksimum, izbočeno oglišče
+LMINCNC - lokalni minimum, vbočeno oglišče
+LINFLEX - prevoj
+LSMAXCNX - vodoravni lokalni maksimum, izbočeno oglišče
+HINFLECTION - vodoravni prevoj
+```
+
+#### 12.2.2 Trapezna delitev
+
+- [ ] Done
+
+Status algoritma hrani **odprti trapez**. Oglišči vi0 in vi3 vedno sovpadata z
+oglišči mnogokotnika. Točki vi1 in vi2 pa sta lahko točki mnogokotnika ali pa
+presečiščni točki med robovi mnogokotnika in preiskovalno premico. Koordinati y
+vi1 in vi2 sta vedno enaki. Vi0 in vi3 pa sta nižji. Te trapeze hranimo v 
+množici SOT (set of open trapezoids). Za vsako luknjo uvedeno svojo množico SOT in
+to tudi označimo. 
+
+Glej učbenik stran 202 do 209.
+
 ## 13 Boolove operacije nad mnogokotniki
 
-- [o] Done
+- [x] Done
 
 Gre za operacije, ki jih že poznamo: presek, unija, razlika. Postopek je sledeč:
 
@@ -640,7 +687,7 @@ mnogokotnika A preverimo, če seka katero izmed stranic mnogokotnika B.
 
 ### 13.2 Algoritem s preiskovalno premico - algoritem SBI
 
-- [o] Done
+- [ ] Done
 
 Časovna zahtevnost:
 
@@ -693,7 +740,7 @@ Postopek je nato sledeč:
 
 ### 13.3 Predstavitev statusa preiskovalne premice z množicami
 
-- [o] Done
+- [ ] Done
 
 Imamo dve množici za mnogokotnik Q in mnogokotnik P. Najbolje je, da za shranjevanje
 uporabljamo seznam. Skratka, preden karkoli vstavimo v množici, preverimo presečišča
@@ -710,7 +757,7 @@ _briši_ in _preveri presečišče_.
 
 #### 13.4.1 Z uporabo seznama
 
-- [o] Done
+- [x] Done
 
 Operacije od **a** do **d** vse trajajo O(r), kjer je r število robov v SLS.
 Skupna časovna zahtevnost je tako O(n^2) in v primeru, da je r mnogo manjši
@@ -718,9 +765,26 @@ od n, skoraj *linearna*.
 
 #### 13.4.2 Z uporabo binarnega drevesa
 
-- [o] Done
+- [x] Done
 
 Časovna zahtevnost je O((k + l) log(k + l)). L je število presečišč, k pa je
 n + m, kjer je n število robov mnogokotnika P in m število robov mnogokotnika Q.
 
 ### 13.5 Izvedba obhoda
+
+- [x] !Done
+
+Unija:
+
+1. Začnemo v ekstremni točki, potujemo po robu mnogokotnika in skočimo na
+   drug mnogokotnik, kjer so presečišča. Končamo v izhodišču.
+2. Če nam ostane še kaj oglišč, izberemo poljubno oglišče. Vzamemo vektorja **a** in **b**,
+   ki jih dobimo iz robov iz tega oglišča. Če je z koordinata vektorskega produkta
+   pozitivna, gremo v smeri vektorja **a**.
+3. Ponavljamo postopek 2, dokler ne zmanjka oglišč.
+
+Presek:
+
+Postopek je isti, samo da vedno začnemo v presečišču. Razlika pa je še v tem, da za
+smer potovanja izbiramo ravno obratno - gremo v smeri **a**, če je vektorski produkt
+negativen.
