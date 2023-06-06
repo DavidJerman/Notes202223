@@ -789,7 +789,7 @@ z = e^(jw)
 
 ali
 
-z = e^(-i * 2 * pi / N * k)
+z = e^(-n * 2 * pi / N * k)
 ```
 
 Kot v Z ravnini določa frekvenco. Poleg tega je vredno omeniti, da je Z **kompleksen**,
@@ -889,7 +889,7 @@ pa ne filtrira v celoti vseh frekvenc nad lomno frekvenco.
 
 ### 18. Primeri filtrov
 
-- [ ] Done
+- [x] Done
 
 - Butterworth,
 - Chebyshev,
@@ -1090,7 +1090,7 @@ imamo vrednosti 1, 2, 3, 1000 v seznamu, potlej bo povprečje 251, mediana pa 2.
 je namreč srednja vrednost, ki jo dobimo, če seznam uredimo po velikosti. V primeru zgoraj je
 sredina enaka 2, 3, zatorej je mediana (2 + 3) / 2 = 2.5.
 
-Zato je najbolje, da izračunamo tako mediano kot povprečje, da dobimo občutek o lasstnosti
+Zato je najbolje, da izračunamo tako mediano kot povprečje, da dobimo občutek o lastnosti
 opazovanih podatkov oz. signalov.
 
 ### 31. Vrste pragov
@@ -1106,7 +1106,7 @@ s pomočjo povprečja (odporen na šum, 20 dB+) ali pa z izračunom optimalnega 
 
 ### 32. Lokalni prag
 
-- [ ] Done
+- [x] Done
 
 Prednost lokalnega pragu je, da lahko mejo praga spreminjamo glede na določeno karakteristiko,
 kot je npr. prisotnost roba. Če rob v nekem pikslu zaznamo, potlej prag spustimo. To je lahko
