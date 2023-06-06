@@ -638,7 +638,7 @@ Gre za operacije, ki jih že poznamo: presek, unija, razlika. Postopek je slede�
 Najpreprostejša je naivna metoda, ki deluje v času O(n^2). Za vsako stranico
 mnogokotnika A preverimo, če seka katero izmed stranic mnogokotnika B.
 
-### 13.2 Algoritem s preiskovalno premico
+### 13.2 Algoritem s preiskovalno premico - algoritem SBI
 
 - [o] Done
 
@@ -649,3 +649,78 @@ mnogokotnika A preverimo, če seka katero izmed stranic mnogokotnika B.
 
 SLS - status preiskovalne premice - robovi, kateri se lahko v tem trenutku
 med sabo sekajo, ker jih seka preiskovalna premica.
+
+Imamo oglišče vk, ki ga spremljamo in še njegovi sosednji oglišči vi
+in vj. Oglišča so povezana z robovi. Preiskujemo v smeri x.
+
+Imamo sledeča pravila za spremembo stanja:
+
+- **a**: xi > xk in xj > xk - vstavi oba robova
+- **b**: xi < xk in xj < xk - odstrani oba robova
+- **c**: xi < xk in xj > xk - vstavi rob vk-vj, odstrani rob vk-vi
+- **d**: xi > xk in xj < xk - vstavi rob vk-vi, odstrani rob vk-vj
+
+Robni primer:
+
+Na preiskovalni premici je več točk. Če to niso robovi, potlej rešimo s pravili
+**a** do **d**. Če pa se najde kakšen rob, pa uporabimo vertikalno pravilo.
+
+Pravilo **v**:
+
+- vstavi navpični rob v SLS
+- preveri, ali se seka z drugimi robovi iz SLS
+- odstrani rob iz SLS
+- vstavi ali zbriši rob, ki se dotika navpičnega roba v SLS glede na pravila
+  **a**, **b**, **c**, **d** in **v**
+
+Možne pohitritve:
+
+- test enakih predznakov
+- izločitveni test z oklepajočimi pravokotniki - ta algoritem v bistvu naredi dve
+  škatli okoli mnogokotnikov, odprti na desno. Nato vrne 1, če je testirana daljica
+  izven škatle in 0, če je znotraj. Če je 0, potem se daljica lahko seka s testiranim
+  mnogokotnikom.
+
+Postopek je nato sledeč:
+
+- premikamo se po preiskovalni premici
+- ko naletimo na točko:
+  - pogledamo, katere točke imamo na preiskovalni premici
+  - pogledamo pravilo oklepajočih pravokotnikov
+  - za veljavne točke gremo čez pravila **a** do **v**
+- sproti si shranjujemo vsa presečišča
+- nadaljujemo do konca
+
+### 13.3 Predstavitev statusa preiskovalne premice z množicami
+
+- [o] Done
+
+Imamo dve množici za mnogokotnik Q in mnogokotnik P. Najbolje je, da za shranjevanje
+uporabljamo seznam. Skratka, preden karkoli vstavimo v množici, preverimo presečišča
+z operacijo **AND**.
+
+Celoten algoritem imaš na strani 223.
+
+Druga možnost predstavitve pa je z binarnim drevesom. Uporabljamo **eno drevo** za
+shranjevanje SLS. Drevo sestoji iz končnih in začetnih vozlišč. Končno vozlišče
+vsebuje podatke o robu ali dveh. Tako imamo tri funkcije nad drevesom: _vstavi_,
+_briši_ in _preveri presečišče_.
+
+### 13.4 Časovna zahtevnost algoritma
+
+#### 13.4.1 Z uporabo seznama
+
+- [o] Done
+
+Operacije od **a** do **d** vse trajajo O(r), kjer je r število robov v SLS.
+Skupna časovna zahtevnost je tako O(n^2) in v primeru, da je r mnogo manjši
+od n, skoraj *linearna*.
+
+#### 13.4.2 Z uporabo binarnega drevesa
+
+- [o] Done
+
+Časovna zahtevnost je O((k + l) log(k + l)). L je število presečišč, k pa je
+n + m, kjer je n število robov mnogokotnika P in m število robov mnogokotnika Q.
+
+### 13.5 Izvedba obhoda
