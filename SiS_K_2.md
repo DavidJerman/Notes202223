@@ -789,7 +789,7 @@ z = e^(jw)
 
 ali
 
-z = e^(-n * 2 * pi / N * k)
+z = e^(i * 2 * pi / N * k)
 ```
 
 Kot v Z ravnini določa frekvenco. Poleg tega je vredno omeniti, da je Z **kompleksen**,
