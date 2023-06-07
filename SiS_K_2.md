@@ -682,7 +682,7 @@ spreminjal v preteklosti. Namen teh modelov je, da opravijo filtriranje signala.
 MA sistem je sistem oblike:
 
 ```
-y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + ... + bL * x[n-L+1]
+y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + ... + bL * x[n-L]
 ```
 
 Sprejema prejšnje **VHODNE** vrednosti. Išče tekoče povprečje prejšnjih vhodnih vrednosti. Zato
@@ -694,7 +694,7 @@ povprečenja, zato tudi imamo ničle.
 AR sistem je sistem oblike:
 
 ```
-y[n] = a1 * y[n-1] + a2 * y[n-2] + ... + aL * y[n-L+1]
+y[n] = a1 * y[n-1] + a2 * y[n-2] + ... + aL * y[n-L]
 ```
 
 Sprejema prejšnje **IZHODNE** vrednosti. Na dolgo mu rečemo _avtorekurzivni_ ali _autoregressive_
@@ -705,8 +705,8 @@ tudi najdemo pole.
 ARMA model pa kombinira oba modela. ARMA model je sistem oblike:
 
 ```
-y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + ... + bL * x[n-L+1] 
-       + a1 * y[n-1] + a2 * y[n-2] + ... + aL * y[n-L+1]
+y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + ... + bL * x[n-L] 
+       + a1 * y[n-1] + a2 * y[n-2] + ... + aL * y[n-L]
 ```
 
 **Red filtra** je max(L, M), kjer je L red MA sistema in M red AR sistema oz. število koeficientov
@@ -859,6 +859,14 @@ Poleg tega pa, filtri ne morejo biti popolni, nekaj frekvenc vedno preide skozi 
 
 Lomna frekvenca je frekvenca, kjer se začnejo frekvence filtrirati. Bolj konkretno, je
 meja pri **0.7** amplitude oz. **-3dB**.
+
+Formula za izračun lomne frekvence je:
+
+```math
+vrednost = frekvenca / vzorčevalna frekvenca
+
+frekvenca = vrednost * vzorčevalna frekvenca
+```
 
 ### 16. Ostale lastnosti filtrov
 
@@ -1211,3 +1219,7 @@ ROC krivuljo lahko vidimo tudi na slednji sliki, kjer enako iščemo kompromis m
 senzitivnostjo in specifičnostjo:
 
 ![ROC](https://davidblog.si/wp-content/uploads/2023/06/Screenshot-2023-06-04-084800.png)
+
+### 35. Ojačenje slikovnega operatorja
+
+Sešteješ absolutne vrednosti.
