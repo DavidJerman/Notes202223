@@ -9,7 +9,7 @@ lahko najdete v zapiskih ali pa v knjigi.
 
 Triangulacijo izvajamo nad množico točk S.
 
-Želimo si, da bi bile triangulacije dobrem, zato uvedemo neke kriterije.
+Želimo si, da bi bile triangulacije dobre, zato uvedemo neke kriterije.
 Npr. dolžino robov, velikost kotov ipd. Pri tem število robov ostaja
 **enako** ne glede na izbiro kriterija.
 
@@ -30,7 +30,7 @@ Iščemo vsoto dolžin robov, ki je najmanjša.
 
 1. Tvorimo vse daljice, katerih je m = (n nad 2), O(n^2 log(n)) in razvrstimo
    po dolžini
-2. Nato jemlemo daljice in jih sprejmemo, če le-te ne sekajo katere od
+2. Nato jemljemo daljice in jih sprejmemo, če le-te ne sekajo katere od
    obstoječih daljic. Če sekajo, jih zavržemo. O(n^4)
 
 Lastnosti:
@@ -94,7 +94,7 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
 - prebirna premica
 - metoda z 3D izbočeno lupino
 
-#### 6.4.1 Fang in Piegl*
+#### 6.4.1 Fang in Piegl == ovijanje paketov
 
 - [x] Done
 
@@ -117,7 +117,7 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
 
 1. Množico S projeciramo na paraboloid. z = x^2 + y^2
 2. Točke povežemo v trikotnike
-3. Odstrnimo trikotnike, ki kažejo navznoter, torej v smeri osi z
+3. Odstranimo trikotnike, ki kažejo navznoter, torej v smeri osi z - njihove normale so pozitivne
 4. Preslikamo nazaj v 2D
 
 #### 6.4.4 Inkrementalni algoritem
@@ -145,10 +145,11 @@ Drugi algoritmi so še **GICS**, iskanje najbližje točke.
 
 ##### 6.4.4.1 Korakanje
 
-- [ ] Done
+- [x] Done
 
 Zapomnimo si zadnjo točko, ki je prispela. Naredimo vektor med staro in novo
-točko. Glede na kot med vektorjema se premaknemo v trikotnik z najmanjšim kotom.
+točko. Ta vektor nam pove, v katero smer se moramo premikati, da najdemo novi
+trikotnik. Premikamo se v sosednje trikotnike, ki imajo glede na vektor najmanjši kot.
 
 #### 6.4.5 Algoritem Guibasa, Knutha in Sharirja (GKS) - O(n*logn)
 
@@ -203,7 +204,7 @@ vse povezave - ko ustvarjamo trikotnike in ko jih legaliziramo.
 
 #### 6.4.6 Algoritem z iskanjem najbližje točke
 
-- [ ] Done
+- [x] Done
 
 Ponovno, gre za _inkrementalni algoritem_, zato imamo generator točk.
 
@@ -346,6 +347,8 @@ DT -> VD: razpolovimo povezave in povežemo razpolovišča
 
 ### 7.2 Algoritmi za tvorbo Voronoijevih diagramov
 
+- [x] Done
+
 1. Naivni algoritem - za vsako točko naredim bisektorje
 2. Inkrementalni algoritem
 3. Deli in vladaj
@@ -384,7 +387,7 @@ Za sliko glej učbenik stran 116.
 
 #### 7.2.2 Prebirna premica (s stožci) - O(n log n)
 
-- [ ] Done
+- [x] Done
 
 - Erfurtov algoritem
 
@@ -401,7 +404,8 @@ Imamo dva dogodka preiskovalne premice:
 - dogodek točke - ustvari se nov stožec
 - dogodek na krožnici - sprememba obstoječega stanja v podatkovnih strukturah
 
-Povezava: ![Raymond Hill](https://web.archive.org/web/20230328053239/http://www.raymondhill.net/voronoi/rhill-voronoi.html)
+Povezava: [Raymond Hill](https://web.archive.org/web/20230328053239/http://www.raymondhill.net/voronoi/rhill-voronoi.html)
+Povezava: [YouTube](https://www.youtube.com/watch?v=k2P9yWSMaXE)
 
 TL;DR: Ko najdemo točko, se začne tvorit stožec, drugi dogodek pa je, ko se neki stožec konča - torej
 se parabola skrči v točko in izgine. Z drugim dogodkom se ustvari Voronojeva točka in začne se nov
@@ -428,7 +432,7 @@ Za točne definicije glej stran 127.
 
 ## 9 Vsebnostni algoritmi
 
-- [ ] Done
+- [x] Done
 
 Algoritmi se tu delijo v dve grupi:
 
@@ -480,14 +484,9 @@ Deluje pa tudi nad luknjami do neke mere - če vemo, na katerem nivoju te luknje
 
 ### 9.4 KKS - Algoritem kodiranega koordinatnega sistema
 
-- [ ] Done
+- [x] Done
 
 Gre za izboljšavo s poltrakom, tako da je algoritem zelo dober.
-
-1. Dodamo novo točko in te točke ustvarimo koordinatni sistem
-2. Nato si izberemo poljubno os - recimo -x
-3. ...
-4. Profit
 
 Najprej klasificiramo robove mnogokotnika glede na to, v katerih
 kvadrantih se nahajajo. Nato potegnem poltrak v smeri -x. Vemo,
@@ -565,7 +564,7 @@ Problem: oddaljenost točke od roba.
 
 ## 11 Triangulacija mnogokotnika
 
-- [ ] Done
+- [x] Done
 
 Delitev glede na kriterij gradnje triangulacije:
 
@@ -631,6 +630,42 @@ BSL je zadaj, FSL pa spredaj. Kar soliden algoritem. Ves čas algoritma greš po
 zgoraj navzdol, od leve proti desni.
 
 Algoritem dela nad mnogokotniki brez lukenj.
+
+#### 12.1.1 Mnogokotniki z luknjami
+
+- [x] Done
+
+Inicializacija je enaka. Recimo pa, da je v mnogokotniku prstan R1. Uvedemo dve novi polji:
+BackRingVertices in FrontRingVertices. V njih hranimo oglišča prstana. Ko pride na vrsto
+BackScanLine in delamo z oglišči prstana, se postopek malce spremeni. Točke tokrat vstavljamo
+v BackRingVertices. V polje BSL pa, če je prstan Rj neposredno vsebovan v zanki mnogokotnika
+oziroma v polje prstana.
+
+Vsebnost prstana v mnogokotniku dokaj zlahka preverimo.
+
+Nato tvorimo trapeze izmenjujoče med FSL in BSL (v obliki črke U) in med BackRingVertices in
+FrontRingVertices (v obliki črke U).
+
+##### 12.1.1.1 Dotikajoči se prstani
+
+- [ ] Done
+
+Tu pa rabimo samo poskrbeti, da če si luknje delijo kakšna oglišča, da jih podvojimo -
+torej, da imamo unikatno oglišče za vsako luknjo. Dobimo ničelne trapeze med prstani.
+
+#### 12.1.2 Zmanjšanje števila trapezov
+
+- [x] Done
+
+Gre za algoritem združevanja trapezov. Združimo, če so izpolnjeni naslednji pogoji:
+
+- trapeza pripadata isti zanki ali prstanu
+- koordinati x oglišč v1,j in v0,k sta enaki (+- epsilon)
+- koordinati x oglišč v2,j in v3,k sta enaki (+- epsilon)
+- oglišča v0,j v1,j in v1,k so kolinearna
+- oglišča v2,j v3,j in v2,k so kolinearna
+
+Glej sliko stran 197.
 
 ### 12.2 Trapezacija mnogokotnika z množico odprtih trapezov
 
