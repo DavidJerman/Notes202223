@@ -77,7 +77,7 @@ Pristop deluje paketno - FFT obdela signal določene dolžine naenkrat.
 ### Digitalno filtriranje
 
 Želimo si realno-časovno filtriranje, torej, da se filtriranje izvaja med vzorčenjem.
-FFT tu ni uporaben. Nov pristop: digitalno filtriranje.
+FFT tu ni uporaben. Nov pristop: digitalno filtriranje v časovni domeni.
 
 IDEJA: uporabimo linearne sisteme MA, AR, ARMA. Problem: nestabilnost sistemov AR in
 ARMA. Catch je v tem, da ker ponovno uporabljamo prejšnje izhode, da lahko amplituda
@@ -292,7 +292,7 @@ slike. Po tem principu tudi deluje iskanje robov.
 #### Zaznava robov
 
 Naklon v sliki - torej rob - dobimo kot razliko sosednjih pikslov. Večja kot je razlika, bolj
-strm je naklon, bolj strm je naklon, bolj verjetno je da gre za rob.
+strm je naklon, bolj strm je naklon, bolj verjetno je, da gre za rob.
 
 Če med piksli ni razlike, potem je naklon 0, torej ni roba.
 
@@ -356,7 +356,7 @@ Cannyev postopek:
 ### Odkrivanje in razpoznavanje oblik
 
 Posamezne lastnosti slik lahko izločimo s pomočjo filtrov. Tem lastnostim rečemo tudi značilke
-(features). Izločanje značil pa imenujem feature extraction.
+(features). Izločanje značilk pa imenujem feature extraction.
 Te značilke lahko nato posredujemo nevronski mreži. To je v bistvu tudi nadgradnja zaznave.
 Recimo vemo, da gre za jabolko, če je okroglo in rdeče.
 
@@ -376,14 +376,14 @@ Postopek:
 Da lahko dobimo značilke, moramo najprej zaznati objekt. Oblike zaznamo v **času** ali
 **prostoru**. Zaznave imajo svojo razsežnost - bodisi dimenzije ali časovno razsežnost.
 Skratka naš cilj je zaznava začetka in konca objekta.
-Temu postopku rečemo segmentiranje, ker izberemo segment signala, kjer se objekt nahaja.
+Temu postopku rečemo segmentacija, ker izberemo segment signala, kjer se objekt nahaja.
 
 #### Segmentacija
 
-Segmentiranje lahko opravimo ali v časovnem/slikovnem prostoru ali v frekvenčnem prostoru.
+Segmentacijo lahko opravimo ali v časovnem/slikovnem prostoru ali v frekvenčnem prostoru.
 
 Glede na prag se nato odločimo, ali je objekt prisoten ali ne. To je binarna odločitev.
-Rečemo, da signal **binariziramo**. Rečimo, če iščemo rdeče jaboljko, določimo nek
+Rečemo, da signal **binariziramo**. Rečimo, če iščemo rdeče jabolko, določimo nek
 prag za rdečo, modro in zeleno.
 
 #### Določanje pragov
@@ -397,7 +397,7 @@ Histogram je grafični prikaz porazdelitve vrednosti v signalu, kjer recimo opaz
 značilko, kot je recimo sivina. Tako bo histogram prikazoval koliko katerega nivoja sivine
 je prisotnega v sliki.
 
-Tako najpogosteje tvorimo histogram amplitud. Primeri historgramov so tako: histogram za
+Tako najpogosteje tvorimo histogram amplitud. Primeri histogramov so tako: histogram za
 elektrodiagram in sivinsko umetno sliko.
 
 Histogram ima tako neko maksimalno in minimalno vrednost, poleg tega pa ima določeno število
@@ -421,7 +421,7 @@ sprejeli in katere ne.
 Pragovna segmentacija temelji na histogramu. Različne segmente ločimo s pragovi. Lahko si določimo
 globalne pragove ali pa lokalne pragove. En prag ali več pragov. Ideja je, da če je vrednost
 nad pragom, da rečemo, da gre za ospredje, da pa če je manjša, da gre za ozadje. Kot prag
-bi lahko preprosto vzelo kar povprečje ospredja in ozadja kot:
+bi lahko preprosto vzeli kar povprečje ospredja in ozadja kot:
 
 ```math
 T = (Tb + Tf) / 2
@@ -479,7 +479,7 @@ robovi, itd. Potlej lahko bolj uspešno izvedemo klasifikacijo. Po tem principu 
 konvolucijske nevronske mreže.
 
 Pri tem je vredno še dodati, da načeloma težko rečemo, ali je nek prag slab ali dober in da
-je to dosti lažje reči šele ko dobimo rezultate klasifikacije. Bolj uspešen kot naš model
+je to dosti lažje reči šele, ko dobimo rezultate klasifikacije. Bolj uspešen kot naš model
 je pri dajanju napovedi, boljša je naša segmentacija.
 
 ##### Lokalni prag
@@ -539,8 +539,8 @@ Nato imamo še pojma:
 
 - **TPF** - true positive fraction - senzitivnost
     - TPF = TP / (TP + FN)
-- **TNR** - true negative fraction - specifičnost
-    - TNR = TN / (TN + FP)
+- **TNF** - true negative fraction - specifičnost
+    - TNF = TN / (TN + FP)
 - **FNF** - false negative fraction
     - FNF = 1 - TPF
 - **FPF** - false positive fraction
@@ -549,17 +549,17 @@ Nato imamo še pojma:
 Za primer zgoraj so rezultati:
 
 - TPF: 1
-- TNR: 0.83
+- TNF: 0.83
 - FNF: 0
 - FPF: 0.17
 
 ##### Natančnost modela
 
-V praksi tako iščemo kompromis med TPF in TNR. To lahko naredimo z uporabo ROC krivulje.
-ROC krivulja je krivulja, ki prikazuje odvisnost TPF od FPF. Najboljša je ponavadi tista,
+V praksi tako iščemo kompromis med TPF in TNF. To lahko naredimo z uporabo ROC krivulje.
+ROC krivulja je krivulja, ki prikazuje razmerje med TPF in TNF. Najboljša je ponavadi tista,
 ki se čim bolj približa enemu izmed robov na osi y = x. Najslabša krivulja pa je tista,
-ki gre skozi os y = -x.** Čim bližje smo tej diagonali, tem slabši je naš model za
-predikcije.
+ki oma ploščino 0.5.** Čim bližje smo tej diagonali, tem slabši je naš model za
+napovedi.
 
 Optimalni prag tako iščemo na ta način, da opazujemo spreminjan ROC krivulje in iščemo
 AUC (area under curve), ki je čim večji. AUC je v bistvu ploščina pod krivuljo. Če je
@@ -688,7 +688,8 @@ y[n] = b0 * x[n] + b1 * x[n-1] + b2 * x[n-2] + ... + bL * x[n-L+1]
 Sprejema prejšnje **VHODNE** vrednosti. Išče tekoče povprečje prejšnjih vhodnih vrednosti. Zato
 se tudi imenuje _Moving Average_. To povprečje pa se nato pomnoži z nekimi koeficienti, ki
 dosežejo efekt filtriranja. Problem **MA** je visoka računska zahtevnost. Pri njem najdemo
-**koeficiente b**.
+**koeficiente b**. Njegov namen je odstranjevanje določenih frekvenc s pomočjo glajenja oz.
+povprečenja, zato tudi imamo ničle.
 
 AR sistem je sistem oblike:
 
@@ -698,7 +699,8 @@ y[n] = a1 * y[n-1] + a2 * y[n-2] + ... + aL * y[n-L+1]
 
 Sprejema prejšnje **IZHODNE** vrednosti. Na dolgo mu rečemo _avtorekurzivni_ ali _autoregressive_
 sistem. AR sistem je avtorekurzivni, kar pomeni, da izhodni vzorec filtra vpliva na naslednje izhodne
-vzorce. Pri njem najdemo **koeficiente a**.
+vzorce. Pri njem najdemo **koeficiente a**. Njegov name je ohranjanje določenih frekvenc - zato
+tudi najdemo pole.
 
 ARMA model pa kombinira oba modela. ARMA model je sistem oblike:
 
@@ -821,7 +823,7 @@ odziv ARMA modela enak:
 H(z) = B(z) / A(z)
 ```
 
-In ta odziv je v bistvu polinom. Koeficienti b nam dajo ničle, koeficienti A pa pole.
+In ta odziv je v bistvu polinom. Koeficienti B nam dajo ničle, koeficienti A pa pole.
 Pravimo tudi, da gre za **sistemovo prenosno karakteristiko**.
 
 S pomočjo ugotavljanja ničel in polov lahko nato govorimo o stabilnosti sistema. Najprej
@@ -1044,14 +1046,14 @@ To je sistem, s katerim opravimo **razpoznavanje oblik**. Postopek je sledeč:
 - [x] Done
 
 Ko iščemo območje oblike v signalu, moramo poiskati segment slike, kjer je ta objekt prisoten.
-Temu postopku pravimo **segmentiranje**. Najpreprostejši pristop je z uporabo pragov. Potlej 
+Temu postopku pravimo **segmentacija**. Najpreprostejši pristop je z uporabo pragov. Potlej 
 samo gledamo za vsak pixel na sliki, če je njegova vrednost večja od praga. Če je, ga označimo
 kot del objekta, če ne, pa ne. Tako dobimo true/false masko, ki nam pove, kje se objekt nahaja.
 
 ![Prag](https://davidblog.si/wp-content/uploads/2023/06/Screenshot-2023-06-03-210859.png)
 
-Določanje pragu je lahko kar zahtevna stvar. Najpreprostejši način je, da določimo globalni
-prag - torej neko vrednost, ki je enaka za vse piksle na sliki.
+Določanje pragu je lahko precej zahtevna stvar. Najpreprostejši način je, da določimo globalni
+prag – torej neko vrednost, ki je enaka za vse piksle na sliki.
 
 Pri določanju pragov si lahko pomagamo s **histogrami**.
 
@@ -1085,7 +1087,7 @@ prag boljši. To spominja na učenje z vzorci pri nevronskih mrežah.
 
 - [x] Done
 
-Glavna razlika je v tem, da je mediana dosti bolj odporna na velika odstopanja. Npr. če
+Glavna razlika je v tem, da je mediana dosti bolj odporna na velika odstopanja. Npr., če
 imamo vrednosti 1, 2, 3, 1000 v seznamu, potlej bo povprečje 251, mediana pa 2.5. Mediana 
 je namreč srednja vrednost, ki jo dobimo, če seznam uredimo po velikosti. V primeru zgoraj je
 sredina enaka 2, 3, zatorej je mediana (2 + 3) / 2 = 2.5.
@@ -1123,7 +1125,7 @@ x = 1/3R * (|a - b - c + d| + |a - b + c - d| + |a + b - c - d|)
 Kjer so a, b, c, d koti v 3x3 operatorju, R pa je število sivinskih nivojev na sliki.
 
 Razlika med lokalnim in globalnim pragom z očesom morda ni vidna, vendar pa kot omenjeno
-prek lahko uspešnost segmentacije ocenimo z rezultati klasifikacije.
+prej lahko uspešnost segmentacije ocenimo z rezultati klasifikacije.
 
 ### 33. Klasifikacija
 
@@ -1131,7 +1133,7 @@ prek lahko uspešnost segmentacije ocenimo z rezultati klasifikacije.
 
 Tu bi samo še enkrat poudaril najpomembnejše pojme:
 
-- vektor značilnic - vektor, ki opisuje neko obliko - dimenzija **R**
+- vektor značilnic - vektor, ki opisuje neko obliko – dimenzija **R**
 - linearna klasifikacija določi meje med razredi
 - poznamo tudi nelinearna odločitvena pravila (polinomi ipd.)
 - število razredov označimo s K
@@ -1143,10 +1145,10 @@ Tu bi samo še enkrat poudaril najpomembnejše pojme:
 
 Pri tem uporabljamo naslednje metrike:
 
-- **TP** - true positive - pravilno pozitivni
-- **TN** - true negative - pravilno negativni
-- **FP** - false positive - napačno pozitivni
-- **FN** - false negative - napačno negativni
+- **TP** – true positive – pravilno pozitivni
+- **TN** – true negative – pravilno negativni
+- **FP** – false positive – napačno pozitivni
+- **FN** – false negative – napačno negativni
 
 Primer:
 
@@ -1186,12 +1188,12 @@ ROC krivulja je krivulja, ki prikazuje odvisnost TPF od FPF (senzitivnosti od
 specifičnosti). Najboljša je ponavadi tista,
 ki se čim bolj približa enemu izmed robov na osi y = x. Najslabša krivulja pa je tista,
 ki gre skozi os y = -x.** Čim bližje smo tej diagonali, tem slabši je naš model za
-predikcije.
+napovedi.
 
 Optimalni prag tako iščemo na ta način, da opazujemo spreminjan ROC krivulje in iščemo
 AUC (area under curve), ki je čim večji. AUC je v bistvu ploščina pod krivuljo. Če je
 AUC = 1, potem je naš model popolnoma natančen. Obratno, če je AUC 0, je model tudi
-popolnoma natančen, ampak rabimo pa obrniti rezultate.
+popolnoma natančen, ampak rabimo pa obrniti rezultate. Najslabše je, če je AUC = 0.5.
 
 ROC - receiver operating characteristic. ROC krivulja ponavadi izgleda nekako takole:
 
