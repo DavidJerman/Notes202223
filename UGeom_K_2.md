@@ -116,8 +116,9 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
 - [x] Done
 
 1. Množico S projeciramo na paraboloid. z = x^2 + y^2
-2. Točke povežemo v trikotnike
-3. Odstranimo trikotnike, ki kažejo navznoter, torej v smeri osi z - njihove normale so pozitivne
+2. Točke povežemo v trikotnike tako, da tvorimo izbočeno 3D lupino - pri tem pazimo, da normale trikotnikov
+   kažejo navzven
+3. Odstranimo trikotnike, katerih normala kaže v smeri osi z
 4. Preslikamo nazaj v 2D
 
 #### 6.4.4 Inkrementalni algoritem
@@ -692,6 +693,9 @@ LMINCNC - lokalni minimum, vbočeno oglišče
 LINFLEX - prevoj
 LSMAXCNX - vodoravni lokalni maksimum, izbočeno oglišče
 HINFLECTION - vodoravni prevoj
+
+Torej: LMAX/LSMAX/LMAX/LMIN + CNX/CNC
+       LINFLEX/HINFLEX
 ```
 
 #### 12.2.2 Trapezna delitev
@@ -705,7 +709,30 @@ vi1 in vi2 sta vedno enaki. Vi0 in vi3 pa sta nižji. Te trapeze hranimo v
 množici SOT (set of open trapezoids). Za vsako luknjo uvedeno svojo množico SOT in
 to tudi označimo. 
 
+Akcije algoritma nato določamo z zastavicami **vtf**, ki sem jih naštel zgoraj.
+
+Na preiskovalni daljici ni vodoravnega roba mnogokotnika in
+mnogokotnik ne vsebuje lukenj:
+
++ vtf_i = LMAXCNX: nov odprt trapez v SOT^L, podvojimo ogljišče
++ vtf_i = LMINCNX: zbrišemo trapez iz SOT^L
++ vtf_i = LMAXCNC: obstoječ trapez razdelimo z novim ogliščem - dva nova odprta trapeza
++ vtf_i = LMINCNC: združimo dva odprta trapeza v enega
++ vtf_i = LINFLEX: ažuriramo koordinate odprtega trapeza
+
+Na preiskovalni daljici je vodoravni rob mnogokotnika:
+
++ vtf_i = vtf_i+ = LSMAXCNX: nov odprt trapez v SOT^L
++ vtf_i = vtf_i+ = LSMINCNX: zbrišemo trapez iz SOT^L
++ vtf_i = vtf_i+ = LSMAXCNC: obstoječ trapez razdelimo z novim ogliščem - dva nova odprta trapeza
++ vtf_i = vtf_i+ = LSMINCNC: združimo dva odprta trapeza v enega
++ vtf_i = LSMAXCNX, vtf_i+ = LSMINCNC ali vtf_i = LSMINCNX, vtf_i+ = LSMAXCNC: ažuriramo koordinate odprtega trapeza
+
 Glej učbenik stran 202 do 209.
+
+#### 12.2.3 Mnogokotniki z luknjami
+
+Za vsak prstan dodamo še svojo množico SOT.
 
 ## 13 Boolove operacije nad mnogokotniki
 
