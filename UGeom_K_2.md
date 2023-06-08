@@ -531,6 +531,11 @@ Nx = 2 * [ratio * sqrt(n)]
 Ny = 2 * [sqrt(n) / ratio]
 
 ratio = (Xmax - Xmin) / (Ymax - Ymin)
+
+Koordinate:
+
+i = [x - Xmin / (Xmax - Xmin)] * Nx
+j = [y - Ymin / (Ymax - Ymin)] * Ny
 ```
 
 1. Priprava podatkov - ustvarimo mrežo velikosti Nx * Ny
