@@ -86,7 +86,7 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
 
 ### 6.4 Algoritmi za tvorbo DT
 
-- [ ] Done
+- [x] Done
 
 - ovijanje paketov
 - deli in vladaj
@@ -104,7 +104,7 @@ optimalna. Dokaz je s pomočjo **Talesovega izreka**.
     2. Če se zgodi, da nastane komplementaren rob že obstoječemu, oba odstranimo iz sklada
        ...
 
-#### 6.4.2 Deli in vladaj
+#### 6.4.2 Deli in vladaj - algoritem DeWall
 
 - [x] Done
 
@@ -236,7 +236,7 @@ celice, da dobimo indekse. Nato poiščemo najbližjo točko, ki nam da tudi pot
 trikotnike, v katerih se lahko nahaja. Če ga ni v tem trikotniku, pogledamo sosede.
 Potlej razdelimo trikotnik na 3 dele in legaliziramo.
 
-#### 6.4.7 Algoritem s preiskovalno premico in napredujočo fronto - Fortune
+#### 6.4.7 Algoritem s preiskovalno premico in napredujočo fronto
 
 - [x] Done
 
@@ -276,7 +276,7 @@ Psevdokod:
 13    Odstranimo BT
 ```
 
-Robni primer: točka pade pri projekciji na neko točko. Razširimo ali levo ali desno -
+Robni primer: točka pade pri projekciji na neko točko. Razširimo ali levo ali desno –
 poljubno.
 
 Pri tvorjenju trikotnikov lahko tudi dodamo pogoj, da mora biti kot dovolj majhen.
@@ -289,18 +289,18 @@ Glej urg.pdf stran 9.
 
 Lahko dodamo pogoj, da nov trikotnik tvorimo samo pod pogojem, da je kot manjši od
 90 stopinj. Če ni, potem pač ne naredimo trikotnika. To seveda zahteva, da v algoritem
-dodamo še kos kode, ki rešuje kotanje, ki zaradi tega lahko nastanejo. - zmanjšamo
+dodamo še kos kode, ki rešuje kotanje, ki zaradi tega lahko nastanejo – zmanjšamo
 poseg v pomnilnik.
 
 **SKIP LIST**:
 
-Za napredujočo fronto si je najbolje hraniti večnivojski seznam točk. Določimo mu
+Za napredujočo fronto si je najbolje hraniti več-nivojski seznam točk. Določimo mu
 minimalni in maksimalni preskok (skip list). Točke so urejene po npr. x koordinati.
 Prednost je hitrost in to, da ne iščemo med vsemi točkami.
 
-Zaznavanje kotanj naredimo tako, da ko dobimo novo točko na robu kotanje, da preverimo
-naklon kotanje - če je naklon premice manjši od 105 stopinj, potem je kotanja. Pr+ postane
-rob kotanje, poiščemo pa še Pb - dno kotanje. Potlej poiščemo še desni rob kotanje tako,
+Zaznavanje kotanj naredimo tako, da, ko dobimo novo točko na robu kotanje, da preverimo
+naklon kotanje – če je naklon premice manjši od 105 stopinj, potem je kotanja. Pr+ postane
+rob kotanje, poiščemo pa še Pb – dno kotanje. Potlej poiščemo še desni rob kotanje tako,
 da gledamo, kdaj se pri naslednjem oglišču zmanjša vrednost y. Dobimo dve verigi, ki ju
 trianguliramo.
 
@@ -385,11 +385,9 @@ Postopek zlitja:
 
 Za sliko glej učbenik stran 116.
 
-#### 7.2.2 Prebirna premica (s stožci) - O(n log n)
+#### 7.2.2 Prebirna premica (s stožci) - O(n log n) - Fortuneov algoritem
 
 - [x] Done
-
-- Erfurtov algoritem
 
 Tu pa je ideja, da ustvarimo 3D stožce za vsako točko. Presečišča (**bisekcije**) teh stožcev so
 Voronoijevi robovi. Nato uporabimo prebirno premico za premikanje preko ravnine, da ugotovimo,
@@ -401,8 +399,8 @@ Voronojev rob se tako gradi z zakasnitvijo glede na prebirno premico.
 
 Imamo dva dogodka preiskovalne premice:
 
-- dogodek točke - ustvari se nov stožec
-- dogodek na krožnici - sprememba obstoječega stanja v podatkovnih strukturah
+- dogodek točke – ustvari se nov stožec, nov parabolični odsek
+- dogodek na krožnici – sprememba obstoječega stanja v podatkovnih strukturah, odstrani se parabolični odsek
 
 Povezava: [Raymond Hill](https://web.archive.org/web/20230328053239/http://www.raymondhill.net/voronoi/rhill-voronoi.html)
 Povezava: [YouTube](https://www.youtube.com/watch?v=k2P9yWSMaXE)
@@ -466,7 +464,7 @@ potem je točka znotraj mnogokotnika.
 Če slučajno poltrak pade na točko, imamo robni primer.
 V tem primeru lahko:
 
-1. Spreminjamo kot, dokler poltrak ne pade na nobeno točko - to ni časovno učinkovito.
+1. Spreminjamo kot, dokler poltrak ne pade na nobeno točko - to ni časovno učinkovito - algoritem Perturbacije.
 2. Druga metoda je opisana na strani 133, ampak je nismo opisali.
 
 Drugi mejni primer je, če testirana točka leži na meji mnogokotnika.
@@ -514,7 +512,8 @@ Rešitev robnih primerov je lahko rotacija mnogokotnika.
 Deluje samo za **izbočene mnogokotnike**. Iz poljubne točke znotraj mnogokotnika
 potegnemo žarke skozi oglišča mnogokotnika - teh je **n**. To nam da kline - torej
 razdelitev mnogokotnika. Nato v času O(log n) ugotovimo, v katerem klinu je točka
-s pomočjo dejstva, da gre za polarni koordinatni sistem. Nato za novo točko le
+s pomočjo dejstva, da gre za polarni koordinatni sistem. Uporabimo pa **binarno 
+iskanje**, **bisekcijo**. Nato za novo točko le
 še preverimo, na kateri strani daljice je - to nam pove, ali je zunaj ali znotraj
 mnogokotnika.
 
@@ -581,7 +580,7 @@ najhitrejši.
 2. CDT - omejena DT - daljica mora biti prisotna v končni triangulaciji
 3. Odstranimo trikotnike, ki niso člani mnogokotnika
 
-### 11.1 Algoritem monotonega mnogokotnika
+### 11.1 Algoritem monotonega mnogokotnika - O(n)
 
 - [x] Done - reši še en primer
 
@@ -589,17 +588,19 @@ Algoritem seveda dela samo z monotonimi mnogokotniki v eni smeri. Oglišča najp
 uredimo glede na os y. Tako dobimo levo in desno verigo. Nato gremo od navzgor
 navzdol, manjši x ima prednost če y enak.
 
+Pri veljavnosti trikotnika testiramo orientacijo - ta mora biti v smeri urinega kazalca.
+
 Za postopek glej učbenik stran 169.
 
-### 11.2 Odstranjevanje uhljev
+### 11.2 Odstranjevanje uhljev - O(n³)
 
 - [x] Done
 
 Iščemo uhlje - to so trikotniki na robu, ki ne sekajo mnogokotnika. Gremo
 po vrsti okoli mnogokotnika in preverjamo.
 
-Tu je še ideja vstvljanja diagonal. Poiščemo eno konkavno ogljišče. Skozi to
-ogljišče potegnemo poltrak. Poltrak nato premaknemo dokler ne najdemo prvega
+Tu je še ideja vstavljanja diagonal. Poiščemo eno konkavno ogljišče. Skozi to
+ogljišče potegnemo poltrak. Poltrak nato premaknemo, dokler ne najdemo prvega
 presečišča. To nam razdeli mnogokotnik na dva dobra mnogokotnika, ki oba
 zagotovo vsebujeta vsaj en uhelj.
 
@@ -610,7 +611,7 @@ zagotovo vsebujeta vsaj en uhelj.
 Ideja je, da mnogokotnik razdelimo na trapeze - ga na ta način labeliramo. S tem
 sem nam odpre pot do mnogih algoritmov.
 
-### 12.1 Trapezodiacija mnogokotnika s prebirno premico
+### 12.1 Trapezodiacija mnogokotnika s prebirno premico - O(n log n)
 
 - [x] Done
 
@@ -638,8 +639,8 @@ Algoritem dela nad mnogokotniki brez lukenj.
 Inicializacija je enaka. Recimo pa, da je v mnogokotniku prstan R1. Uvedemo dve novi polji:
 BackRingVertices in FrontRingVertices. V njih hranimo oglišča prstana. Ko pride na vrsto
 BackScanLine in delamo z oglišči prstana, se postopek malce spremeni. Točke tokrat vstavljamo
-v BackRingVertices. V polje BSL pa, če je prstan Rj neposredno vsebovan v zanki mnogokotnika
-oziroma v polje prstana.
+v BSL. V polje BackRingVertices pa, če je prstan Rj neposredno vsebovan v zanki mnogokotnika in je
+ta točka del prstana.
 
 Vsebnost prstana v mnogokotniku dokaj zlahka preverimo.
 
@@ -648,7 +649,7 @@ FrontRingVertices (v obliki črke U).
 
 ##### 12.1.1.1 Dotikajoči se prstani
 
-- [ ] Done
+- [x] Done
 
 Tu pa rabimo samo poskrbeti, da če si luknje delijo kakšna oglišča, da jih podvojimo -
 torej, da imamo unikatno oglišče za vsako luknjo. Dobimo ničelne trapeze med prstani.
@@ -667,7 +668,7 @@ Gre za algoritem združevanja trapezov. Združimo, če so izpolnjeni naslednji p
 
 Glej sliko stran 197.
 
-### 12.2 Trapezacija mnogokotnika z množico odprtih trapezov
+### 12.2 Trapezacija mnogokotnika z množico odprtih trapezov - O(n log n)
 
 - [x] Done
 
@@ -722,7 +723,7 @@ mnogokotnika A preverimo, če seka katero izmed stranic mnogokotnika B.
 
 ### 13.2 Algoritem s preiskovalno premico - algoritem SBI
 
-- [ ] Done
+- [x] Done
 
 Časovna zahtevnost:
 
@@ -775,7 +776,7 @@ Postopek je nato sledeč:
 
 ### 13.3 Predstavitev statusa preiskovalne premice z množicami
 
-- [ ] Done
+- [x] Done
 
 Imamo dve množici za mnogokotnik Q in mnogokotnik P. Najbolje je, da za shranjevanje
 uporabljamo seznam. Skratka, preden karkoli vstavimo v množici, preverimo presečišča
@@ -807,7 +808,7 @@ n + m, kjer je n število robov mnogokotnika P in m število robov mnogokotnika 
 
 ### 13.5 Izvedba obhoda
 
-- [x] !Done
+- [x] Done
 
 Unija:
 
